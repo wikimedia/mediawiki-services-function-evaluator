@@ -1,0 +1,15 @@
+{
+  "name": "zeval",
+  "version": "0.0.1",
+  "description": "Evaluting ZObjects",
+  "main": "src/zeval.js",
+  "scripts": {
+    "test": "qunit"
+  },
+  "author": "WikiLambda team",
+  "repository": "https://github.com/vrandezo/zeval",
+  "license": "MIT",
+  "devDependencies": {
+    "qunit": "^2.11.3"
+  }
+}
