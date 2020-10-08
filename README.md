@@ -24,8 +24,8 @@ node src/function-evaluator.js '{ "Z1K1": "Z7", "Z7K1": "Zxx", "ZxxK1": "A" }'
 - [ ] validate
 
 ### Further todos
-- [ ] do the tests look right?
-- [ ] what should be the config for the linter?
+- [x] do the tests look right?
+- [x] what should be the config for the linter?
 - [ ] settings
 - [ ] hook it up to the wiki
 - [ ] make it runnable as a service

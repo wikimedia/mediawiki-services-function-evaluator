@@ -124,14 +124,6 @@ QUnit.test( 'simple record', ( assert ) => {
 } );
 
 /* Tests from the php repo
-			'simple record with unsorted keys' => [
-				'{ "Z60K1": "a", "Z1K1 ": "Z60" }',
-				'{ "Z1K1": "Z60", "Z60K1": "a" }'
-			],
-			'simple record with unsorted local keys' => [
-				'{ "K1 ": "a", "Z1K1 ": "Z60" }',
-				'{ "Z1K1": "Z60", "K1": "a" }'
-			],
 			'escaped string' => [
 				'{ "Z1K1": "Z6", "Z6K1": "Z6" }',
 				'{ "Z1K1": "Z6", "Z6K1": "Z6" }'
