@@ -1,18 +1,27 @@
 {
-    "env": {
-        "browser": true,
-        "es2021": true
-    },
-    "extends": [
-        "plugin:vue/essential"
-    ],
-    "parserOptions": {
-        "ecmaVersion": 12,
-        "sourceType": "module"
-    },
-    "plugins": [
-        "vue"
-    ],
-    "rules": {
-    }
+	"root": true,
+	"extends": [
+		"wikimedia",
+		"wikimedia/server"
+	],
+	"rules": {
+		"array-bracket-spacing": "off",
+		"arrow-parens": "off",
+		"brace-style": "off",
+		"camelcase": "off",
+		"comma-spacing": "off",
+		"computed-property-spacing": "off",
+		"eqeqeq": "off",
+		"indent": "off",
+		"keyword-spacing": "off",
+		"no-trailing-spaces": "off",
+		"no-undef": "off",
+		"no-use-before-define": "off",
+		"object-curly-spacing": "off",
+		"prefer-const": "off",
+		"quote-props": "off",
+		"quotes": "off",
+		"space-in-parens": "off",
+		"strict": "off"
+	}
 }
