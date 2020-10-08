@@ -115,44 +115,15 @@ QUnit.test( 'untrimmed string both', ( assert ) => {
 	assert.deepEqual( normalize( ' a ' ), { Z1K1: 'Z6', Z6K1: ' a ' }, 'untrimmed string both' );
 } );
 
+QUnit.test( 'empty record', ( assert ) => {
+	assert.deepEqual( normalize( { Z1K1: 'Z1' } ), { Z1K1: { Z1K1: 'Z9', Z9K1: 'Z1' } }, 'empty record' );
+} );
+
+QUnit.test( 'simple record', ( assert ) => {
+	assert.deepEqual( normalize( { Z1K1: 'Z60', Z60K1: 'a' } ), { Z1K1: { Z1K1: 'Z9', Z9K1: 'Z60' }, Z60K1: { Z1K1: 'Z6', Z6K1: 'a' } }, 'simple record' );
+} );
+
 /* Tests from the php repo
-			'empty record' => [ '{ "Z1K1": "Z1" }', '{ "Z1K1": "Z1" }' ],
-			'simple record' => [
-				'{ "Z1K1": "Z60", "Z60K1": "a" }',
-				'{ "Z1K1": "Z60", "Z60K1": "a" }'
-			],
-			'simple record with left untrimmed key' => [
-				'{ "Z1K1": "Z60", " Z60K1": "a" }',
-				'{ "Z1K1": "Z60", "Z60K1": "a" }'
-			],
-			'simple record with right untrimmed key' => [
-				'{ "Z1K1": "Z60", "Z60K1 ": "a" }',
-				'{ "Z1K1": "Z60", "Z60K1": "a" }'
-			],
-			'simple record with both untrimmed key' => [
-				'{ "Z1K1": "Z60", " Z60K1 ": "a" }',
-				'{ "Z1K1": "Z60", "Z60K1": "a" }'
-			],
-			'simple record with left double untrimmed key' => [
-				'{ "Z1K1": "Z60", "  Z60K1": "a" }',
-				'{ "Z1K1": "Z60", "Z60K1": "a" }'
-			],
-			'simple record with both keys untrimmed' => [
-				'{ " Z1K1 ": "Z60", "Z60K1 ": "a" }',
-				'{ "Z1K1": "Z60", "Z60K1": "a" }'
-			],
-			'simple record with left local untrimmed key' => [
-				'{ "Z1K1": "Z60", " K1": "a" }',
-				'{ "Z1K1": "Z60", "K1": "a" }'
-			],
-			'record with embedded record with key untrimmed' => [
-				'{ "Z1K1 ": "Z60", "Z60K1 ": { "Z1K1": "Z60", "Z60K1 ": "a" } }',
-				'{ "Z1K1": "Z60", "Z60K1": { "Z1K1": "Z60", "Z60K1": "a" } }',
-			],
-			'list with record with key untrimmed' => [
-				'[{ " Z1K1 ": "Z60", "Z60K1 ": "a" }]',
-				'[{ "Z1K1": "Z60", "Z60K1": "a" }]'
-			],
 			'simple record with unsorted keys' => [
 				'{ "Z60K1": "a", "Z1K1 ": "Z60" }',
 				'{ "Z1K1": "Z60", "Z60K1": "a" }'

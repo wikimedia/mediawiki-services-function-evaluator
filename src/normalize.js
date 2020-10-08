@@ -38,8 +38,13 @@ function normalize( o ) {
 		return delistify( o );
 	}
 
-	if ( o.Z1K1 === 'Z5' && o.Z5K1 === 'Z402' ) {
+	if ( o.Z1K1 === 'Z5' && ( o.Z5K1 === 'Z401' || o.Z5K1 === 'Z402' ) ) {
 		return o;
+	}
+
+	const keys = Object.keys( o );
+	for ( let i = 0; i < keys.length; i++ ) {
+		o[ keys[ i ] ] = normalize( o[ keys[ i ] ] );
 	}
 	return o;
 }
