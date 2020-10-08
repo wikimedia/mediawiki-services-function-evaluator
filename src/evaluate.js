@@ -1,6 +1,6 @@
 'use strict';
 
-function evaluate(o) {
+function evaluate( o ) {
 	return o;
 }
 
