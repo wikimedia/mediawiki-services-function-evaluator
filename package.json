@@ -1,14 +1,14 @@
 {
-  "name": "zeval",
+  "name": "function-evaluator",
   "version": "0.0.1",
-  "description": "Evaluting ZObjects",
-  "main": "src/zeval.js",
+  "description": "Evaluting function objects",
+  "main": "src/function-evaluator.js",
   "scripts": {
     "test": "qunit",
     "lint": "eslint src/**/*.js && eslint test/**/*.js"
   },
   "author": "WikiLambda team",
-  "repository": "https://github.com/vrandezo/zeval",
+  "repository": "https://github.com/vrandezo/function-evaluator",
   "license": "MIT",
   "devDependencies": {
     "eslint": "^7.10.0",
