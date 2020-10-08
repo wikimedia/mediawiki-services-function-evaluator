@@ -7,10 +7,6 @@ function wellformed_string( s ) {
 	return s;
 }
 
-function is_array( a ) {
-	return Array.isArray( a );
-}
-
 function wellformed_array( a ) {
 	for ( let i = 0; i < a.length; i++ ) {
 		const w = wellformed( a[ i ] );
@@ -57,7 +53,7 @@ function wellformed( o ) {
 	if ( utils.is_string( o ) ) {
 		return wellformed_string( o );
 	}
-	if ( is_array( o ) ) {
+	if ( utils.is_array( o ) ) {
 		return wellformed_array( o );
 	}
 	if ( is_object( o ) ) {

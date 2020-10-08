@@ -8,15 +8,21 @@ QUnit.test( 'simple string', ( assert ) => {
 	assert.deepEqual( normalize( 'ab' ), { Z1K1: 'Z6', Z6K1: 'ab' }, 'simple string' );
 } );
 
+QUnit.test( 'simple reference', ( assert ) => {
+	assert.deepEqual( normalize( 'Z4' ), { Z1K1: 'Z9', Z9K1: 'Z4' }, 'simple reference' );
+} );
+
+QUnit.test( 'empty list', ( assert ) => {
+	assert.deepEqual( normalize( [] ), { Z1K1: { Z1K1: 'Z9', Z9K1: 'Z10' } }, 'empty list' );
+} );
+
 /* Tests from the php repo
-			'empty list' => [ '[]', '[]' ],
 			'list with empty string' => [ '[""]', '[""]' ],
 			'list with two empty strings' => [ '["", ""]', '["", ""]' ],
 			'list with ordered strings' => [ '["a", "b"]', '["a", "b"]' ],
 			'list with unordered strings' => [ '["b", "a"]', '["b", "a"]' ],
 			'list with lists' => [ '[[],[[]], []]', '[[],[[]],[]]' ],
 			'empty string' => [ '""', '""' ],
-			'string' => [ '"ab"', '"ab"' ],
 			'string unordered' => [ '"ba"', '"ba"' ],
 			'untrimmed string left' => [ '" a"', '" a"' ],
 			'untrimmed string right' => [ '"a "', '"a "' ],
