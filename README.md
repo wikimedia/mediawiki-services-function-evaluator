@@ -15,13 +15,13 @@ node src/zeval.js '{ "Z1K1": "Z7", "Z7K1": "Zxx", "ZxxK1": "A" }'
 
 ### Write
 - [x] parse
-- [ ] wellformedness
+- [x] wellformedness
 - [ ] normalize
+- [ ] labelize
 - [ ] canonicalize
 - [ ] evaluate
-- [ ] validate
-- [ ] labelize
 - [ ] built-ins
+- [ ] validate
 
 ### Further todos
 - [ ] do the tests look right?
@@ -29,4 +29,6 @@ node src/zeval.js '{ "Z1K1": "Z7", "Z7K1": "Zxx", "ZxxK1": "A" }'
 - [ ] settings
 - [ ] hook it up to the wiki
 - [ ] make it runnable as a service
+- [ ] caching
+- [ ] use a caching service
 - [ ] make it runnable as a CLI

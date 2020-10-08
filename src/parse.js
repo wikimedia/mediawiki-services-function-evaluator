@@ -1,5 +1,7 @@
 'use strict';
 
+const error = require('./error.js');
+
 function parse(str) {
 	try {
 		const zobject = JSON.parse(str);
@@ -7,14 +9,7 @@ function parse(str) {
 	}
 	catch(err) {
 		const m = (err.name === "SyntaxError") ? err.message : err.name;
-		return {
-			"Z1K1": "Z5",
-			"Z5K1": "Z401",
-			"Z5K2": {
-				"Z1K1": "Z401",
-				"Z401K1": m
-			}
-		};
+		return error("Z401", m, str);
 	}
 }
 
