@@ -1,10 +1,7 @@
 'use strict';
 
 const error = require( './error.js' );
-
-function is_string( s ) {
-	return typeof s === 'string' || s instanceof String;
-}
+const utils = require( './utils.js' );
 
 function wellformed_string( s ) {
 	return s;
@@ -41,7 +38,7 @@ function wellformed_object( o ) {
 	if ( !keys.includes( 'Z1K1' ) ) {
 		return error( 'Z402', 'Every object needs a Z1K1', o );
 	}
-	if ( !is_object( o.Z1K1 ) && ( is_string( o.Z1K1 ) && !is_valid_zid( o.Z1K1 ) ) ) {
+	if ( !is_object( o.Z1K1 ) && ( utils.is_string( o.Z1K1 ) && !is_valid_zid( o.Z1K1 ) ) ) {
 		return error( 'Z402', 'Z1K1 must have a type as a value.', o );
 	}
 	for ( let i = 0; i < keys.length; i++ ) {
@@ -57,7 +54,7 @@ function wellformed_object( o ) {
 }
 
 function wellformed( o ) {
-	if ( is_string( o ) ) {
+	if ( utils.is_string( o ) ) {
 		return wellformed_string( o );
 	}
 	if ( is_array( o ) ) {
