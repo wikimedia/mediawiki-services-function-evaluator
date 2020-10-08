@@ -1,7 +1,7 @@
 'use strict';
 
-function evaluate(arg) {
-	return arg;
+function evaluate(o) {
+	return o;
 }
 
 module.exports = evaluate;
