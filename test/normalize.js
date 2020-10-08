@@ -13,21 +13,109 @@ QUnit.test( 'simple reference', ( assert ) => {
 } );
 
 QUnit.test( 'empty list', ( assert ) => {
-	assert.deepEqual( normalize( [] ), { Z1K1: { Z1K1: 'Z9', Z9K1: 'Z10' } }, 'empty list' );
+	assert.deepEqual( normalize( [ ] ), { Z1K1: { Z1K1: 'Z9', Z9K1: 'Z10' } }, 'empty list' );
+} );
+
+QUnit.test( 'list with empty string', ( assert ) => {
+	assert.deepEqual( normalize( [ '' ] ), { Z1K1: { Z1K1: 'Z9', Z9K1: 'Z10' }, Z10K1: { Z1K1: 'Z6', Z6K1: '' }, Z10K2: { Z1K1: { Z1K1: 'Z9', Z9K1: 'Z10' } } }, 'list with empty string' );
+} );
+
+QUnit.test( 'list with two empty strings', ( assert ) => {
+	assert.deepEqual( normalize( [ '', '' ] ), { Z1K1: { Z1K1: 'Z9', Z9K1: 'Z10' }, Z10K1: { Z1K1: 'Z6', Z6K1: '' }, Z10K2: { Z1K1: { Z1K1: 'Z9', Z9K1: 'Z10' }, Z10K1: { Z1K1: 'Z6', Z6K1: '' }, Z10K2: { Z1K1: { Z1K1: 'Z9', Z9K1: 'Z10' } } } }, 'list with two empty strings' );
+} );
+
+QUnit.test( 'list with ordered strings', ( assert ) => {
+	assert.deepEqual( normalize( [ 'a', 'b' ] ), { Z1K1: { Z1K1: 'Z9', Z9K1: 'Z10' }, Z10K1: { Z1K1: 'Z6', Z6K1: 'a' }, Z10K2: { Z1K1: { Z1K1: 'Z9', Z9K1: 'Z10' }, Z10K1: { Z1K1: 'Z6', Z6K1: 'b' }, Z10K2: { Z1K1: { Z1K1: 'Z9', Z9K1: 'Z10' } } } }, 'list with ordered strings' );
+} );
+
+QUnit.test( 'list with unordered strings', ( assert ) => {
+	assert.deepEqual( normalize( [ 'b', 'a' ] ), { Z1K1: { Z1K1: 'Z9', Z9K1: 'Z10' }, Z10K1: { Z1K1: 'Z6', Z6K1: 'b' }, Z10K2: { Z1K1: { Z1K1: 'Z9', Z9K1: 'Z10' }, Z10K1: { Z1K1: 'Z6', Z6K1: 'a' }, Z10K2: { Z1K1: { Z1K1: 'Z9', Z9K1: 'Z10' } } } }, 'list with unordered strings' );
+} );
+
+QUnit.test( 'list with lists', ( assert ) => {
+	assert.deepEqual(
+		normalize( [ [ ], [ [ ] ], [ ] ] ),
+		{
+			Z1K1: {
+				Z1K1: 'Z9',
+				Z9K1: 'Z10'
+			},
+			Z10K1: {
+				Z1K1: {
+					Z1K1: 'Z9',
+					Z9K1: 'Z10'
+				}
+			},
+			Z10K2: {
+				Z1K1: {
+					Z1K1: 'Z9',
+					Z9K1: 'Z10'
+				},
+				Z10K1: {
+					Z1K1: {
+						Z1K1: 'Z9',
+						Z9K1: 'Z10'
+					},
+					Z10K1: {
+						Z1K1: {
+							Z1K1: 'Z9',
+							Z9K1: 'Z10'
+						}
+					},
+					Z10K2: {
+						Z1K1: {
+							Z1K1: 'Z9',
+							Z9K1: 'Z10'
+						}
+					}
+				},
+				Z10K2: {
+					Z1K1: {
+						Z1K1: 'Z9',
+						Z9K1: 'Z10'
+					},
+					Z10K1: {
+						Z1K1: {
+							Z1K1: 'Z9',
+							Z9K1: 'Z10'
+						}
+					},
+					Z10K2: {
+						Z1K1: {
+							Z1K1: 'Z9',
+							Z9K1: 'Z10'
+						}
+					}
+				}
+			}
+		}, 'list with lists' );
+} );
+
+QUnit.test( 'empty string', ( assert ) => {
+	assert.deepEqual( normalize( '' ), { Z1K1: 'Z6', Z6K1: '' }, 'empty string' );
+} );
+
+QUnit.test( 'string unordered', ( assert ) => {
+	assert.deepEqual( normalize( 'ba' ), { Z1K1: 'Z6', Z6K1: 'ba' }, 'string unordered' );
+} );
+
+QUnit.test( 'untrimmed string left', ( assert ) => {
+	assert.deepEqual( normalize( ' a' ), { Z1K1: 'Z6', Z6K1: ' a' }, 'untrimmed string left' );
+} );
+
+QUnit.test( 'untrimmed string right', ( assert ) => {
+	assert.deepEqual( normalize( 'a ' ), { Z1K1: 'Z6', Z6K1: 'a ' }, 'untrimmed string right' );
+} );
+
+QUnit.test( 'untrimmed string left two', ( assert ) => {
+	assert.deepEqual( normalize( '  a' ), { Z1K1: 'Z6', Z6K1: '  a' }, 'untrimmed string left two' );
+} );
+
+QUnit.test( 'untrimmed string both', ( assert ) => {
+	assert.deepEqual( normalize( ' a ' ), { Z1K1: 'Z6', Z6K1: ' a ' }, 'untrimmed string both' );
 } );
 
 /* Tests from the php repo
-			'list with empty string' => [ '[""]', '[""]' ],
-			'list with two empty strings' => [ '["", ""]', '["", ""]' ],
-			'list with ordered strings' => [ '["a", "b"]', '["a", "b"]' ],
-			'list with unordered strings' => [ '["b", "a"]', '["b", "a"]' ],
-			'list with lists' => [ '[[],[[]], []]', '[[],[[]],[]]' ],
-			'empty string' => [ '""', '""' ],
-			'string unordered' => [ '"ba"', '"ba"' ],
-			'untrimmed string left' => [ '" a"', '" a"' ],
-			'untrimmed string right' => [ '"a "', '"a "' ],
-			'untrimmed string left two' => [ '"  a"', '"  a"' ],
-			'untrimmed string both' => [ '" a "', '" a "' ],
 			'empty record' => [ '{ "Z1K1": "Z1" }', '{ "Z1K1": "Z1" }' ],
 			'simple record' => [
 				'{ "Z1K1": "Z60", "Z60K1": "a" }',
