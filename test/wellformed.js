@@ -6,6 +6,27 @@ QUnit.test('well formed Z6 string', assert => {
   assert.deepEqual(wellformed({ "Z1K1": "Z6", "Z6K1": "" }), { "Z1K1": "Z6", "Z6K1": "" }, 'well formed Z6 string');
 });
 
+QUnit.test('empty string', assert => {
+  assert.equal(wellformed('""'), "", 'empty string');
+});
+
+QUnit.test('messy string', assert => {
+  assert.equal(wellformed('"This is a [basic] complicated test {string}!"'), "This is a [basic] complicated test {string}!", 'messy string');
+});
+// TODO: what about quotes in strings, tabulators and new lines?
+
+QUnit.test('empty list', assert => {
+  assert.deepEqual(wellformed('[]'), [], 'empty list');
+});
+
+QUnit.test('string singleton list', assert => {
+  assert.deepEqual(wellformed('["Test"]'), ["Test"], 'string singleton list');
+});
+
+QUnit.test('string multiple list', assert => {
+  assert.deepEqual(wellformed('["Test", "Test2" , "Test3"]'), ["Test", "Test2" , "Test3"], 'string multiple list');
+});
+
 // TODO: add the following tests from the WikiLambda extension
 //			'record singleton list' => [ '[{ "Z1K1": "Test!", "Z2K1": "Test" }]', true ],
 //			'record multiple list' => [ '[{ "Z1K1": "Test!", "Z2K1": "Test" },{ "Z1K1": "Test2!", "Z2K1": "Test2?" }]', true ],
