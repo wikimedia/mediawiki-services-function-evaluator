@@ -21,39 +21,52 @@ function is_composition( impl ) {
 	return Object.keys( impl ).includes( 'Z14K2' );
 }
 
-function call_builtin( impl, call ) {
-	const builtin = require( './builtin/' + impl.Z14K4.Z9K1 + '.js' );
-	const function_zid = impl.Z14K1.Z9K1;
-	const keys = Object.keys( call );
-	const args = [ ];
-	let i = 1;
-	while ( true ) {
-		const local_k = 'K' + i.toString();
-		if ( keys.includes( function_zid + local_k ) && keys.includes( local_k ) ) {
-			return error( 'Z420', 'call to function has both global and local key with same id', call );
-		}
-		if ( !keys.includes( function_zid + local_k ) && !keys.includes( local_k ) ) {
-			break;
-		}
-		if ( keys.includes( function_zid + local_k ) ) {
-			args.push( call[ function_zid + local_k ] );
-		} else {
-			args.push( call[ local_k ] );
-		}
-		i++;
+function get_argument_list( func ) {
+	const f = evaluate( func );
+	let argument_list = f.Z8K1;
+	const list = [ ];
+	while ( Object.keys( argument_list ).includes( 'Z10K2' ) ) {
+		list.push( argument_list.Z10K1.Z17K2.Z6K1 );
+		argument_list = argument_list.Z10K2;
 	}
-	return builtin( args );
+	return list;
 }
 
-/* eslint-enable no-unused-vars */
+function call_builtin( impl, call ) {
+	const builtin = require( './builtin/' + impl.Z14K4.Z9K1 + '.js' );
+	const argument_list = get_argument_list( impl.Z14K1 );
+	const keys = Object.keys( call );
+
+	const argument_values = [ ];
+	for ( let i = 0; i < argument_list.length; i++ ) {
+		if ( utils.is_global_key( argument_list[ i ] ) ) {
+			const global_id = argument_list[ i ];
+			const local_id = utils.kid_from_global_key( global_id );
+			if ( keys.includes( global_id ) && keys.includes( local_id ) ) {
+				return error( 'Z420', 'call to function has both global and local key with same id', call );
+			}
+			if ( !keys.includes( global_id ) && !keys.includes( local_id ) ) {
+				argument_values.push( undefined );
+			}
+			if ( keys.includes( global_id ) ) {
+				argument_values.push( call[ global_id ] );
+			} else {
+				argument_values.push( call[ local_id ] );
+			}
+		} else {
+			argument_values.push( call[ argument_list[ i ] ] );
+		}
+	}
+	return builtin( argument_values );
+}
+
 function call_native( impl, call ) {
-	return call;
+	return error( 'Z420', 'Native implementation not implemented yet', [ call, impl ] );
 }
 
 function call_composition( impl, call ) {
-	return call;
+	return error( 'Z421', 'Composition not implemented yet', [ call, impl ] );
 }
-/* eslint-enable no-unused-vars */
 
 function evaluate_Z9( o ) {
 	if ( Object.keys( o ).includes( 'Z9K1' ) && utils.is_string( o.Z9K1 ) ) {

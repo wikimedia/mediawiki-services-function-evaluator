@@ -14,6 +14,14 @@ utils.is_reference = function ( z ) {
 	return z.match( /^[A-Z][1-9]\d*$/ ) !== null;
 };
 
+utils.is_global_key = function ( k ) {
+	return k.match( /^Z[1-9]\d*K[1-9]\d*$/ ) !== null;
+};
+
+utils.kid_from_global_key = function ( k ) {
+	return k.match( /^Z[1-9]\d*(K[1-9]\d*)$/ )[ 1 ];
+};
+
 utils.is_type = function ( type, o ) {
 	if ( utils.is_string( o.Z1K1 ) ) {
 		return o.Z1K1 === type;
