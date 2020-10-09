@@ -15,3 +15,17 @@ QUnit.test( 'string literal', ( assert ) => {
 		'string literal'
 	);
 } );
+
+QUnit.skip( 'call to head', ( assert ) => {
+	assert.deepEqual(
+		rep(
+			{
+				Z1K1: 'Z7',
+				Z7K1: 'Z31',
+				K1: [ 'a' ]
+			}
+		),
+		'"a"',
+		'call to head'
+	);
+} );
