@@ -16,11 +16,11 @@ node src/function-evaluator.js '{ "Z1K1": "Z7", "Z7K1": "Zxx", "ZxxK1": "A" }'
 ### Write
 - [x] parse
 - [x] wellformedness
+- [x] normalize
+- [ ] canonicalize
 - [ ] evaluate
 - [ ] built-ins
-- [ ] normalize
 - [ ] labelize
-- [ ] canonicalize
 - [ ] validate
 
 ### Further todos
