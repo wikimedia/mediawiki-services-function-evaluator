@@ -17,7 +17,7 @@ node src/function-evaluator.js '{ "Z1K1": "Z7", "Z7K1": "Zxx", "ZxxK1": "A" }'
 - [x] parse
 - [x] wellformedness
 - [x] normalize
-- [ ] canonicalize
+- [x] canonicalize
 - [ ] evaluate
 - [ ] built-ins
 - [ ] labelize
@@ -27,6 +27,7 @@ node src/function-evaluator.js '{ "Z1K1": "Z7", "Z7K1": "Zxx", "ZxxK1": "A" }'
 - [x] do the tests look right?
 - [x] what should be the config for the linter?
 - [ ] fix representation and ZIDs of errors
+- [ ] read arguments
 - [ ] settings
 - [ ] hook it up to the wiki
 - [ ] make it runnable as a service

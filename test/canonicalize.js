@@ -145,7 +145,7 @@ QUnit.test( 'empty list', ( assert ) => {
 	assert.deepEqual( canonicalize( [ ] ), [ ], 'empty list' );
 } );
 
-QUnit.skip( 'empty list as object', ( assert ) => {
+QUnit.test( 'empty list as object', ( assert ) => {
 	assert.deepEqual( canonicalize( { Z1K1: 'Z10' } ), [ ], 'empty list as object' );
 } );
 
@@ -153,15 +153,15 @@ QUnit.test( 'single string in list as array', ( assert ) => {
 	assert.deepEqual( canonicalize( [ 'a' ] ), [ 'a' ], 'single string in list as array' );
 } );
 
-QUnit.skip( 'single string in list as object', ( assert ) => {
+QUnit.test( 'single string in list as object', ( assert ) => {
 	assert.deepEqual( canonicalize( { Z1K1: 'Z10', Z10K1: 'a' } ), [ 'a' ], 'single string in list as object' );
 } );
 
-QUnit.skip( 'single string in list as object, tail empty array', ( assert ) => {
+QUnit.test( 'single string in list as object, tail empty array', ( assert ) => {
 	assert.deepEqual( canonicalize( { Z1K1: 'Z10', Z10K1: 'a', Z10K2: [ ] } ), [ 'a' ], 'single string in list as object, tail empty array' );
 } );
 
-QUnit.skip( 'single string in list as object, tail object', ( assert ) => {
+QUnit.test( 'single string in list as object, tail object', ( assert ) => {
 	assert.deepEqual( canonicalize( { Z1K1: 'Z10', Z10K1: 'a', Z10K2: { Z1K1: 'Z10' } } ), [ 'a' ], 'single string in list as object, tail object' );
 } );
 
@@ -173,7 +173,7 @@ QUnit.test( 'two strings in list as array', ( assert ) => {
 	);
 } );
 
-QUnit.skip( 'two strings in list as object, tail as array', ( assert ) => {
+QUnit.test( 'two strings in list as object, tail as array', ( assert ) => {
 	assert.deepEqual(
 		canonicalize( { Z1K1: 'Z10', Z10K1: 'a', Z10K2: [ 'b' ] } ),
 		[ 'a', 'b' ],
@@ -181,7 +181,7 @@ QUnit.skip( 'two strings in list as object, tail as array', ( assert ) => {
 	);
 } );
 
-QUnit.skip( 'two strings in list as ZObject, all tails ZObject', ( assert ) => {
+QUnit.test( 'two strings in list as ZObject, all tails ZObject', ( assert ) => {
 	assert.deepEqual(
 		canonicalize( { Z1K1: 'Z10', Z10K1: 'a', Z10K2: { Z1K1: 'Z10', Z10K1: 'b', Z10K2: { Z1K1: 'Z10' } } } ),
 		[ 'a', 'b' ],
@@ -189,7 +189,7 @@ QUnit.skip( 'two strings in list as ZObject, all tails ZObject', ( assert ) => {
 	);
 } );
 
-QUnit.skip( 'two strings in list as ZObject, tails mixed', ( assert ) => {
+QUnit.test( 'two strings in list as ZObject, tails mixed', ( assert ) => {
 	assert.deepEqual(
 		canonicalize( { Z1K1: 'Z10', Z10K1: 'a', Z10K2: { Z1K1: 'Z10', Z10K1: 'b', Z10K2: [] } } ),
 		[ 'a', 'b' ],
@@ -197,7 +197,7 @@ QUnit.skip( 'two strings in list as ZObject, tails mixed', ( assert ) => {
 	);
 } );
 
-QUnit.skip( 'two strings in list as ZObject, no tail in tail', ( assert ) => {
+QUnit.test( 'two strings in list as ZObject, no tail in tail', ( assert ) => {
 	assert.deepEqual(
 		canonicalize( { Z1K1: 'Z10', Z10K1: 'a', Z10K2: { Z1K1: 'Z10', Z10K1: 'b' } } ),
 		[ 'a', 'b' ],
@@ -213,15 +213,15 @@ QUnit.test( 'lists in list', ( assert ) => {
 	assert.deepEqual( canonicalize( [ [ ], [ ] ] ), [ [ ], [ ] ], 'list in list' );
 } );
 
-QUnit.skip( 'empty object in list', ( assert ) => {
+QUnit.test( 'empty object in list', ( assert ) => {
 	assert.deepEqual( canonicalize( [ { Z1K1: 'Z10' } ] ), [ [ ] ], 'empty object in list' );
 } );
 
-QUnit.skip( 'empty objects in list', ( assert ) => {
+QUnit.test( 'empty objects in list', ( assert ) => {
 	assert.deepEqual( canonicalize( [ { Z1K1: 'Z10' }, { Z1K1: 'Z10' } ] ), [ [ ], [ ] ], 'empty objects in list' );
 } );
 
-QUnit.skip( 'empty ZObjects in list, all ZObjects', ( assert ) => {
+QUnit.test( 'empty ZObjects in list, all ZObjects', ( assert ) => {
 	assert.deepEqual(
 		canonicalize( {
 			Z1K1: 'Z10',
@@ -245,10 +245,18 @@ QUnit.skip( 'empty ZObjects in list, all ZObjects', ( assert ) => {
 	);
 } );
 
-QUnit.skip( 'object in list', ( assert ) => {
+QUnit.test( 'object in list', ( assert ) => {
 	assert.deepEqual(
-		canonicalize( { Z1K1: 'Z10', Z10K1: { Z1K1: 'Z6', Z6K1: 'Z1' }, Z10K2: { Z1K1: 'Z10' } } ),
+		canonicalize( { Z1K1: 'Z10', Z10K1: { Z1K1: 'Z9', Z9K1: 'Z1' }, Z10K2: { Z1K1: 'Z10' } } ),
 		[ 'Z1' ],
 		'object in list'
+	);
+} );
+
+QUnit.test( 'list object in object', ( assert ) => {
+	assert.deepEqual(
+		canonicalize( { Z1K1: 'Z60', Z60K1: { Z1K1: 'Z10' } } ),
+		{ Z1K1: 'Z60', Z60K1: [ ] },
+		'list object in object'
 	);
 } );

@@ -35,6 +35,24 @@ function canonicalize_object( o ) {
 		}
 	}
 
+	if ( o.Z1K1 === 'Z10' ) {
+		if ( keys.length === 1 ) {
+			return [];
+		}
+
+		if ( keys.length === 2 ) {
+			if ( keys.includes( 'Z10K1' ) ) {
+				return [ canonicalize( o.Z10K1 ) ];
+			}
+		}
+
+		if ( keys.length === 3 ) {
+			if ( keys.includes( 'Z10K1' ) && keys.includes( 'Z10K2' ) ) {
+				return [ canonicalize( o.Z10K1 ) ].concat( canonicalize( o.Z10K2 ) );
+			}
+		}
+	}
+
 	for ( let i = 0; i < keys.length; i++ ) {
 		o[ keys[ i ] ] = canonicalize( o[ keys[ i ] ] );
 	}
