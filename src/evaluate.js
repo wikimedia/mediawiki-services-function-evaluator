@@ -32,11 +32,8 @@ function get_argument_list( func ) {
 	return list;
 }
 
-function call_builtin( impl, call ) {
-	const builtin = require( './builtin/' + impl.Z14K4.Z9K1 + '.js' );
-	const argument_list = get_argument_list( impl.Z14K1 );
+function get_argument_values( argument_list, call ) {
 	const keys = Object.keys( call );
-
 	const argument_values = [ ];
 	for ( let i = 0; i < argument_list.length; i++ ) {
 		if ( utils.is_global_key( argument_list[ i ] ) ) {
@@ -57,6 +54,20 @@ function call_builtin( impl, call ) {
 			argument_values.push( call[ argument_list[ i ] ] );
 		}
 	}
+	return argument_values;
+}
+
+function get_builtin( impl ) {
+	// TODO: check impl.Z14K4.Z9K1
+	// TODO: check if file exists
+	return require( './builtin/' + impl.Z14K4.Z9K1 + '.js' );
+}
+
+function call_builtin( impl, call ) {
+	const builtin = get_builtin( impl );
+	const argument_list = get_argument_list( impl.Z14K1 );
+	const argument_values = get_argument_values( argument_list, call );
+
 	return builtin( argument_values );
 }
 
@@ -95,12 +106,19 @@ function evaluate_Z7( o ) {
 	if ( is_composition( impl ) ) {
 		result = call_composition( impl, o );
 	}
+	if ( result === undefined ) {
+		return e;
+	}
 	return result;
 }
 
 // the input is assumed to be a well-formed, normalized ZObject,
 // or else the behaviour is undefined
 function evaluate( o ) {
+	if ( utils.is_type( 'Z5', o ) ) {
+		return o;
+	}
+
 	let result = o;
 	if ( utils.is_type( 'Z7', o ) ) {
 		result = evaluate_Z7( o );
