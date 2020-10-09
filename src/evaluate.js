@@ -23,7 +23,26 @@ function is_composition( impl ) {
 
 function call_builtin( impl, call ) {
 	const builtin = require( './builtin/' + impl.Z14K4.Z9K1 + '.js' );
-	return builtin( call.K1 );
+	const function_zid = impl.Z14K1.Z9K1;
+	const keys = Object.keys( call );
+	const args = [ ];
+	let i = 1;
+	while ( true ) {
+		const local_k = 'K' + i.toString();
+		if ( keys.includes( function_zid + local_k ) && keys.includes( local_k ) ) {
+			return error( 'Z420', 'call to function has both global and local key with same id', call );
+		}
+		if ( !keys.includes( function_zid + local_k ) && !keys.includes( local_k ) ) {
+			break;
+		}
+		if ( keys.includes( function_zid + local_k ) ) {
+			args.push( call[ function_zid + local_k ] );
+		} else {
+			args.push( call[ local_k ] );
+		}
+		i++;
+	}
+	return builtin( args );
 }
 
 /* eslint-enable no-unused-vars */

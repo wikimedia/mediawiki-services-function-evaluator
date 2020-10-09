@@ -29,3 +29,57 @@ QUnit.test( 'call to head', ( assert ) => {
 		'call to head'
 	);
 } );
+
+QUnit.test( 'nested call to head', ( assert ) => {
+	assert.deepEqual(
+		rep(
+			{
+				Z1K1: 'Z7',
+				Z7K1: 'Z31',
+				K1: [
+					{
+						Z1K1: 'Z7',
+						Z7K1: 'Z31',
+						K1: [ 'a' ]
+					}
+				]
+			}
+		),
+		'a',
+		'nested call to head'
+	);
+} );
+
+QUnit.test( 'call to head using global key', ( assert ) => {
+	assert.deepEqual(
+		rep(
+			{
+				Z1K1: 'Z7',
+				Z7K1: 'Z31',
+				Z31K1: [ 'a' ]
+			}
+		),
+		'a',
+		'nested call to head'
+	);
+} );
+
+QUnit.test( 'call to head on empty list', ( assert ) => {
+	assert.deepEqual(
+		rep(
+			{
+				Z1K1: 'Z7',
+				Z7K1: 'Z31',
+				K1: [
+					{
+						Z1K1: 'Z7',
+						Z7K1: 'Z31',
+						K1: [ ]
+					}
+				]
+			}
+		).Z5K1,
+		'Z413',
+		'nested call to head'
+	);
+} );
