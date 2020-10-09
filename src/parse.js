@@ -2,6 +2,8 @@
 
 const error = require( './error.js' );
 
+// any serialized string as input
+// the output is either an error object of error type Z401, or the JSON object parsed
 function parse( str ) {
 	try {
 		const zobject = JSON.parse( str );

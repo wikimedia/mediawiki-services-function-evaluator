@@ -21,6 +21,7 @@ function delistify( a ) {
 	};
 }
 
+// the input is assumed to be a well-formed ZObject, or else the behaviour is undefined
 function normalize( o ) {
 	if ( utils.is_string( o ) ) {
 		if ( utils.is_reference( o ) ) {

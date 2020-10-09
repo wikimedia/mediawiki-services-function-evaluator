@@ -57,6 +57,9 @@ function wellformed_object( o ) {
 	return o;
 }
 
+// input can be any JSON object
+// the output will be either the same JSON object, or a Z5/Z402 error stating
+// it is not well formed
 function wellformed( o ) {
 	if ( utils.is_string( o ) ) {
 		return wellformed_string( o );

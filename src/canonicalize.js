@@ -66,6 +66,7 @@ function canonicalize_object( o ) {
 	return o;
 }
 
+// the input is assumed to be a well-formed ZObject, or else the behaviour is undefined
 function canonicalize( o ) {
 	if ( utils.is_string( o ) ) {
 		return o;
