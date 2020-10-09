@@ -63,7 +63,7 @@ QUnit.test( 'empty record', ( assert ) => {
 	assert.deepEqual( canonicalize( { Z1K1: 'Z1' } ), { Z1K1: 'Z1' }, 'empty record' );
 } );
 
-QUnit.skip( 'empty record with reference type', ( assert ) => {
+QUnit.test( 'empty record with reference type', ( assert ) => {
 	assert.deepEqual( canonicalize( { Z1K1: { Z1K1: 'Z9', Z9K1: 'Z1' } } ), { Z1K1: 'Z1' }, 'empty record with reference type' );
 } );
 
@@ -75,7 +75,7 @@ QUnit.test( 'escaped string', ( assert ) => {
 	assert.deepEqual( canonicalize( { Z1K1: 'Z6', Z6K1: 'Z6' } ), { Z1K1: 'Z6', Z6K1: 'Z6' }, 'escaped string' );
 } );
 
-QUnit.skip( 'unneccessary escaped string', ( assert ) => {
+QUnit.test( 'unneccessary escaped string', ( assert ) => {
 	assert.deepEqual( canonicalize( { Z1K1: 'Z6', Z6K1: 'Z' } ), 'Z', 'unneccessary escaped string' );
 } );
 
@@ -83,15 +83,15 @@ QUnit.test( 'escaped string QID', ( assert ) => {
 	assert.deepEqual( canonicalize( { Z1K1: 'Z6', Z6K1: 'Q42' } ), { Z1K1: 'Z6', Z6K1: 'Q42' }, 'escaped string QID' );
 } );
 
-QUnit.skip( 'unneccessary escaped string key', ( assert ) => {
+QUnit.test( 'unneccessary escaped string key', ( assert ) => {
 	assert.deepEqual( canonicalize( { Z1K1: 'Z6', Z6K1: 'Z1K1' } ), 'Z1K1', 'unneccessary escaped string key' );
 } );
 
-QUnit.skip( 'unneccessary escaped string key with whitespace', ( assert ) => {
+QUnit.test( 'unneccessary escaped string key with whitespace', ( assert ) => {
 	assert.deepEqual( canonicalize( { Z1K1: 'Z6', Z6K1: ' Z1' } ), ' Z1', 'unneccessary escaped string key with whitespace' );
 } );
 
-QUnit.skip( 'unneccessary double escaped string', ( assert ) => {
+QUnit.test( 'unneccessary double escaped string', ( assert ) => {
 	assert.deepEqual( canonicalize( { Z1K1: 'Z6', Z6K1: { Z1K1: 'Z6', Z6K1: 'Z' } } ), 'Z', 'unneccessary double escaped string' );
 } );
 
@@ -99,7 +99,7 @@ QUnit.test( 'string with wrong key', ( assert ) => {
 	assert.deepEqual( canonicalize( { Z1K1: 'Z6', Z6K2: 'Z' } ), { Z1K1: 'Z6', Z6K2: 'Z' }, 'string with wrong key' );
 } );
 
-QUnit.skip( 'array with escaped string', ( assert ) => {
+QUnit.test( 'array with escaped string', ( assert ) => {
 	assert.deepEqual(
 		canonicalize( [ { Z1K1: 'Z6', Z6K1: 'Z6' }, { Z1K1: 'Z6', Z6K1: 'Z' } ] ),
 		[ { Z1K1: 'Z6', Z6K1: 'Z6' }, 'Z' ],
@@ -113,14 +113,14 @@ QUnit.test( 'object with escaped string', ( assert ) => {
 		'object with escaped string' );
 } );
 
-QUnit.skip( 'object with unneccessarily escaped string', ( assert ) => {
+QUnit.test( 'object with unneccessarily escaped string', ( assert ) => {
 	assert.deepEqual(
 		canonicalize( { Z1K1: 'Z2', Z2K2: { Z1K1: 'Z6', Z6K1: 'Z' } } ),
 		{ Z1K1: 'Z2', Z2K2: 'Z' },
 		'object with unneccessarily escaped string' );
 } );
 
-QUnit.skip( 'explicit reference', ( assert ) => {
+QUnit.test( 'explicit reference', ( assert ) => {
 	assert.deepEqual(
 		canonicalize( { Z1K1: 'Z2', Z2K2: { Z1K1: 'Z9', Z9K1: 'Z1' } } ),
 		{ Z1K1: 'Z2', Z2K2: 'Z1' },
@@ -134,7 +134,7 @@ QUnit.test( 'implicit reference', ( assert ) => {
 		'implicit reference' );
 } );
 
-QUnit.skip( 'explicit QID reference', ( assert ) => {
+QUnit.test( 'explicit QID reference', ( assert ) => {
 	assert.deepEqual(
 		canonicalize( { Z1K1: 'Z2', Z2K2: { Z1K1: 'Z9', Z9K1: 'Q96807071' } } ),
 		{ Z1K1: 'Z2', Z2K2: 'Q96807071' },
