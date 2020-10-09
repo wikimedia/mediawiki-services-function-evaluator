@@ -26,7 +26,7 @@ function is_valid_zid( k ) {
 }
 
 function is_object( o ) {
-	return typeof o === 'object' && o !== null;
+	return !utils.is_array( o ) && typeof o === 'object' && o !== null;
 }
 
 function wellformed_object( o ) {
@@ -34,8 +34,16 @@ function wellformed_object( o ) {
 	if ( !keys.includes( 'Z1K1' ) ) {
 		return error( 'Z402', 'Every object needs a Z1K1', o );
 	}
-	if ( !is_object( o.Z1K1 ) && ( utils.is_string( o.Z1K1 ) && !is_valid_zid( o.Z1K1 ) ) ) {
+	if ( !is_object( o.Z1K1 ) && utils.is_string( o.Z1K1 ) && !is_valid_zid( o.Z1K1 ) ) {
 		return error( 'Z402', 'Z1K1 must have a type as a value.', o );
+	}
+	if ( keys.includes( 'Z9K1' ) && !is_object( o.Z9K1 ) ) {
+		if ( !utils.is_string( o.Z9K1 ) || !utils.is_reference( o.Z9K1 ) ) {
+			return error( 'Z402', 'Z9K1 must be a reference.', o );
+		}
+	}
+	if ( keys.includes( 'Z6K1' ) && utils.is_array( o.Z6K1 ) ) {
+		return error( 'Z402', 'Z6K1 must be a string.', o );
 	}
 	for ( let i = 0; i < keys.length; i++ ) {
 		if ( !is_valid_key_reference( keys[ i ] ) ) {

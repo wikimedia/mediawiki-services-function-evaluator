@@ -2,10 +2,6 @@
 
 const utils = require( './utils.js' );
 
-function is_reference( z ) {
-	return z.match( /^[A-Z][1-9]\d*$/ ) !== null;
-}
-
 function delistify( a ) {
 	if ( a.length === 0 ) {
 		return {
@@ -27,7 +23,7 @@ function delistify( a ) {
 
 function normalize( o ) {
 	if ( utils.is_string( o ) ) {
-		if ( is_reference( o ) ) {
+		if ( utils.is_reference( o ) ) {
 			return { Z1K1: 'Z9', Z9K1: o };
 		} else {
 			return { Z1K1: 'Z6', Z6K1: o };
