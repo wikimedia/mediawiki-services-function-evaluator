@@ -18,7 +18,7 @@ utils.is_type = function ( type, o ) {
 	if ( utils.is_string( o.Z1K1 ) ) {
 		return o.Z1K1 === type;
 	}
-	if ( utils.is_type( o.Z1K1, 'Z9' ) ) {
+	if ( utils.is_type( 'Z9', o.Z1K1 ) ) {
 		return o.Z1K1.Z9K1 === type;
 	}
 	return false;

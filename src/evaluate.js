@@ -4,27 +4,29 @@ const utils = require( './utils.js' );
 const error = require( './error.js' );
 const get = require( './get.js' );
 
-/* eslint-disable no-unused-vars */
 function get_implementation( call ) {
-	return undefined;
+	const func = evaluate( call.Z7K1 );
+	return evaluate( func.Z8K4.Z10K1 );
 }
 
 function is_builtin( impl ) {
-	return true;
+	return Object.keys( impl ).includes( 'Z14K4' );
 }
 
 function is_native( impl ) {
-	return false;
+	return Object.keys( impl ).includes( 'Z14K3' );
 }
 
 function is_composition( impl ) {
-	return false;
+	return Object.keys( impl ).includes( 'Z14K2' );
 }
 
 function call_builtin( impl, call ) {
-	return call;
+	const builtin = require( './builtin/' + impl.Z14K4.Z9K1 + '.js' );
+	return builtin( call.K1 );
 }
 
+/* eslint-enable no-unused-vars */
 function call_native( impl, call ) {
 	return call;
 }

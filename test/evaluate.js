@@ -16,7 +16,7 @@ QUnit.test( 'string literal', ( assert ) => {
 	);
 } );
 
-QUnit.skip( 'call to head', ( assert ) => {
+QUnit.test( 'call to head', ( assert ) => {
 	assert.deepEqual(
 		rep(
 			{
@@ -25,7 +25,7 @@ QUnit.skip( 'call to head', ( assert ) => {
 				K1: [ 'a' ]
 			}
 		),
-		'"a"',
+		'a',
 		'call to head'
 	);
 } );
