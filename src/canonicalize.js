@@ -9,6 +9,8 @@ function canonicalize_array( a ) {
 function canonicalize_object( o ) {
 	const keys = Object.keys( o );
 
+	o.Z1K1 = canonicalize( o.Z1K1 );
+
 	if ( o.Z1K1 === 'Z9' ) {
 		if ( keys.length === 2 ) {
 			if ( keys.includes( 'Z9K1' ) ) {

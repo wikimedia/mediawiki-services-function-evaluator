@@ -149,6 +149,10 @@ QUnit.test( 'empty list as object', ( assert ) => {
 	assert.deepEqual( canonicalize( { Z1K1: 'Z10' } ), [ ], 'empty list as object' );
 } );
 
+QUnit.test( 'empty list as object, type as explicit reference', ( assert ) => {
+	assert.deepEqual( canonicalize( { Z1K1: { Z1K1: 'Z9', Z9K1: 'Z10' } } ), [ ], 'empty list as object, type as explicit reference' );
+} );
+
 QUnit.test( 'single string in list as array', ( assert ) => {
 	assert.deepEqual( canonicalize( [ 'a' ] ), [ 'a' ], 'single string in list as array' );
 } );
