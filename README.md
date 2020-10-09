@@ -9,13 +9,8 @@ Run as:
 
 ```
 node src/function-evaluator.js '"Test"'
-```
 
-## TODO
-Add this line as a test run
-
-```
-node src/function-evaluator.js '{ "Z1K1": "Z7", "Z7K1": "Zxx", "ZxxK1": "A" }'
+node src/function-evaluator.js '{ "Z1K1": "Z7", "Z7K1": "Z31", "K1": ["a"] }'
 ```
 
 ### Write
