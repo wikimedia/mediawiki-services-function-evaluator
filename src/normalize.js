@@ -49,6 +49,9 @@ function normalize( o ) {
 		if ( keys[ i ] === 'Z9K1' && utils.is_string( o.Z9K1 ) ) {
 			continue;
 		}
+		if ( keys[ i ] === 'Z10K1' && !keys.includes( 'Z10K2' ) ) {
+			o.Z10K2 = normalize( [ ] );
+		}
 		o[ keys[ i ] ] = normalize( o[ keys[ i ] ] );
 	}
 	return o;

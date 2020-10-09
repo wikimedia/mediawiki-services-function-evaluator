@@ -263,72 +263,262 @@ QUnit.test( 'empty list', ( assert ) => {
 	assert.deepEqual( normalize( [ ] ), { Z1K1: { Z1K1: 'Z9', Z9K1: 'Z10' } }, 'empty list' );
 } );
 
-/* Tests from the php repo
-			'empty list as array' => [
-				'[]', '[]'
-			],
-			'empty list as ZObject' => [
-				'{ "Z1K1": "Z10" }', '[]'
-			],
-			'single string in list as array' => [
-				'["a"]', '["a"]'
-			],
-			'single string in list as ZObject' => [
-				'{ "Z1K1": "Z10", "Z10K1": "a" }', '["a"]'
-			],
-			'single string in list as ZObject, tail empty array' => [
-				'{ "Z1K1": "Z10", "Z10K1": "a", "Z10K2": [] }', '["a"]'
-			],
-			'single string in list as ZObject, tail ZObject' => [
-				'{ "Z1K1": "Z10", "Z10K1": "a", "Z10K2": { "Z1K1": "Z10" } }',
-				'["a"]'
-			],
-			'two strings in list as array' => [
-				'["a", "b"]', '["a", "b"]'
-			],
-			'two strings in list as ZObject, tail as array' => [
-				'{ "Z1K1": "Z10", "Z10K1": "a", "Z10K2": ["b"] }',
-				'["a", "b"]'
-			],
-			'two strings in list as ZObject, all tails ZObject' => [
-				'{ "Z1K1": "Z10", "Z10K1": "a", "Z10K2":' .
-				'{ "Z1K1": "Z10", "Z10K1": "b", "Z10K2": { "Z1K1": "Z10" } } }',
-				'["a", "b"]'
-			],
-			'two strings in list as ZObject, tails mixed' => [
-				'{ "Z1K1": "Z10", "Z10K1": "a", "Z10K2":' .
-				'{ "Z1K1": "Z10", "Z10K1": "b", "Z10K2": [] } }',
-				'["a", "b"]'
-			],
-			'two strings in list as ZObject, no tail in tail' => [
-				'{ "Z1K1": "Z10", "Z10K1": "a", "Z10K2":' .
-				'{ "Z1K1": "Z10", "Z10K1": "b" } }',
-				'["a", "b"]'
-			],
-			'list in list' => [
-				'[[]]',
-				'[[]]'
-			],
-			'lists in list' => [
-				'[[], []]',
-				'[[], []]'
-			],
-			'empty ZObject in list' => [
-				'[{ "Z1K1": "Z10" }]',
-				'[[]]'
-			],
-			'empty ZObjects in list' => [
-				'[{ "Z1K1": "Z10" }, { "Z1K1": "Z10" }]',
-				'[[], []]'
-			],
-			'empty ZObjects in list, all ZObjects' => [
-				'{ "Z1K1": "Z10", "Z10K1": { "Z1K1": "Z10" }, "Z10K2":' .
-				'{ "Z1K1": "Z10", "Z10K1": { "Z1K1": "Z10" }, "Z10K2":' .
-				'{ "Z1K1": "Z10" } } }',
-				'[[], []]'
-			],
-			'ZObject in list' => [
-				'{ "Z1K1": "Z10", "Z10K1": { "Z1K1": "Z6", "Z6K1": "Z1" },' .
-				'  "Z10K2": { "Z1K1": "Z10" } }',
-				'[{ "Z1K1": "Z6", "Z6K1": "Z1" }]'
-*/
+QUnit.test( 'empty list as object', ( assert ) => {
+	assert.deepEqual( normalize( { Z1K1: 'Z10' } ), { Z1K1: { Z1K1: 'Z9', Z9K1: 'Z10' } }, 'empty list as object' );
+} );
+
+QUnit.test( 'single string in list as array', ( assert ) => {
+	assert.deepEqual( normalize( [ 'a' ] ), { Z1K1: { Z1K1: 'Z9', Z9K1: 'Z10' }, Z10K1: { Z1K1: 'Z6', Z6K1: 'a' }, Z10K2: { Z1K1: { Z1K1: 'Z9', Z9K1: 'Z10' } } }, 'single string in list as array' );
+} );
+
+QUnit.test( 'single string in list as object', ( assert ) => {
+	assert.deepEqual( normalize( { Z1K1: 'Z10', Z10K1: 'a' } ), { Z1K1: { Z1K1: 'Z9', Z9K1: 'Z10' }, Z10K1: { Z1K1: 'Z6', Z6K1: 'a' }, Z10K2: { Z1K1: { Z1K1: 'Z9', Z9K1: 'Z10' } } }, 'single string in list as object' );
+} );
+
+QUnit.test( 'single string in list as object, tail empty array', ( assert ) => {
+	assert.deepEqual( normalize( { Z1K1: 'Z10', Z10K1: 'a', Z10K2: [ ] } ), { Z1K1: { Z1K1: 'Z9', Z9K1: 'Z10' }, Z10K1: { Z1K1: 'Z6', Z6K1: 'a' }, Z10K2: { Z1K1: { Z1K1: 'Z9', Z9K1: 'Z10' } } }, 'single string in list as object, tail empty array' );
+} );
+
+QUnit.test( 'single string in list as object, tail object', ( assert ) => {
+	assert.deepEqual( normalize( { Z1K1: 'Z10', Z10K1: 'a', Z10K2: { Z1K1: 'Z10' } } ), { Z1K1: { Z1K1: 'Z9', Z9K1: 'Z10' }, Z10K1: { Z1K1: 'Z6', Z6K1: 'a' }, Z10K2: { Z1K1: { Z1K1: 'Z9', Z9K1: 'Z10' } } }, 'single string in list as object, tail object' );
+} );
+
+QUnit.test( 'two strings in list as array', ( assert ) => {
+	assert.deepEqual(
+		normalize( [ 'a', 'b' ] ),
+		{ Z1K1: { Z1K1: 'Z9', Z9K1: 'Z10' }, Z10K1: { Z1K1: 'Z6', Z6K1: 'a' }, Z10K2: { Z1K1: { Z1K1: 'Z9', Z9K1: 'Z10' }, Z10K1: { Z1K1: 'Z6', Z6K1: 'b' }, Z10K2: { Z1K1: { Z1K1: 'Z9', Z9K1: 'Z10' } } } },
+		'two strings in list as array'
+	);
+} );
+
+QUnit.test( 'two strings in list as object, tail as array', ( assert ) => {
+	assert.deepEqual(
+		normalize( { Z1K1: 'Z10', Z10K1: 'a', Z10K2: [ 'b' ] } ),
+		{ Z1K1: { Z1K1: 'Z9', Z9K1: 'Z10' }, Z10K1: { Z1K1: 'Z6', Z6K1: 'a' }, Z10K2: { Z1K1: { Z1K1: 'Z9', Z9K1: 'Z10' }, Z10K1: { Z1K1: 'Z6', Z6K1: 'b' }, Z10K2: { Z1K1: { Z1K1: 'Z9', Z9K1: 'Z10' } } } },
+		'two strings in list as object, tail as array'
+	);
+} );
+
+QUnit.test( 'two strings in list as ZObject, all tails ZObject', ( assert ) => {
+	assert.deepEqual(
+		normalize( { Z1K1: 'Z10', Z10K1: 'a', Z10K2: { Z1K1: 'Z10', Z10K1: 'b', Z10K2: { Z1K1: 'Z10' } } } ),
+		{ Z1K1: { Z1K1: 'Z9', Z9K1: 'Z10' }, Z10K1: { Z1K1: 'Z6', Z6K1: 'a' }, Z10K2: { Z1K1: { Z1K1: 'Z9', Z9K1: 'Z10' }, Z10K1: { Z1K1: 'Z6', Z6K1: 'b' }, Z10K2: { Z1K1: { Z1K1: 'Z9', Z9K1: 'Z10' } } } },
+		'two strings in list as ZObject, all tails ZObject'
+	);
+} );
+
+QUnit.test( 'two strings in list as ZObject, tails mixed', ( assert ) => {
+	assert.deepEqual(
+		normalize( { Z1K1: 'Z10', Z10K1: 'a', Z10K2: { Z1K1: 'Z10', Z10K1: 'b', Z10K2: [] } } ),
+		{ Z1K1: { Z1K1: 'Z9', Z9K1: 'Z10' }, Z10K1: { Z1K1: 'Z6', Z6K1: 'a' }, Z10K2: { Z1K1: { Z1K1: 'Z9', Z9K1: 'Z10' }, Z10K1: { Z1K1: 'Z6', Z6K1: 'b' }, Z10K2: { Z1K1: { Z1K1: 'Z9', Z9K1: 'Z10' } } } },
+		'two strings in list as ZObject, tails mixed'
+	);
+} );
+
+QUnit.test( 'two strings in list as ZObject, no tail in tail', ( assert ) => {
+	assert.deepEqual(
+		normalize( { Z1K1: 'Z10', Z10K1: 'a', Z10K2: { Z1K1: 'Z10', Z10K1: 'b' } } ),
+		{ Z1K1: { Z1K1: 'Z9', Z9K1: 'Z10' }, Z10K1: { Z1K1: 'Z6', Z6K1: 'a' }, Z10K2: { Z1K1: { Z1K1: 'Z9', Z9K1: 'Z10' }, Z10K1: { Z1K1: 'Z6', Z6K1: 'b' }, Z10K2: { Z1K1: { Z1K1: 'Z9', Z9K1: 'Z10' } } } },
+		'two strings in list as ZObject, no tail in tail'
+	);
+} );
+
+QUnit.test( 'list in list', ( assert ) => {
+	assert.deepEqual(
+		normalize( [ [ ] ] ),
+		{
+			Z1K1: {
+				Z1K1: 'Z9',
+				Z9K1: 'Z10'
+			},
+			Z10K1: {
+				Z1K1: {
+					Z1K1: 'Z9',
+					Z9K1: 'Z10'
+				}
+			},
+			Z10K2: {
+				Z1K1: {
+					Z1K1: 'Z9',
+					Z9K1: 'Z10'
+				}
+			}
+		},
+		'list in list'
+	);
+} );
+
+QUnit.test( 'lists in list', ( assert ) => {
+	assert.deepEqual(
+		normalize( [ [ ], [ ] ] ),
+		{
+			Z1K1: {
+				Z1K1: 'Z9',
+				Z9K1: 'Z10'
+			},
+			Z10K1: {
+				Z1K1: {
+					Z1K1: 'Z9',
+					Z9K1: 'Z10'
+				}
+			},
+			Z10K2: {
+				Z1K1: {
+					Z1K1: 'Z9',
+					Z9K1: 'Z10'
+				},
+				Z10K1: {
+					Z1K1: {
+						Z1K1: 'Z9',
+						Z9K1: 'Z10'
+					}
+				},
+				Z10K2: {
+					Z1K1: {
+						Z1K1: 'Z9',
+						Z9K1: 'Z10'
+					}
+				}
+			}
+		},
+		'list in list'
+	);
+} );
+
+QUnit.test( 'empty object in list', ( assert ) => {
+	assert.deepEqual(
+		normalize( [ { Z1K1: 'Z10' } ] ),
+		{
+			Z1K1: {
+				Z1K1: 'Z9',
+				Z9K1: 'Z10'
+			},
+			Z10K1: {
+				Z1K1: {
+					Z1K1: 'Z9',
+					Z9K1: 'Z10'
+				}
+			},
+			Z10K2: {
+				Z1K1: {
+					Z1K1: 'Z9',
+					Z9K1: 'Z10'
+				}
+			}
+		},
+		'list in list'
+	);
+} );
+
+QUnit.test( 'empty objects in list', ( assert ) => {
+	assert.deepEqual(
+		normalize( [ { Z1K1: 'Z10' }, { Z1K1: 'Z10' } ] ),
+		{
+			Z1K1: {
+				Z1K1: 'Z9',
+				Z9K1: 'Z10'
+			},
+			Z10K1: {
+				Z1K1: {
+					Z1K1: 'Z9',
+					Z9K1: 'Z10'
+				}
+			},
+			Z10K2: {
+				Z1K1: {
+					Z1K1: 'Z9',
+					Z9K1: 'Z10'
+				},
+				Z10K1: {
+					Z1K1: {
+						Z1K1: 'Z9',
+						Z9K1: 'Z10'
+					}
+				},
+				Z10K2: {
+					Z1K1: {
+						Z1K1: 'Z9',
+						Z9K1: 'Z10'
+					}
+				}
+			}
+		},
+		'empty objects in list'
+	);
+} );
+
+QUnit.test( 'empty ZObjects in list, all ZObjects', ( assert ) => {
+	assert.deepEqual(
+		normalize( {
+			Z1K1: 'Z10',
+			Z10K1: {
+				Z1K1: 'Z10'
+
+			},
+			Z10K2: {
+				Z1K1: 'Z10',
+				Z10K1: {
+					Z1K1: 'Z10'
+				},
+				Z10K2: {
+					Z1K1: 'Z10'
+
+				}
+			}
+		} ),
+		{
+			Z1K1: {
+				Z1K1: 'Z9',
+				Z9K1: 'Z10'
+			},
+			Z10K1: {
+				Z1K1: {
+					Z1K1: 'Z9',
+					Z9K1: 'Z10'
+				}
+			},
+			Z10K2: {
+				Z1K1: {
+					Z1K1: 'Z9',
+					Z9K1: 'Z10'
+				},
+				Z10K1: {
+					Z1K1: {
+						Z1K1: 'Z9',
+						Z9K1: 'Z10'
+					}
+				},
+				Z10K2: {
+					Z1K1: {
+						Z1K1: 'Z9',
+						Z9K1: 'Z10'
+					}
+				}
+			}
+		},
+		'empty ZObjects in list, all ZObjects'
+	);
+} );
+
+QUnit.test( 'object in list', ( assert ) => {
+	assert.deepEqual(
+		normalize( { Z1K1: 'Z10', Z10K1: { Z1K1: 'Z6', Z6K1: 'Z1' }, Z10K2: { Z1K1: 'Z10' } } ),
+		{
+			Z1K1: {
+				Z1K1: 'Z9',
+				Z9K1: 'Z10'
+			},
+			Z10K1: {
+				Z1K1: 'Z6',
+				Z6K1: 'Z1'
+			},
+			Z10K2: {
+				Z1K1: {
+					Z1K1: 'Z9',
+					Z9K1: 'Z10'
+				}
+			}
+		},
+		'object in list'
+	);
+} );
