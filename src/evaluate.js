@@ -2,6 +2,7 @@
 
 const utils = require( './utils.js' );
 const error = require( './error.js' );
+const get = require( './get.js' );
 
 /* eslint-disable no-unused-vars */
 function get_implementation( call ) {
@@ -34,7 +35,10 @@ function call_composition( impl, call ) {
 /* eslint-enable no-unused-vars */
 
 function evaluate_Z9( o ) {
-	return o;
+	if ( Object.keys( o ).includes( 'Z9K1' ) && utils.is_string( o.Z9K1 ) ) {
+		return get( o.Z9K1 );
+	}
+	return error( 'Z412', 'Error in evaluation of Z9', o );
 }
 
 function evaluate_Z7( o ) {
