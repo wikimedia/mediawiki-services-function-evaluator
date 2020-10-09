@@ -11,6 +11,10 @@ function canonicalize_object( o ) {
 
 	o.Z1K1 = canonicalize( o.Z1K1 );
 
+	if ( o.Z1K1 === 'Z5' && ( o.Z5K1 === 'Z401' || o.Z5K1 === 'Z402' ) ) {
+		return o;
+	}
+
 	if ( o.Z1K1 === 'Z9' ) {
 		if ( keys.length === 2 ) {
 			if ( keys.includes( 'Z9K1' ) ) {
