@@ -10,7 +10,7 @@ QUnit.test( 'simple string is parse', ( assert ) => {
 } );
 
 QUnit.test( 'invalid JSON', ( assert ) => {
-	assert.equal( parse( '{ bad JSON! Tut, tut.' ).Z5K1, error.syntax_error, 'invalid JSON' );
+	assert.equal( parse( '{ bad JSON! Tut, tut.' ).Z5K1.Z1K1, error.syntax_error, 'invalid JSON' );
 } );
 
 QUnit.test( 'empty string', ( assert ) => {
@@ -22,11 +22,11 @@ QUnit.test( 'well formed Z6 string', ( assert ) => {
 } );
 
 QUnit.test( 'just word', ( assert ) => {
-	assert.equal( parse( 'Test' ).Z5K1, error.syntax_error, 'just word' );
+	assert.equal( parse( 'Test' ).Z5K1.Z1K1, error.syntax_error, 'just word' );
 } );
 
 QUnit.test( 'empty', ( assert ) => {
-	assert.equal( parse( 'Test' ).Z5K1, error.syntax_error, 'empty' );
+	assert.equal( parse( 'Test' ).Z5K1.Z1K1, error.syntax_error, 'empty' );
 } );
 
 QUnit.test( 'messy string', ( assert ) => {

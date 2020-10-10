@@ -78,7 +78,7 @@ QUnit.test( 'call to head on empty list', ( assert ) => {
 					}
 				]
 			}
-		).Z5K1,
+		).Z5K1.Z1K1,
 		'Z413',
 		'nested call to head'
 	);
@@ -91,7 +91,7 @@ QUnit.test( 'call bad reference', ( assert ) => {
 				Z1K1: 'Z9',
 				Z9K1: 'Z48573'
 			}
-		).Z5K1,
+		).Z5K1.Z1K1,
 		'Z404',
 		'call bad reference'
 	);

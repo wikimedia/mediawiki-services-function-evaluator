@@ -28,4 +28,3 @@ function validate( o ) {
 }
 
 module.exports = validate;
- 

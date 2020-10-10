@@ -11,7 +11,7 @@ function canonicalize_object( o ) {
 
 	o.Z1K1 = canonicalize( o.Z1K1 );
 
-	if ( o.Z1K1 === 'Z5' && ( o.Z5K1 === 'Z401' || o.Z5K1 === 'Z402' ) ) {
+	if ( o.Z1K1 === 'Z5' && ( o.Z5K1.Z1K1 === 'Z401' || o.Z5K1.Z1K1 === 'Z402' ) ) {
 		return o;
 	}
 

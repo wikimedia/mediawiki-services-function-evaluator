@@ -35,7 +35,7 @@ QUnit.test( 'record singleton list', ( assert ) => {
 } );
 
 QUnit.test( 'record multiple list with error', ( assert ) => {
-	assert.deepEqual( wellformed( [ { Z1K1: 'Z6', Z2K1: 'Test' }, { Z1K1: 'Test2!', Z2K1: 'Test2?' } ] ).Z5K1, error.not_wellformed, 'record mutiple list with error' );
+	assert.deepEqual( wellformed( [ { Z1K1: 'Z6', Z2K1: 'Test' }, { Z1K1: 'Test2!', Z2K1: 'Test2?' } ] ).Z5K1.Z1K1, error.not_wellformed, 'record mutiple list with error' );
 } );
 
 QUnit.test( 'record multiple list', ( assert ) => {
@@ -47,11 +47,11 @@ QUnit.test( 'record multiple list', ( assert ) => {
 } );
 
 QUnit.test( 'invalid record singleton list', ( assert ) => {
-	assert.deepEqual( wellformed( [ { Z2K1: 'Test' } ] ).Z5K1, error.not_wellformed, 'invalid record singleton list' );
+	assert.deepEqual( wellformed( [ { Z2K1: 'Test' } ] ).Z5K1.Z1K1, error.not_wellformed, 'invalid record singleton list' );
 } );
 
 QUnit.test( 'empty record', ( assert ) => {
-	assert.deepEqual( wellformed( {} ).Z5K1, error.not_wellformed, 'empty record' );
+	assert.deepEqual( wellformed( {} ).Z5K1.Z1K1, error.not_wellformed, 'empty record' );
 } );
 
 QUnit.test( 'singleton string record', ( assert ) => {
@@ -59,11 +59,11 @@ QUnit.test( 'singleton string record', ( assert ) => {
 } );
 
 QUnit.test( 'singleton string record no Z1K1', ( assert ) => {
-	assert.deepEqual( wellformed( { Z2K1: 'Z1' } ).Z5K1, error.not_wellformed, 'singleton string record no Z1K1' );
+	assert.deepEqual( wellformed( { Z2K1: 'Z1' } ).Z5K1.Z1K1, error.not_wellformed, 'singleton string record no Z1K1' );
 } );
 
 QUnit.test( 'singleton string record invalid key', ( assert ) => {
-	assert.deepEqual( wellformed( { 'Z1K ': 'Z1' } ).Z5K1, error.not_wellformed, 'singleton string record no Z1K1' );
+	assert.deepEqual( wellformed( { 'Z1K ': 'Z1' } ).Z5K1.Z1K1, error.not_wellformed, 'singleton string record no Z1K1' );
 } );
 
 QUnit.test( 'string record', ( assert ) => {
@@ -79,7 +79,7 @@ QUnit.test( 'string record with short key', ( assert ) => {
 } );
 
 QUnit.test( 'string record with invalid key', ( assert ) => {
-	assert.deepEqual( wellformed( { Z1K1: 'Z6', ZK1: 'Test' } ).Z5K1, error.not_wellformed, 'string record with invalid key' );
+	assert.deepEqual( wellformed( { Z1K1: 'Z6', ZK1: 'Test' } ).Z5K1.Z1K1, error.not_wellformed, 'string record with invalid key' );
 } );
 
 QUnit.test( 'record with list and sub-record', ( assert ) => {
@@ -92,19 +92,19 @@ QUnit.test( 'record with list and sub-record', ( assert ) => {
 
 QUnit.test( 'record with list and invalid sub-record', ( assert ) => {
 	assert.deepEqual(
-		wellformed( { Z1K1: 'Z8', K2: [ 'Test', 'Second test' ], Z2K1: { K2: 'Test' } } ).Z5K1, error.not_wellformed,
+		wellformed( { Z1K1: 'Z8', K2: [ 'Test', 'Second test' ], Z2K1: { K2: 'Test' } } ).Z5K1.Z1K1, error.not_wellformed,
 		'record with list and invalid sub-record'
 	);
 } );
 
 QUnit.test( 'invalid zobject (int not string/list/record)', ( assert ) => {
-	assert.deepEqual( wellformed( { Z1K1: 'Z2', Z2K1: 2 } ).Z5K1, error.not_wellformed, 'invalid zobject (int not string/list/record)' );
+	assert.deepEqual( wellformed( { Z1K1: 'Z2', Z2K1: 2 } ).Z5K1.Z1K1, error.not_wellformed, 'invalid zobject (int not string/list/record)' );
 } );
 
 QUnit.test( 'invalid zobject (float not string/list/record)', ( assert ) => {
-	assert.deepEqual( wellformed( { Z1K1: 'Z2', Z2K1: 2.0 } ).Z5K1, error.not_wellformed, 'invalid zobject (float not string/list/record)' );
+	assert.deepEqual( wellformed( { Z1K1: 'Z2', Z2K1: 2.0 } ).Z5K1.Z1K1, error.not_wellformed, 'invalid zobject (float not string/list/record)' );
 } );
 
 QUnit.test( 'number in array', ( assert ) => {
-	assert.deepEqual( wellformed( [ 2 ] ).Z5K1, error.not_wellformed, 'number in array' );
+	assert.deepEqual( wellformed( [ 2 ] ).Z5K1.Z1K1, error.not_wellformed, 'number in array' );
 } );

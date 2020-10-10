@@ -13,7 +13,7 @@ function get( zid, meta = false ) {
 
 	const filename = __dirname + '/../data/' + zid + '.json';
 	if ( !fs.existsSync( filename ) ) {
-		return error( 'Z404', [ zid ] );
+		return error( [ 'Z404' ], [ zid ] );
 	}
 
 	const result = require( filename );

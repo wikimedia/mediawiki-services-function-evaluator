@@ -40,7 +40,7 @@ function get_argument_values( argument_list, call ) {
 			const global_id = argument_list[ i ];
 			const local_id = utils.kid_from_global_key( global_id );
 			if ( keys.includes( global_id ) && keys.includes( local_id ) ) {
-				return error( 'Z420', 'call to function has both global and local key with same id', call );
+				return error( [ 'Z420' ], [ 'call to function has both global and local key with same id', call ] );
 			}
 			if ( !keys.includes( global_id ) && !keys.includes( local_id ) ) {
 				argument_values.push( undefined );
@@ -72,22 +72,22 @@ function call_builtin( impl, call ) {
 }
 
 function call_native( impl, call ) {
-	return error( 'Z420', 'Native implementation not implemented yet', [ call, impl ] );
+	return error( [ 'Z420' ], [ 'Native implementation not implemented yet', call, impl ] );
 }
 
 function call_composition( impl, call ) {
-	return error( 'Z421', 'Composition not implemented yet', [ call, impl ] );
+	return error( [ 'Z421' ], [ 'Composition not implemented yet', call, impl ] );
 }
 
 function evaluate_Z9( o ) {
 	if ( Object.keys( o ).includes( 'Z9K1' ) && utils.is_string( o.Z9K1 ) ) {
 		return get( o.Z9K1 );
 	}
-	return error( 'Z412', 'Error in evaluation of Z9', o );
+	return error( [ 'Z412' ], [ 'Error in evaluation of Z9', o ] );
 }
 
 function evaluate_Z7( o ) {
-	const e = error( 'Z411', 'Error in evaluation of Z7', o );
+	const e = error( [ 'Z411' ], [ 'Error in evaluation of Z7', o ] );
 
 	// get implementation
 	const impl = get_implementation( o );

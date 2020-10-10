@@ -6,10 +6,12 @@ QUnit.module( 'error' );
 
 QUnit.test( 'error without arguments', ( assert ) => {
 	assert.deepEqual(
-		error( 'Z401', [ ] ),
+		error( [ 'Z401' ], [ ] ),
 		{
 			Z1K1: 'Z5',
-			Z5K1: 'Z401'
+			Z5K1: {
+				Z1K1: 'Z401'
+			}
 		},
 		'error without arguments'
 	);
@@ -17,11 +19,10 @@ QUnit.test( 'error without arguments', ( assert ) => {
 
 QUnit.test( 'error with one argument', ( assert ) => {
 	assert.deepEqual(
-		error( 'Z401', [ 'test' ] ),
+		error( [ 'Z401' ], [ 'test' ] ),
 		{
 			Z1K1: 'Z5',
-			Z5K1: 'Z401',
-			Z5K2: {
+			Z5K1: {
 				Z1K1: 'Z401',
 				Z401K1: 'test'
 			}
@@ -32,11 +33,10 @@ QUnit.test( 'error with one argument', ( assert ) => {
 
 QUnit.test( 'error with two arguments', ( assert ) => {
 	assert.deepEqual(
-		error( 'Z401', [ 'test', 'arg' ] ),
+		error( [ 'Z401' ], [ 'test', 'arg' ] ),
 		{
 			Z1K1: 'Z5',
-			Z5K1: 'Z401',
-			Z5K2: {
+			Z5K1: {
 				Z1K1: 'Z401',
 				Z401K1: 'test',
 				Z401K2: 'arg'
@@ -48,11 +48,10 @@ QUnit.test( 'error with two arguments', ( assert ) => {
 
 QUnit.test( 'error with zobject argument', ( assert ) => {
 	assert.deepEqual(
-		error( 'Z401', [ { Z1K1: 'Z7', Z7K1: 'Z31', K1: [ ] } ] ),
+		error( [ 'Z401' ], [ { Z1K1: 'Z7', Z7K1: 'Z31', K1: [ ] } ] ),
 		{
 			Z1K1: 'Z5',
-			Z5K1: 'Z401',
-			Z5K2: {
+			Z5K1: {
 				Z1K1: 'Z401',
 				Z401K1: {
 					Z1K1: 'Z7',
@@ -68,15 +67,32 @@ QUnit.test( 'error with zobject argument', ( assert ) => {
 
 QUnit.test( 'error with numeric argument', ( assert ) => {
 	assert.deepEqual(
-		error( 'Z401', [ 1 ] ),
+		error( [ 'Z401' ], [ 1 ] ),
 		{
 			Z1K1: 'Z5',
-			Z5K1: 'Z401',
-			Z5K2: {
+			Z5K1: {
 				Z1K1: 'Z401',
 				Z401K1: 1
 			}
 		},
 		'error with numeric argument'
+	);
+} );
+
+QUnit.test( 'nested error with two arguments', ( assert ) => {
+	assert.deepEqual(
+		error( [ 'Z401', 'Z402' ], [ 'arg1', 'arg2' ] ),
+		{
+			Z1K1: 'Z5',
+			Z5K1: {
+				Z1K1: 'Z401',
+				Z401K1: {
+					Z1K1: 'Z402',
+					Z402K1: 'arg1',
+					Z402K2: 'arg2'
+				}
+			}
+		},
+		'nested error with two arguments'
 	);
 } );

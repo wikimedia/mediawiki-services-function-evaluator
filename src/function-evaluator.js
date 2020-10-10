@@ -46,7 +46,7 @@ for ( let i = 2; i < process.argv.length; i++ ) {
 		do_eval = false;
 		continue;
 	}
-	
+
 	if ( arg === '--wellformed' ) {
 		do_wellformed = true;
 		continue;
@@ -68,6 +68,7 @@ for ( let i = 2; i < process.argv.length; i++ ) {
 	ok = false;
 }
 
+/* eslint-disable no-process-exit */
 if ( !ok ) {
 	process.exit();
 }
@@ -95,9 +96,10 @@ if ( do_validate && validation.length === 0 ) {
 	console.log( 'OK' );
 	process.exit();
 }
+/* eslint-enable no-process-exit */
 
 if ( do_eval ) {
-	result = evaluate( normalize ( result ) );
+	result = evaluate( normalize( result ) );
 }
 
 if ( normal ) {
