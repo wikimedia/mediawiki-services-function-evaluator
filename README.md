@@ -14,6 +14,8 @@ node src/function-evaluator.js '{ "Z1K1": "Z7", "Z7K1": "Z31", "K1": ["a"] }'
 
 ## Todos
 Evaluation is currently a big mess and needs to be fixed up entirely.
+Importantly, assume that everything has been validated before given to evaluation.
+That should simplify evaluation considerably.
 
 src/error.js contains a list of the current errors, needs to be turned into ZObjects.
 
