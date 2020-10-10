@@ -6,7 +6,7 @@ const utils = require( './utils.js' );
 function wellformed_array( a ) {
 	for ( let i = 0; i < a.length; i++ ) {
 		const w = wellformed( a[ i ] );
-		if ( w.Z1K1 === 'Z5' && w.Z5K1 === 'Z402' ) {
+		if ( w.Z1K1 === 'Z5' && w.Z5K1 === error.not_wellformed ) {
 			return error(
 				error.not_wellformed,
 				[ error.array_element_not_well_formed, i.toString(), w ]
@@ -25,6 +25,11 @@ function wellformed_object( o ) {
 		return error( error.not_wellformed, [ error.z1k1_must_not_be_string_or_array, o ] );
 	}
 
+	// Z5 error
+	if ( o.Z1K1 === 'Z5' ) {
+		return o;
+	}
+
 	// Z6 string
 	if ( o.Z1K1 === 'Z6' ) {
 		if ( keys.length !== 2 ) {
@@ -40,19 +45,29 @@ function wellformed_object( o ) {
 	}
 
 	// Z9 reference
-	if ( keys.includes( 'Z9K1' ) && !utils.is_object( o.Z9K1 ) ) {
-		if ( !utils.is_string( o.Z9K1 ) || !utils.is_reference( o.Z9K1 ) ) {
-			return error( error.not_wellformed, 'Z9K1 must be a reference.', o );
+	if ( o.Z1K1 === 'Z9' ) {
+		if ( keys.length !== 2 ) {
+			return error( error.not_wellformed, [ error.z9_must_have_2_keys, o ] );
+		}
+		if ( !( keys.includes( 'Z9K1' ) || keys.includes( 'K1' ) ) ) {
+			return error( error.not_wellformed, [ error.z9_without_z9k1, o ] );
+		}
+		const string_value = keys.includes( 'Z9K1' ) ? o.Z9K1 : o.K1;
+		if ( !utils.is_string( string_value ) ) {
+			return error( error.not_wellformed, [ error.z9k1_must_be_string, string_value ] );
+		}
+		if ( !utils.is_reference( string_value ) ) {
+			return error( error.not_wellformed, [ error.z9k1_must_be_reference, string_value ] );
 		}
 	}
 
 	for ( let i = 0; i < keys.length; i++ ) {
 		if ( !utils.is_key( keys[ i ] ) ) {
-			return error( error.not_wellformed, 'Key not a valid key reference', keys[ i ] );
+			return error( error.not_wellformed, [ error.invalid_key, keys[ i ] ] );
 		}
 		const v = wellformed( o[ keys[ i ] ] );
-		if ( v.Z1K1 === 'Z5' && v.Z5K1 === 'Z402' ) {
-			return error( error.not_wellformed, 'Value of ' + keys[ i ] + ' is not wellformed.', v );
+		if ( v.Z1K1 === 'Z5' && v.Z5K1 === error.not_wellformed ) {
+			return error( error.not_wellformed, [ error.not_wellformed_value, keys[ i ], v ] );
 		}
 	}
 	return o;
