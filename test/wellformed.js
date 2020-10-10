@@ -105,18 +105,6 @@ QUnit.test( 'invalid zobject (float not string/list/record)', ( assert ) => {
 	assert.deepEqual( wellformed( { Z1K1: 'Z2', Z2K1: 2.0 } ).Z5K1, error.not_wellformed, 'invalid zobject (float not string/list/record)' );
 } );
 
-QUnit.test( 'invalid reference', ( assert ) => {
-	assert.deepEqual( wellformed( { Z1K1: 'Z9', Z9K1: 'Test' } ).Z5K1, error.not_wellformed, 'invalid reference' );
-} );
-
-QUnit.test( 'invalid reference array', ( assert ) => {
-	assert.deepEqual( wellformed( { Z1K1: 'Z9', Z9K1: [] } ).Z5K1, error.not_wellformed, 'invalid reference array' );
-} );
-
-QUnit.test( 'invalid string array', ( assert ) => {
-	assert.deepEqual( wellformed( { Z1K1: 'Z6', Z6K1: [] } ).Z5K1, error.not_wellformed, 'invalid reference array' );
-} );
-
 QUnit.test( 'number in array', ( assert ) => {
 	assert.deepEqual( wellformed( [ 2 ] ).Z5K1, error.not_wellformed, 'number in array' );
 } );
