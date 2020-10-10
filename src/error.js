@@ -20,4 +20,6 @@ function error( code, args ) {
 	return error_object;
 }
 
+error.syntax_error = 'Z401'; // message from parser, input string
+
 module.exports = error;

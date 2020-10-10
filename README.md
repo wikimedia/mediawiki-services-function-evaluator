@@ -27,8 +27,7 @@ A Z7 will fail in evaluation if they are not well set up.
 
 Evaluation is currently a big mess and needs to be fixed up entirely.
 
-Current list of errors:
-- 
+src/error.js contains a list of the current errors, needs to be turned into ZObjects.
 
 ### Write
 - [x] parse
