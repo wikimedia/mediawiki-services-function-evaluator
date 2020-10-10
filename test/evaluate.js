@@ -83,3 +83,16 @@ QUnit.test( 'call to head on empty list', ( assert ) => {
 		'nested call to head'
 	);
 } );
+
+QUnit.test( 'call bad reference', ( assert ) => {
+	assert.deepEqual(
+		rep(
+			{
+				Z1K1: 'Z9',
+				Z9K1: 'Z48573'
+			}
+		).Z5K1,
+		'Z404',
+		'call bad reference'
+	);
+} );

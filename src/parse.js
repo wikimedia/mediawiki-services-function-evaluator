@@ -10,7 +10,7 @@ function parse( str ) {
 		return zobject;
 	} catch ( err ) {
 		const m = ( err.name === 'SyntaxError' ) ? err.message : err.name;
-		return error( 'Z401', m, str );
+		return error( 'Z401', [ m, str ] );
 	}
 }
 
