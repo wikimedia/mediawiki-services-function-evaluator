@@ -8,6 +8,7 @@ const normalize = require( './normalize.js' );
 const wellformed = require( './wellformed.js' );
 const parse = require( './parse.js' );
 const error = require( './error.js' );
+const validate = require( './validate.js' );
 
 // process arguments
 let input;
@@ -67,27 +68,42 @@ for ( let i = 2; i < process.argv.length; i++ ) {
 	ok = false;
 }
 
-if ( ok ) {
-	let result = wellformed( parse( input ) );
+if ( !ok ) {
+	process.exit();
+}
 
-	if ( do_wellformed ) {
-		if ( result.Z1K1 !== 'Z5' ) {
-			if ( result.Z5K1 !== error.syntax_error && result.Z5K1 !== error.not_wellformed ) {
-				console.log( 'OK' );
-				process.exit();
-			}
+let result = wellformed( parse( input ) );
+
+if ( do_wellformed ) {
+	if ( result.Z1K1 !== 'Z5' ) {
+		if ( result.Z5K1 !== error.syntax_error && result.Z5K1 !== error.not_wellformed ) {
+			console.log( 'OK' );
+			process.exit();
 		}
 	}
-
-	if ( do_eval ) {
-		result = evaluate( normalize ( result ) );
-	}
-
-	if ( normal ) {
-		result = normalize( result );
-	} else {
-		result = canonicalize( result );
-	}
-
-	console.log( JSON.stringify( result, null, 2 ) );
 }
+
+result = normalize( result );
+
+const validation = validate( result );
+
+if ( validation.length > 0 ) {
+	result = validation;
+}
+
+if ( do_validate && validation.length === 0 ) {
+	console.log( 'OK' );
+	process.exit();
+}
+
+if ( do_eval ) {
+	result = evaluate( normalize ( result ) );
+}
+
+if ( normal ) {
+	result = normalize( result );
+} else {
+	result = canonicalize( result );
+}
+
+console.log( JSON.stringify( result, null, 2 ) );
