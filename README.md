@@ -44,6 +44,7 @@ src/error.js contains a list of the current errors, needs to be turned into ZObj
 - [x] what should be the config for the linter?
 - [ ] fix representation and ZIDs of errors
 - [x] read arguments
+- [ ] tests for utils
 - [ ] settings
 - [ ] hook it up to the wiki
 - [ ] make it runnable as a service
