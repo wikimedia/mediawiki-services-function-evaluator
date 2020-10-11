@@ -77,7 +77,8 @@ let result = wellformed( parse( input ) );
 
 if ( do_wellformed ) {
 	if ( result.Z1K1 !== 'Z5' ) {
-		if ( result.Z5K1 !== error.syntax_error && result.Z5K1 !== error.not_wellformed ) {
+		if ( result.Z5K1.Z1K1 !== error.syntax_error &&
+			result.Z5K1.Z1K1 !== error.not_wellformed ) {
 			console.log( 'OK' );
 			process.exit();
 		}
