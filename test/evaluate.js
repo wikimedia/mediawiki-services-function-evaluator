@@ -3,6 +3,7 @@
 const evaluate = require( '../src/evaluate.js' );
 const normalize = require( '../src/normalize.js' );
 const canonicalize = require( '../src/canonicalize.js' );
+const error = require( '../src/error.js' );
 
 const rep = ( x ) => canonicalize( evaluate( normalize( x ) ) );
 
@@ -79,7 +80,7 @@ QUnit.test( 'call to head on empty list', ( assert ) => {
 				]
 			}
 		).Z5K1.Z1K1,
-		'Z413',
+		error.nil,
 		'nested call to head'
 	);
 } );

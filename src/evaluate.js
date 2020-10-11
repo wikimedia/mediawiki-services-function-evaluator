@@ -6,7 +6,6 @@ const get = require( './get.js' );
 
 // TODO: rename get to resolve, and by_key to get
 
-
 function get_implementation( call ) {
 	// TODO: rewrite
 	const func = evaluate( call.Z7K1 );
@@ -82,6 +81,7 @@ function call_builtin( impl, call ) {
 	return builtin( argument_values );
 }
 
+/* eslint-disable no-unused-vars */
 function call_native( impl, call ) {
 	// TODO: implement
 	return error( [ error.not_implemented_yet ], [ 'evaluate.call_native' ] );
@@ -91,6 +91,7 @@ function call_composition( impl, call ) {
 	// TODO: implement
 	return error( [ error.not_implemented_yet ], [ 'evaluate.call_composition' ] );
 }
+/* eslint-enable no-unused-vars */
 
 function evaluate_Z9( o ) {
 	// TODO: rewrite. Assume Z9 is correct. by_key(Z9 K1) and then get that
