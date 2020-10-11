@@ -1,6 +1,7 @@
 'use strict';
 
 const utils = require( './utils.js' );
+const error = require( './error.js' );
 
 function delistify( a ) {
 	if ( a.length === 0 ) {
@@ -35,7 +36,8 @@ function normalize( o ) {
 		return delistify( o );
 	}
 
-	if ( o.Z1K1 === 'Z5' && ( o.Z5K1.Z1K1 === 'Z401' || o.Z5K1.Z1K1 === 'Z402' ) ) {
+	if ( o.Z1K1 === 'Z5' &&
+		( o.Z5K1.Z1K1 === error.syntax_error || o.Z5K1.Z1K1 === error.not_wellformed ) ) {
 		return o;
 	}
 

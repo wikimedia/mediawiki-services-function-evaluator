@@ -112,25 +112,36 @@ function evaluate_Z7( o ) {
 	return result;
 }
 
-// the input is assumed to be a well-formed, normalized ZObject,
+function is_type( type, o ) {
+	if ( utils.is_string( o.Z1K1 ) ) {
+		return o.Z1K1 === type;
+	}
+	if ( is_type( 'Z9', o.Z1K1 ) ) {
+		return o.Z1K1.Z9K1 === type;
+	}
+	return false;
+}
+
+// the input is assumed to be a valid and normal ZObject,
 // or else the behaviour is undefined
 function evaluate( o ) {
-	if ( utils.is_type( 'Z5', o ) ) {
+	if ( is_type( 'Z5', o ) ) {
 		return o;
 	}
 
 	let result = o;
-	if ( utils.is_type( 'Z7', o ) ) {
+	if ( is_type( 'Z7', o ) ) {
 		result = evaluate_Z7( o );
 	}
-	if ( utils.is_type( 'Z9', o ) ) {
+	if ( is_type( 'Z9', o ) ) {
 		result = evaluate_Z9( o );
 	}
 
 	if ( utils.deep_equal( result, o ) ) {
-		return result;
+		return o;
 	}
 	return evaluate( result );
 }
 
+evaluate.is_type = is_type;
 module.exports = evaluate;

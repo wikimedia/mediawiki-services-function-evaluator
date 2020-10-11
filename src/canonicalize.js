@@ -1,6 +1,7 @@
 'use strict';
 
 const utils = require( './utils.js' );
+const error = require( './error.js' );
 
 function canonicalize_array( a ) {
 	return a.map( canonicalize );
@@ -11,7 +12,8 @@ function canonicalize_object( o ) {
 
 	o.Z1K1 = canonicalize( o.Z1K1 );
 
-	if ( o.Z1K1 === 'Z5' && ( o.Z5K1.Z1K1 === 'Z401' || o.Z5K1.Z1K1 === 'Z402' ) ) {
+	if ( o.Z1K1 === 'Z5' &&
+		( o.Z5K1.Z1K1 === error.syntax_error || o.Z5K1.Z1K1 === error.not_wellformed ) ) {
 		return o;
 	}
 
