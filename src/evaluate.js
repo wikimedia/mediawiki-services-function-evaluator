@@ -2,7 +2,7 @@
 
 const utils = require( './utils.js' );
 const error = require( './error.js' );
-const get = require( './get.js' );
+const resolve = require( './resolve.js' );
 
 // TODO: rename get to resolve, and by_key to get
 
@@ -65,7 +65,7 @@ function get_argument_values( argument_list, call ) {
 	return argument_values;
 }
 
-function get_builtin( impl ) {
+function load_builtin( impl ) {
 	// TODO: rewrite
 	// TODO: check impl.Z14K4.Z9K1
 	// TODO: check if file exists
@@ -74,7 +74,7 @@ function get_builtin( impl ) {
 
 function call_builtin( impl, call ) {
 	// TODO: rewrite
-	const builtin = get_builtin( impl );
+	const builtin = load_builtin( impl );
 	const argument_list = get_argument_list( impl.Z14K1 );
 	const argument_values = get_argument_values( argument_list, call );
 
@@ -95,9 +95,9 @@ function call_composition( impl, call ) {
 
 function evaluate_Z9( o ) {
 	// TODO: rewrite. Assume Z9 is correct. by_key(Z9 K1) and then get that
-	// check get.js
+	// check resolve.js
 	if ( Object.keys( o ).includes( 'Z9K1' ) && utils.is_string( o.Z9K1 ) ) {
-		return get( o.Z9K1 );
+		return resolve( o.Z9K1 );
 	}
 	return error( [ 'Z412' ], [ 'Error in evaluation of Z9', o ] );
 }

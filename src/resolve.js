@@ -6,7 +6,7 @@ const fs = require( 'fs' );
 
 // given a zid, returns the object
 // TODO: cache!!!
-function get( zid, meta = false ) {
+function resolve( zid, meta = false ) {
 	// this should be configurable against any path on disc and against any wiki
 	// and possible other sources
 	// for now, it looks in the data directory of this
@@ -25,4 +25,4 @@ function get( zid, meta = false ) {
 	}
 }
 
-module.exports = get;
+module.exports = resolve;
