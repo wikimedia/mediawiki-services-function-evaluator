@@ -134,11 +134,13 @@ function is( type, o ) {
 		return o.Z1K1 === type;
 	}
 	if ( is( 'Z9', o.Z1K1 ) ) {
-		// TODO: replace with by_key(Z9, K1)
-		return o.Z1K1.Z9K1 === type;
+		return get( 'Z9', 'K1', get( 'Z1', 'K1', o ) ) === type;
 	}
-	// TODO: replace with by_key(Z4, K1).by_key(Z9 K1)?
-	return evaluate( o.Z1K1 ).Z4K1.Z9K1 === type;
+	return get( 'Z9', 'K1', get( 'Z4', 'K1', get( 'Z1', 'K1', o ) ) ) === type;
+}
+
+function get( zid, kid, o ) {
+	return o[ zid + kid ];
 }
 
 // the input must be a valid and normal ZObject, or else undefined behaviour
@@ -161,4 +163,5 @@ function evaluate( o ) {
 }
 
 evaluate.is = is;
+evaluate.get = get;
 module.exports = evaluate;

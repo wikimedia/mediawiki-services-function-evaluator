@@ -97,3 +97,25 @@ QUnit.test( 'call bad reference', ( assert ) => {
 		'call bad reference'
 	);
 } );
+
+QUnit.test( 'evaluate an error', ( assert ) => {
+	assert.deepEqual(
+		rep(
+			{
+				Z1K1: 'Z5',
+				Z5K1: {
+					Z1K1: 'Z404',
+					Z404K1: 'Z48573'
+				}
+			}
+		),
+		{
+			Z1K1: 'Z5',
+			Z5K1: {
+				Z1K1: 'Z404',
+				Z404K1: 'Z48573'
+			}
+		},
+		'should stay unchanged'
+	);
+} );
