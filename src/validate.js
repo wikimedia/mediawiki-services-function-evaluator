@@ -7,15 +7,35 @@ function validate_z6( o ) {
 	const errors = [ ];
 	const keys = Object.keys( o );
 	if ( keys.length !== 2 ) {
-		errors.push( error( error.not_wellformed, [ error.z6_must_have_2_keys, o ] ) );
+		errors.push( error( [ error.z6_must_have_2_keys ], [ o ] ) );
 	}
 	if ( !( keys.includes( 'Z6K1' ) || keys.includes( 'K1' ) ) ) {
-		errors.push( error( error.not_wellformed, [ error.z6_without_z6k1, o ] ) );
+		errors.push( error( [ error.z6_without_z6k1 ], [ o ] ) );
 		return errors;
 	}
 	const string_value = keys.includes( 'Z6K1' ) ? o.Z6K1 : o.K1;
 	if ( !utils.is_string( string_value ) ) {
-		errors.push( error( error.not_wellformed, [ error.z6k1_must_be_string, string_value ] ) );
+		errors.push( error( [ error.z6k1_must_be_string ], [ string_value ] ) );
+	}
+	return errors;
+}
+
+function validate_z9( o ) {
+	const errors = [ ];
+	const keys = Object.keys( o );
+	if ( keys.length !== 2 ) {
+		errors.push( error( [ error.z9_must_have_2_keys ], [ o ] ) );
+	}
+	if ( !( keys.includes( 'Z9K1' ) || keys.includes( 'K1' ) ) ) {
+		errors.push( error( [ error.z9_without_z9k1 ], [ o ] ) );
+		return errors;
+	}
+	const string_value = keys.includes( 'Z9K1' ) ? o.Z9K1 : o.K1;
+	if ( !utils.is_string( string_value ) ) {
+		errors.push( error( [ error.z9k1_must_be_string ], [ string_value ] ) );
+	}
+	if ( !utils.is_reference( string_value ) ) {
+		errors.push( error( [ error.z9k1_must_be_reference ], [ string_value ] ) );
 	}
 	return errors;
 }
@@ -24,6 +44,9 @@ function validate_z6( o ) {
 function validate( o ) {
 	if ( o.Z1K1 === 'Z6' ) {
 		return validate_z6( o );
+	}
+	if ( o.Z1K1 === 'Z9' ) {
+		return validate_z9( o );
 	}
 
 	if ( o.Z1K1 === 'Z5' ) {
