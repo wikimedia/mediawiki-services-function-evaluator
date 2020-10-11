@@ -117,9 +117,11 @@ function is_type( type, o ) {
 		return o.Z1K1 === type;
 	}
 	if ( is_type( 'Z9', o.Z1K1 ) ) {
+		// TODO: replace with get(Z9, K1)
 		return o.Z1K1.Z9K1 === type;
 	}
-	return false;
+	// TODO: replace with get(Z4, K1).get(Z9 K1)?
+	return evaluate( o.Z1K1 ).Z4K1.Z9K1 === type;
 }
 
 // the input is assumed to be a valid and normal ZObject,
