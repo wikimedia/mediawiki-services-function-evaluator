@@ -13,11 +13,11 @@ function builtin( args ) {
 	if ( !evaluate.is_type( 'Z10', arg ) ) {
 		return error( [ error.argument_type_error ], [ 'Z10', arg.Z1K1, arg ] );
 	}
-	// TODO: replace that with a has(Z10, K1)
+	// TODO: replace that with a has_key(Z10, K1)
 	if ( !Object.keys( arg ).includes( 'Z10K1' ) && !Object.keys( arg ).includes( 'K1' ) ) {
 		return error( [ error.nil ], [ ] );
 	}
-	// TODO: replace that with a get(Z10, K1)
+	// TODO: replace that with a by_key(Z10, K1)
 	if ( Object.keys( arg ).includes( 'Z10K1' ) ) {
 		return arg.Z10K1;
 	}

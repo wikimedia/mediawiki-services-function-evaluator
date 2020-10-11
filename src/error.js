@@ -26,10 +26,13 @@ function error( codes, args ) {
 
 error.syntax_error = 'Z401'; // message from parser, input string
 error.not_wellformed = 'Z402'; // sub error code, maybe more
-error.nil = 'Z403'; // -
+error.not_implemented_yet = 'Z403'; // function name
 error.zid_not_found = 'Z404'; // zid
 error.number_of_arguments_mismatch = 'Z405'; // expected number, actual number, args
 error.argument_type_error = 'Z406'; // expected type, actual type, arg
+error.error_in_evaluation = 'Z407'; // function call
+error.competing_keys = 'Z408'; // object
+error.nil = 'Z410'; // -
 
 error.zobject_must_not_be_number_or_boolean_or_null = 'Z421'; // offending text (sub of Z402)
 error.array_element_not_well_formed = 'Z422'; // offending index in array, propagated error (sub of Z402)

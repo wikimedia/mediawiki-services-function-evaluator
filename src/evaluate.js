@@ -4,24 +4,32 @@ const utils = require( './utils.js' );
 const error = require( './error.js' );
 const get = require( './get.js' );
 
+// TODO: rename get to resolve, and by_key to get
+
+
 function get_implementation( call ) {
+	// TODO: rewrite
 	const func = evaluate( call.Z7K1 );
 	return evaluate( func.Z8K4.Z10K1 );
 }
 
 function is_builtin( impl ) {
+	// TODO: replace with has
 	return Object.keys( impl ).includes( 'Z14K4' );
 }
 
 function is_native( impl ) {
+	// TODO: replace with has
 	return Object.keys( impl ).includes( 'Z14K3' );
 }
 
 function is_composition( impl ) {
+	// TODO: replace with has
 	return Object.keys( impl ).includes( 'Z14K2' );
 }
 
 function get_argument_list( func ) {
+	// TODO: rewrite
 	const f = evaluate( func );
 	let argument_list = f.Z8K1;
 	const list = [ ];
@@ -33,6 +41,7 @@ function get_argument_list( func ) {
 }
 
 function get_argument_values( argument_list, call ) {
+	// TODO: rewrite
 	const keys = Object.keys( call );
 	const argument_values = [ ];
 	for ( let i = 0; i < argument_list.length; i++ ) {
@@ -40,7 +49,7 @@ function get_argument_values( argument_list, call ) {
 			const global_id = argument_list[ i ];
 			const local_id = utils.kid_from_global_key( global_id );
 			if ( keys.includes( global_id ) && keys.includes( local_id ) ) {
-				return error( [ 'Z420' ], [ 'call to function has both global and local key with same id', call ] );
+				return error( [ error.competing_keys ], [ call ] );
 			}
 			if ( !keys.includes( global_id ) && !keys.includes( local_id ) ) {
 				argument_values.push( undefined );
@@ -58,12 +67,14 @@ function get_argument_values( argument_list, call ) {
 }
 
 function get_builtin( impl ) {
+	// TODO: rewrite
 	// TODO: check impl.Z14K4.Z9K1
 	// TODO: check if file exists
 	return require( './builtin/' + impl.Z14K4.Z9K1 + '.js' );
 }
 
 function call_builtin( impl, call ) {
+	// TODO: rewrite
 	const builtin = get_builtin( impl );
 	const argument_list = get_argument_list( impl.Z14K1 );
 	const argument_values = get_argument_values( argument_list, call );
@@ -72,14 +83,18 @@ function call_builtin( impl, call ) {
 }
 
 function call_native( impl, call ) {
-	return error( [ 'Z420' ], [ 'Native implementation not implemented yet', call, impl ] );
+	// TODO: implement
+	return error( [ error.not_implemented_yet ], [ 'evaluate.call_native' ] );
 }
 
 function call_composition( impl, call ) {
-	return error( [ 'Z421' ], [ 'Composition not implemented yet', call, impl ] );
+	// TODO: implement
+	return error( [ error.not_implemented_yet ], [ 'evaluate.call_composition' ] );
 }
 
 function evaluate_Z9( o ) {
+	// TODO: rewrite. Assume Z9 is correct. by_key(Z9 K1) and then get that
+	// check get.js
 	if ( Object.keys( o ).includes( 'Z9K1' ) && utils.is_string( o.Z9K1 ) ) {
 		return get( o.Z9K1 );
 	}
@@ -87,7 +102,8 @@ function evaluate_Z9( o ) {
 }
 
 function evaluate_Z7( o ) {
-	const e = error( [ 'Z411' ], [ 'Error in evaluation of Z7', o ] );
+	// TODO: rewrite
+	const e = error( [ error.error_in_evaluation ], [ o ] );
 
 	// get implementation
 	const impl = get_implementation( o );
@@ -117,15 +133,14 @@ function is_type( type, o ) {
 		return o.Z1K1 === type;
 	}
 	if ( is_type( 'Z9', o.Z1K1 ) ) {
-		// TODO: replace with get(Z9, K1)
+		// TODO: replace with by_key(Z9, K1)
 		return o.Z1K1.Z9K1 === type;
 	}
-	// TODO: replace with get(Z4, K1).get(Z9 K1)?
+	// TODO: replace with by_key(Z4, K1).by_key(Z9 K1)?
 	return evaluate( o.Z1K1 ).Z4K1.Z9K1 === type;
 }
 
-// the input is assumed to be a valid and normal ZObject,
-// or else the behaviour is undefined
+// the input must be a valid and normal ZObject, or else undefined behaviour
 function evaluate( o ) {
 	if ( is_type( 'Z5', o ) ) {
 		return o;
