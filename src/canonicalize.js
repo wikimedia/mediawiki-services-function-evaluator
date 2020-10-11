@@ -61,11 +61,11 @@ function canonicalize_object( o ) {
 		}
 	}
 
+	const result = {};
 	for ( let i = 0; i < keys.length; i++ ) {
-		o[ keys[ i ] ] = canonicalize( o[ keys[ i ] ] );
+		result[ keys[ i ] ] = canonicalize( o[ keys[ i ] ] );
 	}
-
-	return o;
+	return result;
 }
 
 // the input is assumed to be a well-formed ZObject, or else the behaviour is undefined

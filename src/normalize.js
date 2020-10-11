@@ -42,22 +42,26 @@ function normalize( o ) {
 	}
 
 	const keys = Object.keys( o );
+	const result = {};
 	for ( let i = 0; i < keys.length; i++ ) {
 		if ( keys[ i ] === 'Z1K1' && ( o.Z1K1 === 'Z6' || o.Z1K1 === 'Z9' ) ) {
+			result.Z1K1 = o.Z1K1;
 			continue;
 		}
 		if ( keys[ i ] === 'Z6K1' && utils.is_string( o.Z6K1 ) ) {
+			result.Z6K1 = o.Z6K1;
 			continue;
 		}
 		if ( keys[ i ] === 'Z9K1' && utils.is_string( o.Z9K1 ) ) {
+			result.Z9K1 = o.Z9K1;
 			continue;
 		}
 		if ( keys[ i ] === 'Z10K1' && !keys.includes( 'Z10K2' ) ) {
-			o.Z10K2 = normalize( [ ] );
+			result.Z10K2 = normalize( [ ] );
 		}
-		o[ keys[ i ] ] = normalize( o[ keys[ i ] ] );
+		result[ keys[ i ] ] = normalize( o[ keys[ i ] ] );
 	}
-	return o;
+	return result;
 }
 
 module.exports = normalize;

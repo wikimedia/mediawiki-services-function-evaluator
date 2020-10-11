@@ -147,14 +147,13 @@ function evaluate( o ) {
 		return o;
 	}
 
-	let result = o;
+	let result = utils.deep_copy( o );
 	if ( is_type( 'Z7', o ) ) {
 		result = evaluate_Z7( o );
 	}
 	if ( is_type( 'Z9', o ) ) {
 		result = evaluate_Z9( o );
 	}
-
 	if ( utils.deep_equal( result, o ) ) {
 		return o;
 	}

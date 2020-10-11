@@ -38,4 +38,8 @@ utils.deep_equal = function ( o1, o2 ) {
 	return JSON.stringify( o1 ) === JSON.stringify( o2 );
 };
 
+utils.deep_copy = function ( o ) {
+	return JSON.parse( JSON.stringify( o ) );
+};
+
 module.exports = utils;

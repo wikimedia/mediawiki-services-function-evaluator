@@ -20,7 +20,7 @@ function get( zid, meta = false ) {
 	if ( meta ) {
 		return normalize( result );
 	} else {
-		// TODO: if there is no Z2K2, return an error
+		// TODO: if there is no Z2K2, return an error / replace with get(Z2 K2)
 		return normalize( result.Z2K2 );
 	}
 }
