@@ -129,11 +129,11 @@ function evaluate_Z7( o ) {
 	return result;
 }
 
-function is_type( type, o ) {
+function is( type, o ) {
 	if ( utils.is_string( o.Z1K1 ) ) {
 		return o.Z1K1 === type;
 	}
-	if ( is_type( 'Z9', o.Z1K1 ) ) {
+	if ( is( 'Z9', o.Z1K1 ) ) {
 		// TODO: replace with by_key(Z9, K1)
 		return o.Z1K1.Z9K1 === type;
 	}
@@ -143,15 +143,15 @@ function is_type( type, o ) {
 
 // the input must be a valid and normal ZObject, or else undefined behaviour
 function evaluate( o ) {
-	if ( is_type( 'Z5', o ) ) {
+	if ( is( 'Z5', o ) ) {
 		return o;
 	}
 
 	let result = utils.deep_copy( o );
-	if ( is_type( 'Z7', o ) ) {
+	if ( is( 'Z7', o ) ) {
 		result = evaluate_Z7( o );
 	}
-	if ( is_type( 'Z9', o ) ) {
+	if ( is( 'Z9', o ) ) {
 		result = evaluate_Z9( o );
 	}
 	if ( utils.deep_equal( result, o ) ) {
@@ -160,5 +160,5 @@ function evaluate( o ) {
 	return evaluate( result );
 }
 
-evaluate.is_type = is_type;
+evaluate.is = is;
 module.exports = evaluate;

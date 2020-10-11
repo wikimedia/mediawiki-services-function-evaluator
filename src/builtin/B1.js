@@ -10,7 +10,7 @@ function builtin( args ) {
 		return error( [ error.builtin_number_of_arguments_mismatch ], [ '1', args.length.toString(), args ] );
 	}
 	const arg = args[ 0 ];
-	if ( !evaluate.is_type( 'Z10', arg ) ) {
+	if ( !evaluate.is( 'Z10', arg ) ) {
 		return error( [ error.argument_type_error ], [ 'Z10', arg.Z1K1, arg ] );
 	}
 	// TODO: replace that with a has_key(Z10, K1)
