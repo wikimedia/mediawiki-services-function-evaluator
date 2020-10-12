@@ -136,7 +136,7 @@ function is( type, o ) {
 	if ( is( 'Z9', o.Z1K1 ) ) {
 		return get( 'Z9', 'K1', get( 'Z1', 'K1', o ) ) === type;
 	}
-	return get( 'Z9', 'K1', get( 'Z4', 'K1', get( 'Z1', 'K1', o ) ) ) === type;
+	return get( 'Z9', 'K1', get( 'Z4', 'K1', evaluate( get( 'Z1', 'K1', o ) ) ) ) === type;
 }
 
 function get( zid, kid, o ) {
