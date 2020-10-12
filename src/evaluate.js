@@ -4,10 +4,11 @@ const utils = require( './utils.js' );
 const error = require( './error.js' );
 const resolve = require( './resolve.js' );
 
-// TODO: rename get to resolve, and by_key to get
+// TODO: check B1
+// TODO: check resolve
 
 function get_implementation( call ) {
-	// TODO: rewrite
+	// TODO: rewrite and test
 	const func = evaluate( call.Z7K1 );
 	return evaluate( func.Z8K4.Z10K1 );
 }
@@ -28,7 +29,7 @@ function is_composition( impl ) {
 }
 
 function get_argument_list( func ) {
-	// TODO: rewrite
+	// TODO: rewrite and test
 	const f = evaluate( func );
 	let argument_list = f.Z8K1;
 	const list = [ ];
@@ -40,7 +41,7 @@ function get_argument_list( func ) {
 }
 
 function get_argument_values( argument_list, call ) {
-	// TODO: rewrite
+	// TODO: rewrite and test
 	const keys = Object.keys( call );
 	const argument_values = [ ];
 	for ( let i = 0; i < argument_list.length; i++ ) {
@@ -66,14 +67,14 @@ function get_argument_values( argument_list, call ) {
 }
 
 function load_builtin( impl ) {
-	// TODO: rewrite
+	// TODO: rewrite and test
 	// TODO: check impl.Z14K4.Z9K1
 	// TODO: check if file exists
 	return require( './builtin/' + impl.Z14K4.Z9K1 + '.js' );
 }
 
 function call_builtin( impl, call ) {
-	// TODO: rewrite
+	// TODO: rewrite and test
 	const builtin = load_builtin( impl );
 	const argument_list = get_argument_list( impl.Z14K1 );
 	const argument_values = get_argument_values( argument_list, call );
@@ -83,19 +84,19 @@ function call_builtin( impl, call ) {
 
 /* eslint-disable no-unused-vars */
 function call_native( impl, call ) {
-	// TODO: implement
+	// TODO: implement and test
 	return error( [ error.not_implemented_yet ], [ 'evaluate.call_native' ] );
 }
 
 function call_composition( impl, call ) {
-	// TODO: implement
+	// TODO: implement and test
 	return error( [ error.not_implemented_yet ], [ 'evaluate.call_composition' ] );
 }
 /* eslint-enable no-unused-vars */
 
 function evaluate_Z9( o ) {
 	// TODO: rewrite. Assume Z9 is correct. by_key(Z9 K1) and then get that
-	// check resolve.js
+	// check resolve.js. tests?
 	if ( Object.keys( o ).includes( 'Z9K1' ) && utils.is_string( o.Z9K1 ) ) {
 		return resolve( o.Z9K1 );
 	}
@@ -103,7 +104,7 @@ function evaluate_Z9( o ) {
 }
 
 function evaluate_Z7( o ) {
-	// TODO: rewrite
+	// TODO: rewrite and test
 	const e = error( [ error.error_in_evaluation ], [ o ] );
 
 	// get implementation
@@ -129,18 +130,24 @@ function evaluate_Z7( o ) {
 	return result;
 }
 
+function get( zid, kid, o ) {
+	// TODO: implement and test
+	return o[ zid + kid ];
+}
+
+function has( zid, kid, o ) {
+	// TODO: implement and test
+	return Object.keys( o ).includes( zid + kid );
+}
+
 function is( type, o ) {
 	if ( utils.is_string( o.Z1K1 ) ) {
 		return o.Z1K1 === type;
 	}
 	if ( is( 'Z9', o.Z1K1 ) ) {
-		return get( 'Z9', 'K1', get( 'Z1', 'K1', o ) ) === type;
+		return get( 'Z9', 'K1', o.Z1K1 ) === type;
 	}
-	return get( 'Z9', 'K1', get( 'Z4', 'K1', evaluate( get( 'Z1', 'K1', o ) ) ) ) === type;
-}
-
-function get( zid, kid, o ) {
-	return o[ zid + kid ];
+	return get( 'Z9', 'K1', get( 'Z4', 'K1', evaluate( o.Z1K1 ) ) ) === type;
 }
 
 // the input must be a valid and normal ZObject, or else undefined behaviour
@@ -164,4 +171,5 @@ function evaluate( o ) {
 
 evaluate.is = is;
 evaluate.get = get;
+evaluate.has = has;
 module.exports = evaluate;
