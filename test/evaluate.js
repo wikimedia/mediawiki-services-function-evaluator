@@ -119,3 +119,174 @@ QUnit.test( 'evaluate an error', ( assert ) => {
 		'should stay unchanged'
 	);
 } );
+
+QUnit.test( 'is a Z6', ( assert ) => {
+	assert.true(
+		evaluate.is(
+			'Z6',
+			{
+				Z1K1: 'Z6',
+				Z6K1: 'test'
+			}
+		),
+		'is a Z6'
+	);
+} );
+
+QUnit.test( 'is not a Z6', ( assert ) => {
+	assert.false(
+		evaluate.is(
+			'Z6',
+			{
+				Z1K1: 'Z9',
+				Z9K1: 'Z6'
+			}
+		),
+		'is not a Z6'
+	);
+} );
+
+QUnit.test( 'is not a Z1', ( assert ) => {
+	assert.false(
+		evaluate.is(
+			'Z1',
+			{
+				Z1K1: 'Z6',
+				Z6K1: 'test'
+			}
+		),
+		'is not a Z1'
+	);
+} );
+
+QUnit.test( 'is a Z6 as full reference', ( assert ) => {
+	assert.true(
+		evaluate.is(
+			'Z6',
+			{
+				Z1K1: {
+					Z1K1: 'Z9',
+					Z9K1: 'Z6'
+				},
+				Z6K1: 'test'
+			}
+		),
+		'is a Z6 as full reference'
+	);
+} );
+
+QUnit.test( 'is a Z6 as double nested reference', ( assert ) => {
+	assert.true(
+		evaluate.is(
+			'Z6',
+			{
+				Z1K1: {
+					Z1K1: {
+						Z1K1: 'Z9',
+						Z9K1: 'Z9'
+					},
+					Z9K1: 'Z6'
+				},
+				Z6K1: 'test'
+			}
+		),
+		'is a Z6 as double nested reference'
+	);
+} );
+
+// has a full string on z9k1
+QUnit.skip( 'is a Z6 as full reference with explicit string', ( assert ) => {
+	assert.true(
+		evaluate.is(
+			'Z6',
+			{
+				Z1K1: {
+					Z1K1: 'Z9',
+					Z9K1: {
+						Z1K1: 'Z6',
+						Z6K1: 'Z6'
+					}
+				},
+				Z6K1: 'test'
+			}
+		),
+		'is a Z6 as full reference with explicit string'
+	);
+} );
+
+// has a function as z1k1
+QUnit.skip( 'is a Z6 with function', ( assert ) => {
+	assert.true(
+		evaluate.is(
+			'Z6',
+			{
+				Z1K1: {
+					Z1K1: 'Z7',
+					Z7K1: 'Z31',
+					Z31K1: [ 'Z6' ]
+				},
+				Z6K1: 'test'
+			}
+		),
+		'is a Z6 with function'
+	);
+} );
+
+// has an explicit type, with Identity being a string
+QUnit.skip( 'is a Z6 as full type', ( assert ) => {
+	assert.true(
+		evaluate.is(
+			'Z6',
+			{
+				Z1K1: {
+					Z1K1: 'Z4',
+					Z4K1: 'Z6',
+					Z4K2: [
+						{
+							Z1K1: 'Z3',
+							Z3K1: 'Z6',
+							Z3K2: 'Z6K1',
+							Z3K3: {
+								Z1K1: 'Z12',
+								Z12K1: [ ]
+							}
+						}
+					]
+				},
+				Z6K1: 'test'
+			}
+		),
+		'is a Z6 as full type'
+	);
+} );
+
+// has an explicit type, with Identity beign a full reference
+QUnit.skip( 'is a Z6 as full type with reference', ( assert ) => {
+	assert.true(
+		evaluate.is(
+			'Z6',
+			{
+				Z1K1: {
+					Z1K1: 'Z4',
+					Z4K1: {
+						Z1K1: 'Z9',
+						Z6K1: 'Z6'
+					},
+					Z4K2: [
+						{
+							Z1K1: 'Z3',
+							Z3K1: 'Z6',
+							Z3K2: 'Z6K1',
+							Z3K3: {
+								Z1K1: 'Z12',
+								Z12K1: [ ]
+							}
+						}
+					]
+				},
+				Z6K1: 'test'
+			}
+		),
+		'is a Z6 as full type with reference'
+	);
+} );
