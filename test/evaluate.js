@@ -195,7 +195,7 @@ QUnit.test( 'is a Z6 as double nested reference', ( assert ) => {
 } );
 
 // has a full string on z9k1
-QUnit.skip( 'is a Z6 as full reference with explicit string', ( assert ) => {
+QUnit.test( 'is a Z6 as full reference with explicit string', ( assert ) => {
 	assert.true(
 		evaluate.is(
 			'Z6',
