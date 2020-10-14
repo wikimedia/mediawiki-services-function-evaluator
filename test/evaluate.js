@@ -238,7 +238,7 @@ QUnit.test( 'is a Z6 as full type', ( assert ) => {
 	);
 } );
 
-QUnit.only( 'is a Z6 as full type with reference', ( assert ) => {
+QUnit.test( 'is a Z6 as full type with reference', ( assert ) => {
 	assert.true(
 		evaluate.is(
 			'Z6',

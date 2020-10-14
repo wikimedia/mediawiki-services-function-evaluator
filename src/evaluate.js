@@ -158,12 +158,9 @@ function is( type, o ) {
 			return true;
 		}
 		if ( o.Z1K1 === 'Z7' ) {
-			return is( type, evaluate_Z7( o ) );
+			return is( type, evaluate( o ) );
 		}
 		if ( o.Z1K1 === 'Z9' ) {
-			if ( get( 'Z9', 'K1', o ) === type ) {
-				return true;
-			}
 			return is( type, evaluate_Z9( o ) );
 		}
 		return false;
@@ -172,10 +169,10 @@ function is( type, o ) {
 		return get( 'Z9', 'K1', o.Z1K1 ) === type;
 	}
 	if ( is( 'Z4', o.Z1K1 ) ) {
-		return is( type, get( 'Z4', 'K1', o.Z1K1 ) );
+		return is( type, { Z1K1: get( 'Z4', 'K1', o.Z1K1 ) } );
 	}
 	if ( is( 'Z7', o.Z1K1 ) ) {
-		return is( type, get( get( 'Z4', 'K1', evaluate_Z7( o.Z1K1 ) ) ) );
+		return is( type, { Z1K1: get( 'Z4', 'K1', evaluate( o.Z1K1 ) ) } );
 	}
 	return false;
 }
