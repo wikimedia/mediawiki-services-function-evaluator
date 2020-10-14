@@ -132,30 +132,54 @@ function evaluate_Z7( o ) {
 
 function get( zid, kid, o ) {
 	// TODO: implement and test
+	// TODO: if a Z7 or a Z9, and not asking for a Z7 or Z9,
+	// then evaluate before answering
 	return o[ zid + kid ];
 }
 
 function has( zid, kid, o ) {
 	// TODO: implement and test
-	return Object.keys( o ).includes( zid + kid );
+	// TODO: if a Z7 or a Z9, and not asking for a Z7 or Z9,
+	// then evaluate before answering
+	const keys = Object.keys( o );
+	if ( zid === undefined ) {
+		return keys.includes( kid );
+	}
+	return keys.includes( kid ) || keys.includes( zid + kid );
 }
 
 function is( type, o ) {
+	// if a Z7 or a Z9, and not asking for a Z7 or Z9,
+	// then evaluate before answering
 	if ( utils.is_string( o.Z1K1 ) ) {
-		return o.Z1K1 === type;
+		if ( o.Z1K1 === type ) {
+			return true;
+		}
+		if ( o.Z1K1 === 'Z7' ) {
+			return is( type, evaluate_Z7( o ) );
+		}
+		if ( o.Z1K1 === 'Z9' ) {
+			if ( get( 'Z9', 'K1', o ) === type ) {
+				return true;
+			}
+			return is( type, evaluate_Z9( o ) );
+		}
+		return false;
 	}
 	if ( is( 'Z9', o.Z1K1 ) ) {
 		return get( 'Z9', 'K1', o.Z1K1 ) === type;
 	}
-	return get( 'Z9', 'K1', get( 'Z4', 'K1', evaluate( o.Z1K1 ) ) ) === type;
+	if ( is( 'Z4', o.Z1K1 ) ) {
+		return is( type, get( 'Z4', 'K1', o.Z1K1 ) );
+	}
+	if ( is( 'Z7', o.Z1K1 ) ) {
+		return is( type, get( get( 'Z4', 'K1', evaluate_Z7( o.Z1K1 ) ) ) );
+	}
+	return false;
 }
 
 // the input must be a valid and normal ZObject, or else undefined behaviour
 function evaluate( o ) {
-	if ( is( 'Z5', o ) ) {
-		return o;
-	}
-
 	let result = utils.deep_copy( o );
 	if ( is( 'Z7', o ) ) {
 		result = evaluate_Z7( o );

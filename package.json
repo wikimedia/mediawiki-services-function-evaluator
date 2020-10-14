@@ -14,6 +14,6 @@
   "devDependencies": {
     "eslint": "7.10.0",
     "eslint-config-wikimedia": "0.17.0",
-    "qunit": "2.11.3"
+    "qunit": "^2.11.3"
   }
 }

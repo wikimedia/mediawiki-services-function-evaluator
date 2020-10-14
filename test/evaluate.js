@@ -240,7 +240,7 @@ QUnit.test( 'is a Z6 as full type', ( assert ) => {
 } );
 
 // has an explicit type, with Identity beign a full reference
-QUnit.test( 'is a Z6 as full type with reference', ( assert ) => {
+QUnit.only( 'is a Z6 as full type with reference', ( assert ) => {
 	assert.true(
 		evaluate.is(
 			'Z6',
