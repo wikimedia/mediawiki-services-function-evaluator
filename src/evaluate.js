@@ -87,21 +87,14 @@ function call_native( impl, call ) {
 	// TODO: implement and test
 	return error( [ error.not_implemented_yet ], [ 'evaluate.call_native' ] );
 }
+/* eslint-enable no-unused-vars */
 
+/* eslint-disable no-unused-vars */
 function call_composition( impl, call ) {
 	// TODO: implement and test
 	return error( [ error.not_implemented_yet ], [ 'evaluate.call_composition' ] );
 }
 /* eslint-enable no-unused-vars */
-
-function evaluate_Z9( o ) {
-	// TODO: rewrite. Assume Z9 is correct. by_key(Z9 K1) and then get that
-	// check resolve.js. tests?
-	if ( Object.keys( o ).includes( 'Z9K1' ) && utils.is_string( o.Z9K1 ) ) {
-		return resolve( o.Z9K1 );
-	}
-	return error( [ 'Z412' ], [ 'Error in evaluation of Z9', o ] );
-}
 
 function evaluate_Z7( o ) {
 	// TODO: rewrite and test
@@ -128,6 +121,15 @@ function evaluate_Z7( o ) {
 		return e;
 	}
 	return result;
+}
+
+function evaluate_Z9( o ) {
+	// TODO: rewrite. Assume Z9 is correct. by_key(Z9 K1) and then get that
+	// check resolve.js. tests?
+	if ( Object.keys( o ).includes( 'Z9K1' ) && utils.is_string( o.Z9K1 ) ) {
+		return resolve( o.Z9K1 );
+	}
+	return error( [ 'Z412' ], [ 'Error in evaluation of Z9', o ] );
 }
 
 function get( zid, kid, o ) {

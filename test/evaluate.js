@@ -211,7 +211,6 @@ QUnit.test( 'is a Z6 with function', ( assert ) => {
 	);
 } );
 
-// has an explicit type, with Identity being a string
 QUnit.test( 'is a Z6 as full type', ( assert ) => {
 	assert.true(
 		evaluate.is(
@@ -239,7 +238,6 @@ QUnit.test( 'is a Z6 as full type', ( assert ) => {
 	);
 } );
 
-// has an explicit type, with Identity beign a full reference
 QUnit.only( 'is a Z6 as full type with reference', ( assert ) => {
 	assert.true(
 		evaluate.is(
