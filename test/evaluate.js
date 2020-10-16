@@ -267,3 +267,130 @@ QUnit.test( 'is a Z6 as full type with reference', ( assert ) => {
 		'is a Z6 as full type with reference'
 	);
 } );
+
+QUnit.test( 'has Z60K1', ( assert ) => {
+	assert.true(
+		evaluate.has(
+			'Z60', 'K1',
+			normalize( {
+				Z1K1: 'Z60',
+				Z60K1: 'test'
+			} )
+		),
+		'has Z60K1'
+	);
+} );
+
+QUnit.test( 'has not Z60K2', ( assert ) => {
+	assert.false(
+		evaluate.has(
+			'Z60', 'K2',
+			normalize( {
+				Z1K1: 'Z60',
+				Z60K1: 'test'
+			} )
+		),
+		'has noy Z60K2'
+	);
+} );
+
+QUnit.test( 'has Z60K2, skipped K1', ( assert ) => {
+	assert.true(
+		evaluate.has(
+			'Z60', 'K2',
+			normalize( {
+				Z1K1: 'Z60',
+				Z60K2: 'test'
+			} )
+		),
+		'has Z60K2'
+	);
+} );
+
+QUnit.test( 'has K1', ( assert ) => {
+	assert.true(
+		evaluate.has(
+			'Z60', 'K1',
+			normalize( {
+				Z1K1: 'Z60',
+				K1: 'test'
+			} )
+		),
+		'has K1'
+	);
+} );
+
+QUnit.test( 'has not K2', ( assert ) => {
+	assert.false(
+		evaluate.has(
+			'Z60', 'K2',
+			normalize( {
+				Z1K1: 'Z60',
+				K1: 'test'
+			} )
+		),
+		'has not K2'
+	);
+} );
+
+QUnit.test( 'mixed global and local, has K2', ( assert ) => {
+	assert.true(
+		evaluate.has(
+			'Z60', 'K2',
+			normalize( {
+				Z1K1: 'Z60',
+				Z60K1: 'test',
+				K2: 'test'
+			} )
+		),
+		'mixed global and local, has K2'
+	);
+} );
+
+QUnit.test( 'mixed global and local, has not K3', ( assert ) => {
+	assert.false(
+		evaluate.has(
+			'Z60', 'K3',
+			normalize( {
+				Z1K1: 'Z60',
+				Z60K1: 'test',
+				K2: 'test'
+			} )
+		),
+		'mixed global and local, has not K3'
+	);
+} );
+
+QUnit.skip( 'reference has Z4K1', ( assert ) => {
+	assert.true(
+		evaluate.has(
+			'Z4', 'K1',
+			normalize( 'Z4' )
+		),
+		'reference has Z4K1'
+	);
+} );
+
+QUnit.test( 'reference has not Z4K8', ( assert ) => {
+	assert.false(
+		evaluate.has(
+			'Z4', 'K8',
+			normalize( 'Z4' )
+		),
+		'reference has not Z4K1'
+	);
+} );
+
+QUnit.skip( 'function call has Z4K1', ( assert ) => {
+	assert.true(
+		evaluate.has(
+			'Z4', 'K1',
+			normalize( {
+				Z1K1: 'Z7',
+				Z7K1: 'Z31',
+				Z31K1: [ 'Z4', 'Z6' ]
+			} )
+		),
+		'function call has Z4K1'
+	);
+} );
