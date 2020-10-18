@@ -290,7 +290,7 @@ QUnit.test( 'has not Z60K2', ( assert ) => {
 				Z60K1: 'test'
 			} )
 		),
-		'has noy Z60K2'
+		'has not Z60K2'
 	);
 } );
 
@@ -392,5 +392,142 @@ QUnit.test( 'function call has Z4K1', ( assert ) => {
 			} )
 		),
 		'function call has Z4K1'
+	);
+} );
+
+QUnit.test( 'get Z60K1', ( assert ) => {
+	assert.deepEqual(
+		evaluate.get(
+			'Z60', 'K1',
+			normalize( {
+				Z1K1: 'Z60',
+				Z60K1: 'test'
+			} )
+		),
+		normalize( 'test' ),
+		'get Z60K1'
+	);
+} );
+
+QUnit.test( 'get Z60K2', ( assert ) => {
+	assert.equal(
+		evaluate.get(
+			'Z60', 'K2',
+			normalize( {
+				Z1K1: 'Z60',
+				Z60K1: 'test'
+			} )
+		).Z1K1,
+		'Z5',
+		'get Z60K2'
+	);
+} );
+
+QUnit.test( 'get Z60K2, skipped K1', ( assert ) => {
+	assert.deepEqual(
+		evaluate.get(
+			'Z60', 'K2',
+			normalize( {
+				Z1K1: 'Z60',
+				Z60K2: 'test'
+			} )
+		),
+		normalize( 'test' ),
+		'get Z60K2, skipped K1'
+	);
+} );
+
+QUnit.test( 'get K1', ( assert ) => {
+	assert.deepEqual(
+		evaluate.get(
+			'Z60', 'K1',
+			normalize( {
+				Z1K1: 'Z60',
+				K1: 'test'
+			} )
+		),
+		normalize( 'test' ),
+		'get K1'
+	);
+} );
+
+QUnit.test( 'get not K2', ( assert ) => {
+	assert.equal(
+		evaluate.get(
+			'Z60', 'K2',
+			normalize( {
+				Z1K1: 'Z60',
+				K1: 'test'
+			} )
+		).Z1K1,
+		'Z5',
+		'get not K2'
+	);
+} );
+
+QUnit.test( 'mixed global and local, get K2', ( assert ) => {
+	assert.deepEqual(
+		evaluate.get(
+			'Z60', 'K2',
+			normalize( {
+				Z1K1: 'Z60',
+				Z60K1: 'test',
+				K2: 'test'
+			} )
+		),
+		normalize( 'test' ),
+		'mixed global and local, get K2'
+	);
+} );
+
+QUnit.test( 'mixed global and local, get not K3', ( assert ) => {
+	assert.equal(
+		evaluate.get(
+			'Z60', 'K3',
+			normalize( {
+				Z1K1: 'Z60',
+				Z60K1: 'test',
+				K2: 'test'
+			} )
+		).Z1K1,
+		'Z5',
+		'mixed global and local, get not K3'
+	);
+} );
+
+QUnit.test( 'reference get Z4K1', ( assert ) => {
+	assert.deepEqual(
+		evaluate.get(
+			'Z4', 'K1',
+			normalize( 'Z4' )
+		),
+		normalize( 'Z4' ),
+		'reference get Z4K1'
+	);
+} );
+
+QUnit.test( 'reference get not Z4K8', ( assert ) => {
+	assert.equal(
+		evaluate.get(
+			'Z4', 'K8',
+			normalize( 'Z4' )
+		).Z1K1,
+		'Z5',
+		'reference get not Z4K1'
+	);
+} );
+
+QUnit.test( 'function call get Z4K1', ( assert ) => {
+	assert.deepEqual(
+		evaluate.get(
+			'Z4', 'K1',
+			normalize( {
+				Z1K1: 'Z7',
+				Z7K1: 'Z31',
+				Z31K1: [ 'Z4', 'Z6' ]
+			} )
+		),
+		normalize( 'Z4' ),
+		'function call get Z4K1'
 	);
 } );

@@ -133,15 +133,36 @@ function evaluate_Z9( o ) {
 }
 
 function get( zid, kid, o ) {
-	// TODO: implement and test
-	// TODO: if a Z7 or a Z9, and not asking for a Z7 or Z9,
+	// if a Z7 or a Z9, and not asking for a Z7 or Z9,
 	// then evaluate before answering
-	return o[ zid + kid ];
+	const keys = Object.keys( o );
+	if ( zid === undefined ) {
+		if ( keys.includes( kid ) ) {
+			return o[ kid ];
+		} else {
+			return error( [ error.key_not_fund ], [ kid, o ] );
+		}
+	}
+	if ( keys.includes( kid ) ) {
+		return o[ kid ];
+	}
+	if ( keys.includes( zid + kid ) ) {
+		return o[ zid + kid ];
+	}
+	if ( zid === 'Z7' || zid === 'Z9' ) {
+		return error( [ error.key_not_fund ], [ kid, o ] );
+	}
+	if ( is( 'Z9', o ) ) {
+		return get( zid, kid, evaluate_Z9( o ) );
+	}
+	if ( is( 'Z7', o ) ) {
+		return get( zid, kid, evaluate( o ) );
+	}
+	return error( [ error.key_not_fund ], [ kid, o ] );
 }
 
 function has( zid, kid, o ) {
-	// TODO: implement and test
-	// TODO: if a Z7 or a Z9, and not asking for a Z7 or Z9,
+	// if a Z7 or a Z9, and not asking for a Z7 or Z9,
 	// then evaluate before answering
 	const keys = Object.keys( o );
 	if ( zid === undefined ) {
