@@ -361,7 +361,7 @@ QUnit.test( 'mixed global and local, has not K3', ( assert ) => {
 	);
 } );
 
-QUnit.skip( 'reference has Z4K1', ( assert ) => {
+QUnit.test( 'reference has Z4K1', ( assert ) => {
 	assert.true(
 		evaluate.has(
 			'Z4', 'K1',
@@ -381,7 +381,7 @@ QUnit.test( 'reference has not Z4K8', ( assert ) => {
 	);
 } );
 
-QUnit.skip( 'function call has Z4K1', ( assert ) => {
+QUnit.test( 'function call has Z4K1', ( assert ) => {
 	assert.true(
 		evaluate.has(
 			'Z4', 'K1',

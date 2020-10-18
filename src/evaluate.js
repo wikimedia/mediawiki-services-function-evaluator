@@ -147,7 +147,20 @@ function has( zid, kid, o ) {
 	if ( zid === undefined ) {
 		return keys.includes( kid );
 	}
-	return keys.includes( kid ) || keys.includes( zid + kid );
+	const result = keys.includes( kid ) || keys.includes( zid + kid );
+	if ( result ) {
+		return true;
+	}
+	if ( zid === 'Z7' || zid === 'Z9' ) {
+		return false;
+	}
+	if ( is( 'Z9', o ) ) {
+		return has( zid, kid, evaluate_Z9( o ) );
+	}
+	if ( is( 'Z7', o ) ) {
+		return has( zid, kid, evaluate( o ) );
+	}
+	return false;
 }
 
 function is( type, o ) {
