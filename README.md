@@ -32,7 +32,8 @@ src/error.js contains a list of the current errors, needs to be turned into ZObj
 ### Further todos
 - [x] do the tests look right?
 - [x] what should be the config for the linter?
-- [ ] fix representation and ZIDs of errors
+- [ ] fix representation and ZIDs of errors, update spec
+- [ ] update representation of Z7
 - [x] read arguments
 - [ ] tests for utils
 - [ ] settings

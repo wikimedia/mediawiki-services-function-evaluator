@@ -5,7 +5,6 @@ const error = require( './error.js' );
 const resolve = require( './resolve.js' );
 
 // TODO: check B1
-// TODO: check resolve
 
 function get_implementation( call ) {
 	// TODO: rewrite and test
@@ -124,7 +123,6 @@ function evaluate_Z7( o ) {
 }
 
 function evaluate_Z9( o ) {
-	// TODO: check resolve.js. tests?
 	const zid = get( 'Z9', 'K1', o );
 	if ( utils.is_string( zid ) ) {
 		return resolve( zid );
