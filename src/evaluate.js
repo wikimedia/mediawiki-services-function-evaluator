@@ -124,12 +124,13 @@ function evaluate_Z7( o ) {
 }
 
 function evaluate_Z9( o ) {
-	// TODO: rewrite. Assume Z9 is correct. by_key(Z9 K1) and then get that
-	// check resolve.js. tests?
-	if ( Object.keys( o ).includes( 'Z9K1' ) && utils.is_string( o.Z9K1 ) ) {
-		return resolve( o.Z9K1 );
+	// TODO: check resolve.js. tests?
+	const zid = get( 'Z9', 'K1', o );
+	if ( utils.is_string( zid ) ) {
+		return resolve( zid );
+	} else {
+		return error( [ error.z9_error ], [ o ] );
 	}
-	return error( [ 'Z412' ], [ 'Error in evaluation of Z9', o ] );
 }
 
 function get( zid, kid, o ) {
@@ -150,7 +151,7 @@ function get( zid, kid, o ) {
 		return o[ zid + kid ];
 	}
 	if ( zid === 'Z7' || zid === 'Z9' ) {
-		return error( [ error.key_not_fund ], [ kid, o ] );
+		return error( [ error.key_not_fund ], [ zid + kid, o ] );
 	}
 	if ( is( 'Z9', o ) ) {
 		return get( zid, kid, evaluate_Z9( o ) );
@@ -158,7 +159,7 @@ function get( zid, kid, o ) {
 	if ( is( 'Z7', o ) ) {
 		return get( zid, kid, evaluate( o ) );
 	}
-	return error( [ error.key_not_fund ], [ kid, o ] );
+	return error( [ error.key_not_fund ], [ zid + kid, o ] );
 }
 
 function has( zid, kid, o ) {

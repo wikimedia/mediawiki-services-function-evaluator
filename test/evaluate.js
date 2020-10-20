@@ -531,3 +531,19 @@ QUnit.test( 'function call get Z4K1', ( assert ) => {
 		'function call get Z4K1'
 	);
 } );
+
+QUnit.test( 'resolve Z101', ( assert ) => {
+	assert.deepEqual(
+		rep( 'Z101' ),
+		'test',
+		'resolve Z101'
+	);
+} );
+
+QUnit.test( 'resolve Z1234434', ( assert ) => {
+	assert.deepEqual(
+		rep( 'Z1234434' ).Z1K1,
+		'Z5',
+		'resolve Z1234434'
+	);
+} );

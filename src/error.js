@@ -33,6 +33,9 @@ error.argument_type_error = 'Z406'; // expected type, actual type, arg
 error.error_in_evaluation = 'Z407'; // function call
 error.competing_keys = 'Z408'; // object
 error.nil = 'Z410'; // -
+error.key_not_found = 'Z411'; // key reference, object
+error.z9_error = 'Z412'; // object
+error.resolved_object_without_z2k2 = 'Z413'; // resolved object
 
 error.zobject_must_not_be_number_or_boolean_or_null = 'Z421'; // offending text (sub of Z402)
 error.array_element_not_well_formed = 'Z422'; // offending index in array, propagated error (sub of Z402)
