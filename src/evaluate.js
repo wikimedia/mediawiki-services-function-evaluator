@@ -7,8 +7,10 @@ const resolve = require( './resolve.js' );
 // TODO: check B1
 
 function get_implementation( call ) {
-	// TODO: rewrite and test
-	const func = evaluate( call.Z7K1 );
+	// TODO: this really should be 'K1' on the second argument, not 'Z7K1'.
+	// But this can only be changed after we have the fuller function model
+	// implemented, as until then we have to treat Z7K1 special. Sigh.
+	const func = evaluate( get( 'Z7', 'Z7K1', call ) );
 	return evaluate( func.Z8K4.Z10K1 );
 }
 
