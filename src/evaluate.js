@@ -15,18 +15,15 @@ function get_implementation( call ) {
 }
 
 function is_builtin( impl ) {
-	// TODO: replace with has
-	return Object.keys( impl ).includes( 'Z14K4' );
+	return has( 'Z14', 'K4', impl );
 }
 
 function is_native( impl ) {
-	// TODO: replace with has
-	return Object.keys( impl ).includes( 'Z14K3' );
+	return has( 'Z14', 'K3', impl );
 }
 
 function is_composition( impl ) {
-	// TODO: replace with has
-	return Object.keys( impl ).includes( 'Z14K2' );
+	return has( 'Z14', 'K2', impl );
 }
 
 function get_argument_list( func ) {
