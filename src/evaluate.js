@@ -11,6 +11,9 @@ function get_implementation( call ) {
 	// But this can only be changed after we have the fuller function model
 	// implemented, as until then we have to treat Z7K1 special. Sigh.
 	const func = evaluate( get( 'Z7', 'Z7K1', call ) );
+	// TODO: this simply takes the first implementation. Good enough for
+	// now, in the sense that it is better than nothing, but this really
+	// should be considerably improved.
 	return evaluate( func.Z8K4.Z10K1 );
 }
 
@@ -95,7 +98,6 @@ function call_composition( impl, call ) {
 /* eslint-enable no-unused-vars */
 
 function evaluate_Z7( o ) {
-	// TODO: rewrite and test
 	const e = error( [ error.error_in_evaluation ], [ o ] );
 
 	// get implementation
