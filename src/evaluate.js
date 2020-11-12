@@ -3,8 +3,8 @@
 const utils = require( './utils.js' );
 const error = require( './error.js' );
 const resolve = require( './resolve.js' );
-
-// TODO: check B1
+const fs = require( 'fs' );
+const path = require( 'path' );
 
 function get_implementation( call ) {
 	// TODO: this really should be 'K1' on the second argument, not 'Z7K1'.
@@ -67,16 +67,37 @@ function get_argument_values( argument_list, call ) {
 	return argument_values;
 }
 
+function good_bid( bid ) {
+	return /^B[1-9][0-9]*$/.test( bid );
+}
+
 function load_builtin( impl ) {
-	// TODO: rewrite and test
-	// TODO: check impl.Z14K4.Z9K1
-	// TODO: check if file exists
-	return require( './builtin/' + impl.Z14K4.Z9K1 + '.js' );
+	const z14k4 = get( 'Z14', 'K4', impl );
+	if ( !has( 'Z9', 'K1', z14k4 ) ) {
+		return () => {
+			return error( [ error.builtin_id_error ], [ impl ] );
+		};
+	}
+	const bid = get( 'Z9', 'K1', z14k4 );
+	if ( !good_bid( bid ) ) {
+		return () => {
+			return error( [ error.builtin_id_error ], [ impl ] );
+		};
+	}
+	const builtin_path = path.resolve( __dirname, './builtin/' + bid + '.js' );
+	if ( !fs.existsSync( builtin_path ) ) {
+		return () => {
+			return error( [ error.builtin_does_not_exist ], [ impl ] );
+		};
+	}
+	return require( builtin_path );
 }
 
 function call_builtin( impl, call ) {
-	// TODO: rewrite and test
 	const builtin = load_builtin( impl );
+	// TODO: rewrite and test
+	// console.log( impl );
+	// console.log( call );
 	const argument_list = get_argument_list( impl.Z14K1 );
 	const argument_values = get_argument_values( argument_list, call );
 

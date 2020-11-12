@@ -547,3 +547,225 @@ QUnit.test( 'resolve Z1234434', ( assert ) => {
 		'resolve Z1234434'
 	);
 } );
+
+QUnit.test( 'global arguments in lambda function', ( assert ) => {
+	assert.deepEqual(
+		rep(
+			{
+				Z1K1: 'Z7',
+				Z7K1: {
+					Z1K1: 'Z8',
+					Z8K1: [ {
+						Z1K1: 'Z17',
+						Z17K1: 'Z10',
+						Z17K2: 'Z31K1'
+					} ],
+					Z8K2: 'Z1',
+					Z8K3: [],
+					Z8K4: [ {
+						Z1K1: 'Z14',
+						Z14K1: {
+							Z1K1: 'Z8',
+							Z8K1: [ {
+								Z1K1: 'Z17',
+								Z17K1: 'Z10',
+								Z17K2: 'Z31K1'
+							} ],
+							Z8K2: 'Z1',
+							Z8K3: []
+						},
+						Z14K4: 'B1'
+					} ]
+				},
+				K1: [ 'a' ]
+			}
+		),
+		'a',
+		'global arguments in lambda function'
+	);
+} );
+
+QUnit.test( 'local arguments in lambda function', ( assert ) => {
+	assert.deepEqual(
+		rep(
+			{
+				Z1K1: 'Z7',
+				Z7K1: {
+					Z1K1: 'Z8',
+					Z8K1: [ {
+						Z1K1: 'Z17',
+						Z17K1: 'Z10',
+						Z17K2: 'K1'
+					} ],
+					Z8K2: 'Z1',
+					Z8K3: [],
+					Z8K4: [ {
+						Z1K1: 'Z14',
+						Z14K1: {
+							Z1K1: 'Z8',
+							Z8K1: [ {
+								Z1K1: 'Z17',
+								Z17K1: 'Z10',
+								Z17K2: 'Z31K1'
+							} ],
+							Z8K2: 'Z1',
+							Z8K3: []
+						},
+						Z14K4: 'B1'
+					} ]
+				},
+				K1: [ 'a' ]
+			}
+		),
+		'a',
+		'local arguments in lambda function'
+	);
+} );
+
+QUnit.test( 'global arguments in lambda function, global in call', ( assert ) => {
+	assert.deepEqual(
+		rep(
+			{
+				Z1K1: 'Z7',
+				Z7K1: {
+					Z1K1: 'Z8',
+					Z8K1: [ {
+						Z1K1: 'Z17',
+						Z17K1: 'Z10',
+						Z17K2: 'Z31K1'
+					} ],
+					Z8K2: 'Z1',
+					Z8K3: [],
+					Z8K4: [ {
+						Z1K1: 'Z14',
+						Z14K1: {
+							Z1K1: 'Z8',
+							Z8K1: [ {
+								Z1K1: 'Z17',
+								Z17K1: 'Z10',
+								Z17K2: 'Z31K1'
+							} ],
+							Z8K2: 'Z1',
+							Z8K3: []
+						},
+						Z14K4: 'B1'
+					} ]
+				},
+				Z31K1: [ 'a' ]
+			}
+		),
+		'a',
+		'global arguments in lambda function, global in call'
+	);
+} );
+
+QUnit.test( 'bad builtin X1', ( assert ) => {
+	assert.deepEqual(
+		rep(
+			{
+				Z1K1: 'Z7',
+				Z7K1: {
+					Z1K1: 'Z8',
+					Z8K1: [ {
+						Z1K1: 'Z17',
+						Z17K1: 'Z10',
+						Z17K2: 'K1'
+					} ],
+					Z8K2: 'Z1',
+					Z8K3: [],
+					Z8K4: [ {
+						Z1K1: 'Z14',
+						Z14K1: {
+							Z1K1: 'Z8',
+							Z8K1: [ {
+								Z1K1: 'Z17',
+								Z17K1: 'Z10',
+								Z17K2: 'Z31K1'
+							} ],
+							Z8K2: 'Z1',
+							Z8K3: []
+						},
+						Z14K4: 'X1'
+					} ]
+				},
+				K1: [ 'a' ]
+			}
+		).Z5K1.Z1K1,
+		error.builtin_id_error,
+		'bad builtin X1'
+	);
+} );
+
+QUnit.test( 'bad builtin head', ( assert ) => {
+	assert.equal(
+		rep(
+			{
+				Z1K1: 'Z7',
+				Z7K1: {
+					Z1K1: 'Z8',
+					Z8K1: [ {
+						Z1K1: 'Z17',
+						Z17K1: 'Z10',
+						Z17K2: 'K1'
+					} ],
+					Z8K2: 'Z1',
+					Z8K3: [],
+					Z8K4: [ {
+						Z1K1: 'Z14',
+						Z14K1: {
+							Z1K1: 'Z8',
+							Z8K1: [ {
+								Z1K1: 'Z17',
+								Z17K1: 'Z10',
+								Z17K2: 'Z31K1'
+							} ],
+							Z8K2: 'Z1',
+							Z8K3: []
+						},
+						Z14K4: 'head'
+					} ]
+				},
+				K1: [ 'a' ]
+			}
+		).Z5K1.Z1K1,
+		error.builtin_id_error,
+		'bad builtin head'
+	);
+} );
+
+QUnit.test( 'builtin does not exist', ( assert ) => {
+	assert.equal(
+		rep(
+			{
+				Z1K1: 'Z7',
+				Z7K1: {
+					Z1K1: 'Z8',
+					Z8K1: [ {
+						Z1K1: 'Z17',
+						Z17K1: 'Z10',
+						Z17K2: 'K1'
+					} ],
+					Z8K2: 'Z1',
+					Z8K3: [],
+					Z8K4: [ {
+						Z1K1: 'Z14',
+						Z14K1: {
+							Z1K1: 'Z8',
+							Z8K1: [ {
+								Z1K1: 'Z17',
+								Z17K1: 'Z10',
+								Z17K2: 'Z31K1'
+							} ],
+							Z8K2: 'Z1',
+							Z8K3: []
+						},
+						Z14K4: 'B12345'
+					} ]
+				},
+				K1: [ 'a' ]
+			}
+		).Z5K1.Z1K1,
+		error.builtin_does_not_exist,
+		'builtin does not exist'
+	);
+} );

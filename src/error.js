@@ -36,6 +36,8 @@ error.nil = 'Z410'; // -
 error.key_not_found = 'Z411'; // key reference, object
 error.z9_error = 'Z412'; // object
 error.resolved_object_without_z2k2 = 'Z413'; // resolved object
+error.builtin_does_not_exist = 'Z414'; // implementation
+error.builtin_id_error = 'Z415'; // implementation
 
 error.zobject_must_not_be_number_or_boolean_or_null = 'Z421'; // offending text (sub of Z402)
 error.array_element_not_well_formed = 'Z422'; // offending index in array, propagated error (sub of Z402)
