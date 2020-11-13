@@ -30,13 +30,12 @@ function is_composition( impl ) {
 }
 
 function get_argument_list( func ) {
-	// TODO: rewrite and test
 	const f = evaluate( func );
-	let argument_list = f.Z8K1;
+	let argument_list = get( 'Z8', 'K1', f );
 	const list = [ ];
-	while ( Object.keys( argument_list ).includes( 'Z10K2' ) ) {
-		list.push( argument_list.Z10K1.Z17K2.Z6K1 );
-		argument_list = argument_list.Z10K2;
+	while ( has( 'Z10', 'K2', argument_list ) ) {
+		list.push( get( 'Z6', 'K1', get( 'Z17', 'K2', get( 'Z10', 'K1', argument_list ) ) ) );
+		argument_list = get( 'Z10', 'K2', argument_list );
 	}
 	return list;
 }
