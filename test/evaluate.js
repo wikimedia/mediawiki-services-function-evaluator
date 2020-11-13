@@ -784,3 +784,23 @@ QUnit.test( 'competing keys', ( assert ) => {
 		'competing keys'
 	);
 } );
+
+QUnit.test( 'head(tail(["a", "b"]))', ( assert ) => {
+	assert.equal(
+		rep(
+			{
+				Z1K1: 'Z7',
+				Z7K1: 'Z31',
+				K1: [
+					{
+						Z1K1: 'Z7',
+						Z7K1: 'Z32',
+						K1: [ 'a', 'b' ]
+					}
+				]
+			}
+		),
+		'b',
+		'head(tail(["a", "b"]))'
+	);
+} );

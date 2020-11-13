@@ -3,6 +3,7 @@
 const error = require( './error.js' );
 const normalize = require( './normalize.js' );
 const fs = require( 'fs' );
+const path = require( 'path' );
 
 // given a zid, returns the object
 // TODO: cache!!!
@@ -11,7 +12,7 @@ function resolve( zid, meta = false ) {
 	// and possible other sources
 	// for now, it looks in the data directory of this
 
-	const filename = __dirname + '/../data/' + zid + '.json';
+	const filename = path.resolve( __dirname, '../data/' + zid + '.json' );
 	if ( !fs.existsSync( filename ) ) {
 		return error( [ error.zid_not_found ], [ zid ] );
 	}

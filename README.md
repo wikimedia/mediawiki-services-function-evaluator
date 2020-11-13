@@ -43,3 +43,21 @@ src/error.js contains a list of the current errors, needs to be turned into ZObj
 - [ ] caching
 - [ ] use a caching service
 - [ ] make it runnable as a CLI
+
+### Built-ins
+- [x] head
+- [x] tail
+- [ ] if
+- [ ] value by key
+- [ ] reify
+- [ ] abstract
+- [ ] is empty
+- [ ] cons
+- [ ] first
+- [ ] second
+- [ ] convert string to list
+- [ ] convert list to string
+- [ ] same byte
+- [ ] unquote
+- [ ] validators for all initial types
+- [ ] parse
