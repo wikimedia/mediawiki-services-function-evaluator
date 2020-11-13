@@ -8,7 +8,7 @@ const path = require( 'path' );
 
 function get_implementation( call ) {
 	// TODO: this really should be 'K1' on the second argument, not 'Z7K1'.
-	// But this can only be changed after we have the fuller function model
+	// But this can only be changed after we have the generic function model
 	// implemented, as until then we have to treat Z7K1 special. Sigh.
 	const func = evaluate( get( 'Z7', 'Z7K1', call ) );
 	// TODO: this simply takes the first implementation. Good enough for
@@ -41,7 +41,6 @@ function get_argument_list( func ) {
 }
 
 function get_argument_values( argument_list, call ) {
-	// TODO: rewrite and test
 	const keys = Object.keys( call );
 	const argument_values = [ ];
 	for ( let i = 0; i < argument_list.length; i++ ) {
@@ -94,11 +93,11 @@ function load_builtin( impl ) {
 
 function call_builtin( impl, call ) {
 	const builtin = load_builtin( impl );
-	// TODO: rewrite and test
-	// console.log( impl );
-	// console.log( call );
 	const argument_list = get_argument_list( impl.Z14K1 );
 	const argument_values = get_argument_values( argument_list, call );
+	if ( argument_values.Z1K1 === 'Z5' ) {
+		return argument_values;
+	}
 
 	return builtin( argument_values );
 }

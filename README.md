@@ -24,10 +24,11 @@ src/error.js contains a list of the current errors, needs to be turned into ZObj
 - [x] wellformedness
 - [x] normalize
 - [x] canonicalize
-- [ ] evaluate
-- [ ] built-ins
+- [x] evaluate
+- [x] built-ins
 - [ ] labelize
 - [ ] validate
+- [ ] composition
 
 ### Further todos
 - [x] do the tests look right?

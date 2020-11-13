@@ -769,3 +769,18 @@ QUnit.test( 'builtin does not exist', ( assert ) => {
 		'builtin does not exist'
 	);
 } );
+
+QUnit.test( 'competing keys', ( assert ) => {
+	assert.deepEqual(
+		rep(
+			{
+				Z1K1: 'Z7',
+				Z7K1: 'Z31',
+				Z31K1: [ 'a' ],
+				K1: [ 'a' ]
+			}
+		).Z5K1.Z1K1,
+		error.competing_keys,
+		'competing keys'
+	);
+} );
