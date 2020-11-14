@@ -11,7 +11,7 @@ function load( zid ) {
 		const url = config.repository + zid;
 		// TODO: turn this to async
 		const request = require( 'sync-request' );
-		// TODO: set a better user agent
+		// TODO: get user agent from configuration
 		const res = request( 'GET', url, {
 			qs: {
 				action: 'raw'
