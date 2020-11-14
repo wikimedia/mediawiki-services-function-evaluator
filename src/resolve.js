@@ -14,7 +14,7 @@ function load( zid ) {
 		// TODO: set a better user agent
 		const res = request( 'GET', url, {
 			qs: {
-				'action': 'raw'
+				action: 'raw'
 			},
 			headers: {
 				'user-agent': 'function-evaluator'
