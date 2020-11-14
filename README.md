@@ -38,7 +38,8 @@ src/error.js contains a list of the current errors, needs to be turned into ZObj
 - [x] read arguments
 - [ ] tests for utils
 - [ ] settings
-- [ ] hook it up to the wiki
+- [x] hook it up to the wiki
+- [ ] make resolving async
 - [ ] make it runnable as a service
 - [ ] caching
 - [ ] use a caching service

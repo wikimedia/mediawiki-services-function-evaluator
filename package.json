@@ -11,6 +11,9 @@
   "author": "WikiLambda team",
   "repository": "https://github.com/vrandezo/function-evaluator",
   "license": "MIT",
+  "dependencies": {
+    "sync-request": "^6.1.0"
+  },
   "devDependencies": {
     "eslint": "7.10.0",
     "eslint-config-wikimedia": "0.17.0",
