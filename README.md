@@ -1,64 +1,83 @@
-This is a simple evaluation engine for ZObjects.
+# service-template-node [![Build Status](https://travis-ci.org/wikimedia/service-template-node.svg?branch=master)](https://travis-ci.org/wikimedia/service-template-node)
 
-For parameters, run 
+Template for creating MediaWiki Services in Node.js
+
+## Getting Started
+
+### Installation
+
+First, clone the repository
+
 ```
-node src/function-evaluator.js --help
+git clone https://github.com/wikimedia/service-template-node.git
 ```
 
-Run as:
+Install the dependencies
+
 ```
-node src/function-evaluator.js '"Test"'
-
-node src/function-evaluator.js '{ "Z1K1": "Z7", "Z7K1": "Z31", "K1": ["a"] }'
+cd service-template-node
+npm install
 ```
 
-## Todos
-Evaluation is currently a big mess and needs to be fixed up entirely.
-Importantly, assume that everything has been validated before given to evaluation.
-That should simplify evaluation considerably.
+You are now ready to get to work!
 
-src/error.js contains a list of the current errors, needs to be turned into ZObjects.
+* Inspect/modify/configure `app.js`
+* Add routes by placing files in `routes/` (look at the files there for examples)
 
-### Write
-- [x] parse
-- [x] wellformedness
-- [x] normalize
-- [x] canonicalize
-- [x] evaluate
-- [x] built-ins
-- [ ] labelize
-- [ ] validate
-- [ ] composition
+You can also read [the documentation](https://www.mediawiki.org/wiki/ServiceTemplateNode).
 
-### Further todos
-- [x] do the tests look right?
-- [x] what should be the config for the linter?
-- [ ] fix representation and ZIDs of errors, update spec
-- [ ] update representation of Z7
-- [x] read arguments
-- [ ] tests for utils
-- [ ] settings
-- [x] hook it up to the wiki
-- [ ] make resolving async
-- [ ] make it runnable as a service
-- [ ] caching
-- [ ] use a caching service
-- [ ] make it runnable as a CLI
+### Running the examples
 
-### Built-ins
-- [x] head
-- [x] tail
-- [ ] if
-- [ ] value by key
-- [ ] reify
-- [ ] abstract
-- [ ] is empty
-- [ ] cons
-- [ ] first
-- [ ] second
-- [ ] convert string to list
-- [ ] convert list to string
-- [ ] same byte
-- [ ] unquote
-- [ ] validators for all initial types
-- [ ] parse
+The template is a fully-working example, so you may try it right away. To
+start the server hosting the REST API, simply run (inside the repo's directory)
+
+```
+npm start
+```
+
+This starts an HTTP server listening on `localhost:6927`. There are several
+routes you may query (with a browser, or `curl` and friends):
+
+* `http://localhost:6927/_info/`
+* `http://localhost:6927/_info/name`
+* `http://localhost:6927/_info/version`
+* `http://localhost:6927/_info/home`
+* `http://localhost:6927/{domain}/v1/siteinfo{/prop}`
+* `http://localhost:6927/{domain}/v1/page/{title}`
+* `http://localhost:6927/{domain}/v1/page/{title}/lead`
+* `http://localhost:6927/ex/err/array`
+* `http://localhost:6927/ex/err/file`
+* `http://localhost:6927/ex/err/manual/error`
+* `http://localhost:6927/ex/err/manual/deny`
+* `http://localhost:6927/ex/err/auth`
+
+### Tests
+
+The template also includes a test suite a small set of executable tests. To fire
+them up, simply run:
+
+```
+npm test
+```
+
+If you haven't changed anything in the code (and you have a working Internet
+connection), you should see all the tests passing. As testing most of the code
+is an important aspect of service development, there is also a bundled tool
+reporting the percentage of code covered. Start it with:
+
+```
+npm run-script coverage
+```
+
+### Troubleshooting
+
+In a lot of cases when there is an issue with node it helps to recreate the
+`node_modules` directory:
+
+```
+rm -r node_modules
+npm install
+```
+
+Enjoy!
+

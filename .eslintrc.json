@@ -6,6 +6,9 @@
 	],
 	"rules": {
 		"camelcase": "off",
-		"no-use-before-define": "off"
+		"no-use-before-define": "off",
+		"no-shadow": "off",
+		"jsdoc/no-undefined-types": "off",
+		"no-underscore-dangle": "off"
 	}
 }
