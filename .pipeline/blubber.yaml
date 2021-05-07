@@ -9,7 +9,7 @@ variants:
   build:
     base: docker-registry.wikimedia.org/buster-nodejs10-devel
     copies: [local]
-    apt: { packages: [git, build-essential] }
+    apt: { packages: [git, build-essential, python3-dev] }
     node: { requirements: [package.json, package-lock.json] }
     runs: { environment: { LINK: g++ } }
   development:
@@ -27,3 +27,32 @@ variants:
     copies: [prep]
     node: { env: production }
     entrypoint: [node, server.js]
+
+  build-python3-executor:
+    base: docker-registry.wikimedia.org/python3-devel:0.0.2
+    apt: { packages: [python3-dev, python3-setuptools, python3-pkgconfig] }
+    lives:
+      in: /executors/python3
+    copies:
+    - from: local
+      source: executors/python3
+      destination: .
+    - from: local
+      source: test_data
+      destination: ./test/test_data
+    python:
+      version: python3
+  test-python3-executor:
+    includes: [build-python3-executor]
+    lives:
+      in: /executors/python3
+    runs:
+      environment: { PYTHONPATH: /executors/python3 }
+    python:
+      use-system-flag: false
+      # TODO: Figure out why black can't be installed.
+      requirements:
+      - from: local
+        source: executors/python3/requirements-dev.txt
+        destination: ./requirements-dev.txt
+    entrypoint: [pytest]

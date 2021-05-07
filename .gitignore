@@ -1,2 +1,5 @@
 node_modules
 .eslintcache
+executors/python3/test/test_data/**
+**/__pycache__/**
+**/venv/**

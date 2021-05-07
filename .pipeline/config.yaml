@@ -1,0 +1,10 @@
+pipelines:
+  test-executors:
+    blubberfile: blubber.yaml
+    stages:
+      - name: build-python3-executor
+        build: build-python3-executor
+        run: false
+      - name: test-python3-executor
+    execution:
+      - [built-python3-executor, test-python3-executor] 

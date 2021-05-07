@@ -4,4 +4,4 @@ port=29418
 project=mediawiki/services/function-evaluator.git
 track=1
 defaultrebase=0
-defaultbranch=main
+defaultbranch=master
