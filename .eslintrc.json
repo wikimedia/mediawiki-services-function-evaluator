@@ -9,5 +9,11 @@
 		"no-shadow": "off",
 		"jsdoc/no-undefined-types": "off",
 		"no-underscore-dangle": "off"
-	}
+	},
+	"overrides": [
+		{
+			"files": "**/*.json",
+			"extends": "wikimedia/json"
+		}
+	]
 }
