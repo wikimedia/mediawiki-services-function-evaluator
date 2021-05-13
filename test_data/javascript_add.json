@@ -110,12 +110,12 @@
 						},
 						"Z61K1": {
 							"Z1K1": "Z6",
-							"Z6K1": "python-3"
+							"Z6K1": "javascript"
 						}
 					},
 					"Z16K2": {
 						"Z1K1": "Z6",
-						"Z6K1": "Z1000K0 = str(int(Z1000K1) + int(Z1000K2))"
+						"Z6K1": "function Z1000( Z1000K1, Z1000K2 ) { return (parseInt(Z1000K1) + parseInt(Z1000K2)).toString(); }"
 					}
 				}
 			},

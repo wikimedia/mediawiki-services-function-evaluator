@@ -144,21 +144,39 @@ describe( 'evaluate-integration-python3', function () {
 	}
 
 	integrationTest(
-		'addition',
+		'python - addition',
 		readJSON( './test_data/python3_add.json' ),
-		readJSON( './test_data/python3_add_expected.json' )
+		readJSON( './test_data/add_expected.json' )
 	);
 
 	integrationTest(
-		'error: no Z8',
+		'python - error: no Z8',
 		readJSON( './test_data/python3_no_Z8.json' ),
-		readJSON( './test_data/python3_no_Z8_expected_list.json' )
+		readJSON( './test_data/no_Z8_expected_list.json' )
 	);
 
 	integrationTest(
-		'error: no Z14',
+		'python - error: no Z14',
 		readJSON( './test_data/python3_no_Z14.json' ),
-		readJSON( './test_data/python3_no_Z14_expected_list.json' )
+		readJSON( './test_data/no_Z14_expected_list.json' )
+	);
+
+	integrationTest(
+		'javascript - addition',
+		readJSON( './test_data/javascript_add.json' ),
+		readJSON( './test_data/add_expected.json' )
+	);
+
+	integrationTest(
+		'javascript - error: no Z8',
+		readJSON( './test_data/javascript_no_Z8.json' ),
+		readJSON( './test_data/no_Z8_expected_list.json' )
+	);
+
+	integrationTest(
+		'javascript - error: no Z14',
+		readJSON( './test_data/javascript_no_Z14.json' ),
+		readJSON( './test_data/no_Z14_expected_list.json' )
 	);
 
 } );

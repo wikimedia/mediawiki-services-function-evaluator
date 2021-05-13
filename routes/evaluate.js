@@ -72,16 +72,42 @@ function parseAsZObject( stringVersion ) {
 }
 
 router.post( '/', async ( req, res ) => {
-	const ZObject = { function_call: req.body };
+	const ZObject = req.body;
 
 	// TODO: Condition this on the requested coding language; send error if
 	// not supported.
 	// TODO: If possible, executor processes should be spun up on server start
 	// and stored in app.settings.
-	const executorProcess = subprocess.runExecutorSubprocess(
-		'python3',
-		[ 'executors/python3/executor.py' ]
-	);
+	let programmingLanguage;
+	try {
+		programmingLanguage = ZObject.Z7K1.Z8K4.Z10K1.Z14K3.Z16K1.Z61K1.Z6K1;
+	} catch ( e ) {
+		// TODO: Return error in this case (should be handled by validation).
+		programmingLanguage = 'python-3';
+	}
+	const executorProcess = subprocess.runExecutorSubprocess( programmingLanguage );
+
+	// TODO: Return error in this case (should be handled by validation).
+	if ( executorProcess === null ) {
+		res.json( {
+			Z1K1: {
+				Z1K1: 'Z9',
+				Z9K1: 'Z22'
+			},
+			Z22K1: Z23(),
+			Z22K2: {
+				Z1K1: {
+					Z1K1: 'Z9',
+					Z9K1: 'Z5'
+				},
+				Z5K1: {
+					Z1K1: 'Z6',
+					Z6K1: `No executor found for programming language ${programmingLanguage}.`
+				}
+			}
+		} );
+		return;
+	}
 
 	// Set up two promises to capture all stdout/stderr in the subprocess.
 	const stdoutQueue = [], stderrQueue = [];
@@ -145,7 +171,7 @@ router.post( '/', async ( req, res ) => {
 	} );
 
 	// Write ZObject to executor process.
-	executorProcess.stdin.write( JSON.stringify( ZObject ) );
+	executorProcess.stdin.write( JSON.stringify( { function_call: ZObject } ) );
 	executorProcess.stdin.end();
 } );
 

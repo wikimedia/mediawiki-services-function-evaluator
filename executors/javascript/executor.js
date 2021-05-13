@@ -1,0 +1,99 @@
+'use strict';
+
+const resultCache = new Map();
+const serializers = new Map();
+const boundValues = new Map();
+const argumentNames = [];
+
+serializers.set( 'Z6ToString', function ( Z6 ) {
+	return Z6.Z6K1;
+} );
+
+serializers.set( 'stringToZ6', function ( string ) {
+	return { Z1K1: 'Z6', Z6K1: string };
+} );
+
+function error( message ) {
+	return {
+		Z1K1: { Z1K1: 'Z9', Z9K1: 'Z5' },
+		Z5K2: { Z1K1: 'Z6', Z6K1: message }
+	};
+}
+
+function writeZObject( ZObject, stream ) {
+	stream.write( JSON.stringify( ZObject ) );
+}
+
+function execute( Z7, stdout = process.stdout, stderr = process.stderr ) {
+	let functionName;
+	try {
+		functionName = Z7.Z7K1.Z8K5.Z9K1;
+	} catch ( e ) {
+		functionName = undefined;
+	}
+	// TODO: Handle input that fails to validate all at once instead of ad hoc.
+	if ( functionName === undefined ) {
+		writeZObject( error( 'Z7K1 did not contain a valid Function.' ), stderr );
+		return;
+	}
+
+	// TODO: Ensure that these match declared arguments? (already done in orchestrator)
+	for ( const key of Object.keys( Z7 ) ) {
+		if ( key.startsWith( functionName ) ) {
+			argumentNames.push( key );
+			boundValues.set( key, Z7[ key ] );
+		}
+	}
+	argumentNames.sort();
+
+	let implementation;
+	try {
+		implementation = Z7.Z7K1.Z8K4.Z10K1.Z14K3.Z16K2.Z6K1;
+	} catch ( e ) {
+		implementation = undefined;
+	}
+	if ( implementation === undefined ) {
+		writeZObject( error( 'Z8K4 did not contain a valid Implementation.' ), stderr );
+		return;
+	}
+
+	const returnValue = functionName + 'K0';
+	const functionTemplate = `
+        ${implementation}
+
+        let boundLocals = [];
+        for ( const key of argumentNames ) {
+            const value = boundValues.get(key);
+            boundLocals.push(serializers.get('Z6ToString')(value));
+        }
+
+        resultCache.set(
+            '${returnValue}',
+            serializers.get('stringToZ6')(
+                ${functionName}.apply(null, boundLocals)
+            )
+        );
+    `;
+	eval( functionTemplate ); // eslint-disable-line no-eval
+
+	writeZObject( resultCache.get( returnValue ), stdout );
+}
+
+function main( stdin = process.stdin, stdout = process.stdout, stderr = process.stderr ) {
+	stdin.on( 'readable', () => {
+		let chunk;
+		while ( ( chunk = stdin.read() ) !== null ) {
+			const theInput = JSON.parse( chunk );
+			const functionCall = theInput.function_call;
+			if ( functionCall !== undefined ) {
+				execute( functionCall, stdout, stderr );
+			}
+		}
+	} );
+}
+
+if ( module.parent === null ) {
+	main();
+}
+
+module.exports = { execute, main };

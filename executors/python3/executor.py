@@ -42,6 +42,7 @@ def execute(Z7, stdout=sys.stdout, stderr=sys.stderr):
         _write_zobject(_error("Z7K1 did not contain a valid Function."), stderr)
         return
 
+    # TODO: Ensure that these match declared arguments? (already done in orchestrator)
     argument_names = [key for key in Z7 if key.startswith(function_name)]
     bound_values = {
         argument_name: Z7[argument_name]
