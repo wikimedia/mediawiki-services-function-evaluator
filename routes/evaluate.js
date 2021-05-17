@@ -2,6 +2,7 @@
 
 const sUtil = require( '../lib/util' );
 const subprocess = require( '../src/subprocess.js' );
+const { SchemaFactory } = require( '../function-schemata/javascript/src/schema.js' );
 
 /**
  * The main router object
@@ -107,6 +108,49 @@ router.post( '/', async ( req, res ) => {
 			}
 		} );
 		return;
+	}
+
+	const schema = SchemaFactory.NORMAL().create( 'Z7' );
+	if ( !schema.validate( ZObject ) ) {
+		res.json( {
+			Z1K1: {
+				Z1K1: 'Z9',
+				Z9K1: 'Z22'
+			},
+			Z22K1: Z23(),
+			Z22K2: {
+				Z1K1: {
+					Z1K1: 'Z9',
+					Z9K1: 'Z5'
+				},
+				Z5K2: schema.errors.reduce( ( errors, error ) => {
+					function setEmptyListItemData( list, string ) {
+						if ( list.Z10K1 === undefined ) {
+							list.Z10K1 = string;
+							list.Z10K2 = {
+								Z1K1: {
+									Z1K1: 'Z9',
+									Z9K1: 'Z10'
+								}
+							};
+							return list;
+						} else {
+							return { ...list, Z10K2: setEmptyListItemData( list.Z10K2, string ) };
+						}
+					}
+
+					return setEmptyListItemData( errors, {
+						Z1K1: 'Z6',
+						Z6K1: `${error.dataPath} ${error.message}.`
+					} );
+				}, {
+					Z1K1: {
+						Z1K1: 'Z9',
+						Z9K1: 'Z10'
+					}
+				} )
+			}
+		} );
 	}
 
 	// Set up two promises to capture all stdout/stderr in the subprocess.
