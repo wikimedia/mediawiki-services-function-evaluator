@@ -8,6 +8,10 @@ const Server = require( '../../utils/server.js' );
 const subprocess = require( '../../../src/subprocess.js' );
 const sinon = require( 'sinon' );
 
+const { SchemaFactory } = require( '../../../function-schemata/javascript/src/schema.js' );
+
+const errorValidator = SchemaFactory.NORMAL().create( 'Z5' );
+
 describe( 'evaluate-unit', function () {
 
 	this.timeout( 20000 );
@@ -34,12 +38,21 @@ describe( 'evaluate-unit', function () {
 			return preq( {
 				method: 'post',
 				uri: uri,
-				body: {}
+				body: {
+					Z1K1: 'Z9',
+					Z9K1: 'Z1000'
+				}
 			} )
 				.then( ( res ) => {
 					assert.status( res, 200 );
 					assert.contentType( res, 'application/json' );
-					assert.deepEqual( res.body, output, name );
+					if ( typeof output === 'function' ) {
+						assert.ok( output( res.body ), name );
+					} else {
+						assert.deepEqual( res.body, output, name );
+					}
+				} )
+				.finally( () => {
 					stubProcess.restore();
 				} );
 		} );
@@ -58,11 +71,7 @@ describe( 'evaluate-unit', function () {
 	test(
 		'empty on both ends',
 		'test_data/empty_on_both_ends.py',
-		{
-			Z1K1: { Z1K1: 'Z9', Z9K1: 'Z22' },
-			Z22K1: { Z1K1: { Z1K1: 'Z9', Z9K1: 'Z23' } },
-			Z22K2: { Z1K1: { Z1K1: 'Z9', Z9K1: 'Z23' } }
-		}
+		( json ) => !errorValidator.validate( json )
 	);
 
 	it(
@@ -74,17 +83,6 @@ describe( 'evaluate-unit', function () {
 
 			const expectedZ22K1 = { Z1K1: { Z1K1: 'Z9', Z9K1: 'Z23' } };
 
-			function Z10ToStringArray( Z10 ) {
-				const result = [];
-				while ( Z10.Z10K1 !== undefined ) {
-					result.push( Z10.Z10K1.Z6K1 );
-					Z10 = Z10.Z10K2;
-				}
-				return result;
-			}
-
-			const expectedErrors = [ 'facinorous output', 'i am very bad too' ];
-
 			return preq( {
 				method: 'post',
 				uri: uri,
@@ -95,12 +93,9 @@ describe( 'evaluate-unit', function () {
 					assert.contentType( res, 'application/json' );
 					const Z22 = res.body;
 					assert.deepEqual( Z22.Z22K1, expectedZ22K1 );
-
-					const errorStrings = Z10ToStringArray( Z22.Z22K2.Z5K2 );
-					assert.deepEqual( errorStrings.length, expectedErrors.length );
-					for ( const error of expectedErrors ) {
-						assert.notDeepEqual( -1, errorStrings.indexOf( error ) );
-					}
+					assert.ok( !errorValidator.validate( res.body ) );
+				} )
+				.finally( () => {
 					stubProcess.restore();
 				} );
 		}
@@ -134,7 +129,11 @@ describe( 'evaluate-integration-python3', function () {
 				.then( ( res ) => {
 					assert.status( res, 200 );
 					assert.contentType( res, 'application/json' );
-					assert.deepEqual( res.body, output, name );
+					if ( typeof output === 'function' ) {
+						assert.ok( output( res.body ), name );
+					} else {
+						assert.deepEqual( res.body, output, name );
+					}
 				} );
 		} );
 	};
@@ -152,13 +151,13 @@ describe( 'evaluate-integration-python3', function () {
 	integrationTest(
 		'python - error: no Z8',
 		readJSON( './test_data/python3_no_Z8.json' ),
-		readJSON( './test_data/no_Z8_expected_list.json' )
+		( json ) => !errorValidator.validate( json )
 	);
 
 	integrationTest(
 		'python - error: no Z14',
 		readJSON( './test_data/python3_no_Z14.json' ),
-		readJSON( './test_data/no_Z14_expected_list.json' )
+		( json ) => !errorValidator.validate( json )
 	);
 
 	integrationTest(
@@ -170,13 +169,13 @@ describe( 'evaluate-integration-python3', function () {
 	integrationTest(
 		'javascript - error: no Z8',
 		readJSON( './test_data/javascript_no_Z8.json' ),
-		readJSON( './test_data/no_Z8_expected_list.json' )
+		( json ) => !errorValidator.validate( json )
 	);
 
 	integrationTest(
 		'javascript - error: no Z14',
 		readJSON( './test_data/javascript_no_Z14.json' ),
-		readJSON( './test_data/no_Z14_expected_list.json' )
+		( json ) => !errorValidator.validate( json )
 	);
 
 } );
