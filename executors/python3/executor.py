@@ -76,7 +76,7 @@ def execute(Z7, stdout=sys.stdout, stderr=sys.stderr):
     _write_zobject(_RESULT_CACHE[return_value], stdout)
 
 
-# TODO: If PYTHONPATH could be controlled in Blubber, then these deps could
+# TODO: If PYTHONPATH could be controlled in Blubber, then stream deps could
 # be mocked in tests instead of injected.
 def main(stdin=sys.stdin, stdout=sys.stdout, stderr=sys.stderr):
     # TODO: Accept chunked input. Probably best just to run a service instead

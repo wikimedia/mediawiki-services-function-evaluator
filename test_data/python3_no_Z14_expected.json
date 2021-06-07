@@ -1,0 +1,22 @@
+{
+	"Z1K1": {
+		"Z1K1": "Z9",
+		"Z9K1": "Z22"
+	},
+	"Z22K1": {
+		"Z1K1": {
+			"Z1K1": "Z9",
+			"Z9K1": "Z23"
+		}
+	},
+	"Z22K2": {
+		"Z1K1": {
+			"Z1K1": "Z9",
+			"Z9K1": "Z5"
+		},
+		"Z5K2": {
+			"Z1K1": "Z6",
+			"Z6K1": "Z8K4 did not contain a valid Implementation."
+		}
+	}
+}
