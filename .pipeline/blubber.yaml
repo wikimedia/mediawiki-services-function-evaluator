@@ -56,3 +56,28 @@ variants:
         source: executors/python3/requirements-dev.txt
         destination: ./requirements-dev.txt
     entrypoint: [pytest]
+
+  build-javascript-executor:
+    base: docker-registry.wikimedia.org/nodejs10-devel
+    lives:
+      in: /executors/javascript
+    copies:
+    - from: local
+      source: executors/javascript/
+      destination: .
+    - from: local
+      source: test_data
+      destination: ./test/test_data
+    node:
+      requirements:
+      - from: local
+        source: executors/javascript/package.json
+        destination: ./package.json
+      - from: local
+        source: executors/javascript/package-lock.json
+        destination: ./package-lock.json
+  test-javascript-executor:
+    includes: [build-javascript-executor]
+    lives:
+      in: /executors/javascript
+    entrypoint: [npm, test]

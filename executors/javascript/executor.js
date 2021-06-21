@@ -1,9 +1,6 @@
 'use strict';
 
-const resultCache = new Map();
 const serializers = new Map();
-const boundValues = new Map();
-const argumentNames = [];
 
 serializers.set( 'Z6ToString', function ( Z6 ) {
 	return Z6.Z6K1;
@@ -25,6 +22,9 @@ function writeZObject( ZObject, stream ) {
 }
 
 function execute( Z7, stdout = process.stdout, stderr = process.stderr ) {
+	const resultCache = new Map();
+	const boundValues = new Map();
+	const argumentNames = [];
 	let functionName;
 	try {
 		functionName = Z7.Z7K1.Z8K5.Z9K1;
