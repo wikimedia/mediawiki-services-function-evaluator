@@ -6,9 +6,7 @@ _RESULT_CACHE = {}
 
 
 _FUNCTION_TEMPLATE = """
-def {function_name}({argument_list}):
-    {implementation}
-    return {return_value}
+{implementation}
 
 
 bound_values = dict()

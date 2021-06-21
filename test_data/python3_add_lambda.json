@@ -119,7 +119,7 @@
 					},
 					"Z16K2": {
 						"Z1K1": "Z6",
-						"Z6K1": "def Z1000(Z1000K1, Z1000K2):\n\treturn str(int(Z1000K1) + int(Z1000K2))"
+						"Z6K1": "Z1000 = lambda Z1000K1, Z1000K2: str(int(Z1000K1) + int(Z1000K2))"
 					}
 				}
 			},

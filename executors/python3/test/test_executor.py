@@ -40,6 +40,11 @@ class ExecutorTest(unittest.TestCase):
         expected = _read_test_json('python3_add_expected.json')['Z22K1']
         self._run_test(Z7, expected_result=expected)
 
+    def test_runs_lambda(self):
+        Z7 = _read_test_json('python3_add_lambda.json')
+        expected = _read_test_json('python3_add_expected.json')['Z22K1']
+        self._run_test(Z7, expected_result=expected)
+
     def test_no_Z8(self):
         Z7 = _read_test_json('python3_no_Z8.json')
         expected = _read_test_json('python3_no_Z8_expected.json')['Z22K2']
@@ -54,8 +59,6 @@ class ExecutorTest(unittest.TestCase):
         Z7 = _read_test_json('python3_add.json')
         Z7_full = {'function_call': Z7}
         Z7_string = json.dumps(Z7_full)
-        # TODO: Chunk input to avoid this.
-        Z7_string = ''.join(Z7_string.split())
         expected = _read_test_json('python3_add_expected.json')['Z22K1']
         self._stdin.write(Z7_string + '\n')
         self._stdin.seek(0)
