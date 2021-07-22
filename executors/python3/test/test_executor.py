@@ -6,8 +6,8 @@ import sys
 import unittest
 from unittest.mock import patch
 
-# This is a kludge due to how env variables work in Blubber; would be better if
-# PYTHONPATH could be controlled directly.
+# TODO(T282795): This is a kludge due to how env variables work in Blubber;
+# would be better if PYTHONPATH could be controlled directly.
 from .. import executor
 
 
@@ -44,6 +44,21 @@ class ExecutorTest(unittest.TestCase):
         Z7 = _read_test_json('python3_add_lambda.json')
         expected = _read_test_json('python3_add_expected.json')['Z22K1']
         self._run_test(Z7, expected_result=expected)
+
+    def test_various_types(self):
+        Z7 = _read_test_json('python3_compound_type.json')
+        expected = _read_test_json('compound_type_expected.json')['Z22K1']
+        self._run_test(Z7, expected_result=expected)
+
+    def test_undeserializable_type(self):
+        Z7 = _read_test_json('python3_unsupported_input.json')
+        expected = _read_test_json('unsupported_input_expected.json')['Z22K2']
+        self._run_test(Z7, expected_stderr=expected)
+
+    def test_unserializable_type(self):
+        Z7 = _read_test_json('python3_unsupported_output.json')
+        expected = _read_test_json('python3_unsupported_output_expected.json')['Z22K2']
+        self._run_test(Z7, expected_stderr=expected)
 
     def test_no_Z8(self):
         Z7 = _read_test_json('python3_no_Z8.json')

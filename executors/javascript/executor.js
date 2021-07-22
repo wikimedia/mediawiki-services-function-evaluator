@@ -1,14 +1,7 @@
 'use strict';
 
-const serializers = new Map();
-
-serializers.set( 'Z6ToString', function ( Z6 ) {
-	return Z6.Z6K1;
-} );
-
-serializers.set( 'stringToZ6', function ( string ) {
-	return { Z1K1: 'Z6', Z6K1: string };
-} );
+// eslint-disable-next-line no-unused-vars
+const { serialize, deserialize } = require( './serialization.js' );
 
 function error( message ) {
 	return {
@@ -64,17 +57,20 @@ function execute( Z7, stdout = process.stdout, stderr = process.stderr ) {
         let boundLocals = [];
         for ( const key of argumentNames ) {
             const value = boundValues.get(key);
-            boundLocals.push(serializers.get('Z6ToString')(value));
+            boundLocals.push(deserialize(value));
         }
 
         resultCache.set(
             '${returnValue}',
-            serializers.get('stringToZ6')(
-                ${functionName}.apply(null, boundLocals)
-            )
+            serialize(${functionName}.apply(null, boundLocals))
         );
     `;
-	eval( functionTemplate ); // eslint-disable-line no-eval
+	try {
+		eval( functionTemplate ); // eslint-disable-line no-eval
+	} catch ( e ) {
+		writeZObject( error( e.message ), stderr );
+		return;
+	}
 
 	writeZObject( resultCache.get( returnValue ), stdout );
 }

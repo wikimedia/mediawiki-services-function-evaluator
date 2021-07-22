@@ -47,6 +47,29 @@ describe( 'JavaScript executor', () => { // eslint-disable-line no-undef
 		);
 	} );
 
+	it( 'test compound type', () => { // eslint-disable-line no-undef
+		runTest(
+			readTestJson( './test/test_data/javascript_compound_type.json' ),
+			readTestJson( './test/test_data/compound_type_expected.json' )
+		);
+	} );
+
+	it( 'test undeserializable type', () => { // eslint-disable-line no-undef
+		runTest(
+			readTestJson( './test/test_data/javascript_unsupported_input.json' ),
+			null,
+			readTestJson( './test/test_data/unsupported_input_expected.json' )
+		);
+	} );
+
+	it( 'test unserializable type', () => { // eslint-disable-line no-undef
+		runTest(
+			readTestJson( './test/test_data/javascript_unsupported_output.json' ),
+			null,
+			readTestJson( './test/test_data/javascript_unsupported_output_expected.json' )
+		);
+	} );
+
 	it( 'test no Z8', () => { // eslint-disable-line no-undef
 		runTest(
 			readTestJson( './test/test_data/javascript_no_Z8.json' ),
