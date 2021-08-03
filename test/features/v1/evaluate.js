@@ -12,6 +12,10 @@ const { SchemaFactory } = require( '../../../function-schemata/javascript/src/sc
 
 const errorValidator = SchemaFactory.NORMAL().create( 'Z5' );
 
+function Z23() {
+	return { Z1K1: 'Z9', Z9K1: 'Z23' };
+}
+
 describe( 'evaluate-unit', function () {
 
 	this.timeout( 20000 );
@@ -64,7 +68,7 @@ describe( 'evaluate-unit', function () {
 		{
 			Z1K1: { Z1K1: 'Z9', Z9K1: 'Z22' },
 			Z22K1: { Z1K1: 'Z6', Z6K1: 'well-behaved' },
-			Z22K2: { Z1K1: { Z1K1: 'Z9', Z9K1: 'Z23' } }
+			Z22K2: Z23()
 		}
 	);
 
@@ -81,7 +85,7 @@ describe( 'evaluate-unit', function () {
 			}
 			const stubProcess = sinon.stub( subprocess, 'runExecutorSubprocess' ).callsFake( mockExecutor );
 
-			const expectedZ22K1 = { Z1K1: { Z1K1: 'Z9', Z9K1: 'Z23' } };
+			const expectedZ22K1 = Z23();
 
 			return preq( {
 				method: 'post',

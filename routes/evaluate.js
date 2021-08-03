@@ -20,7 +20,7 @@ let app; // eslint-disable-line no-unused-vars
  * @return {Object} Z23
  */
 function Z23() {
-	return { Z1K1: { Z1K1: 'Z9', Z9K1: 'Z23' } };
+	return { Z1K1: 'Z9', Z9K1: 'Z23' };
 }
 
 /**
