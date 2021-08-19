@@ -110,7 +110,7 @@ router.post( '/', async ( req, res ) => {
 		return;
 	}
 
-	const schema = SchemaFactory.NORMAL().create( 'Z7' );
+	const schema = SchemaFactory.NORMAL().create( 'Z7_backend' );
 	if ( !schema.validate( ZObject ) ) {
 		res.json( {
 			Z1K1: {
