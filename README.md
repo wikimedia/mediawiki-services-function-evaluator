@@ -1,83 +1,65 @@
-# service-template-node [![Build Status](https://travis-ci.org/wikimedia/service-template-node.svg?branch=master)](https://travis-ci.org/wikimedia/service-template-node)
+<a href='introduction'></a>
+# Wikifunctions function-evaluator
 
-Template for creating MediaWiki Services in Node.js
+The evaluator service executes user-written 'native' code in a variety of programming languages.
+The repository consists of the [evaluator service](#evaluator-service) and a
+variety of language-specific [executors](#executors).
 
-## Getting Started
+<a href='evaluator-service'></a>
+## Evaluator Service
+The evaluator itself is a thin wrapper (based on [service-template-node](https://www.mediawiki.org/wiki/ServiceTemplateNode))
+responsible for validating incoming objects as Z7/Function calls, determining the correct
+[executor](#executors) to delegate to, and returning either the result of
+function execution or an approprate error back to the caller.
 
-### Installation
+<a href='executors'></a>
+## Executors
+An executor accepts as input a fully dereferenced Z7/Function call (with a single native-code implementation),
+executes the native code with the provided inputs, and returns a Z22/Pair containing
+in key Z22K1 either the result of successful execution or Z23/Nothing, and in Z22K2 any appropriate Z5/Errors.
 
-First, clone the repository
+### Communication between the Evaluator and Executor
+As currently implemented, executors run as child processes of the main Node
+process. The evaluator initializes a child process corresponding to the correct
+programming language and runs the appropriate executor module. For example,
+in order to execute Python code, the evaluator spawns a subprocess with the
+command `python3 executors/python3/executor.py`.
 
-```
-git clone https://github.com/wikimedia/service-template-node.git
-```
+Thereafter, the evaluator communicates with the executor via I/O streams:
+`stdin`, `stdout`, and `stderr`. The evaluator writes the (JSON-stringified)
+Z7/Function call to the child process's `stdin`. The evaluator then waits until the
+subprocess terminates. Logs written to `stderr` in the executor will likewise
+be logged by the evaluator. The executor writes the (JSON-stringified) Z22/Pair
+to `stdout`, which the evaluator collects and returns as JSON.
 
-Install the dependencies
+### Implementing a New Executor
+An executor must be able to do three things: 1) communicate with the main
+process via standard I/O streams; 2) deserialize ZObjects as appropriate native
+types (and perform the inverse serialization operation); and 3) execute code.
+The existing Python and JavaScript implementations can hopefully serve as a
+reference for how to accomplish these tasks, but serialization and deserialization
+deserve particular attention.
 
-```
-cd service-template-node
-npm install
-```
+For certain built-in types, there is a natural mapping between ZType and
+primitive (or standard library) types; currently, executors can (de)serialize
+the following types:
 
-You are now ready to get to work!
+- Z6/String    <-> string
+- Z10/List     <-> generic sequential container type (list, array, vector, etc.)
+- Z21/Unit     <-> nullary type (None, null, etc.)
+- Z40/Boolean  <-> Boolean
 
-* Inspect/modify/configure `app.js`
-* Add routes by placing files in `routes/` (look at the files there for examples)
+Any new executor must be able to support these. We expect the list of built-in
+types to grow (a little, and finitely); we also expect to be able to support
+(de)serialization of user-defined types, but executors can't handle this at
+present.
 
-You can also read [the documentation](https://www.mediawiki.org/wiki/ServiceTemplateNode).
+Once we adopt the generic function model, the return type of a Z7/Function call will be fully
+specifiable (even if complex, e.g. a Z10/List of Z6/Strings); however, at the moment, it is not.
+Therefore, while type inference for deserialization is completely deterministic,
+serialization must rely on some type-inferring heuristic.
 
-### Running the examples
-
-The template is a fully-working example, so you may try it right away. To
-start the server hosting the REST API, simply run (inside the repo's directory)
-
-```
-npm start
-```
-
-This starts an HTTP server listening on `localhost:6927`. There are several
-routes you may query (with a browser, or `curl` and friends):
-
-* `http://localhost:6927/_info/`
-* `http://localhost:6927/_info/name`
-* `http://localhost:6927/_info/version`
-* `http://localhost:6927/_info/home`
-* `http://localhost:6927/{domain}/v1/siteinfo{/prop}`
-* `http://localhost:6927/{domain}/v1/page/{title}`
-* `http://localhost:6927/{domain}/v1/page/{title}/lead`
-* `http://localhost:6927/ex/err/array`
-* `http://localhost:6927/ex/err/file`
-* `http://localhost:6927/ex/err/manual/error`
-* `http://localhost:6927/ex/err/manual/deny`
-* `http://localhost:6927/ex/err/auth`
-
-### Tests
-
-The template also includes a test suite a small set of executable tests. To fire
-them up, simply run:
-
-```
-npm test
-```
-
-If you haven't changed anything in the code (and you have a working Internet
-connection), you should see all the tests passing. As testing most of the code
-is an important aspect of service development, there is also a bundled tool
-reporting the percentage of code covered. Start it with:
-
-```
-npm run-script coverage
-```
-
-### Troubleshooting
-
-In a lot of cases when there is an issue with node it helps to recreate the
-`node_modules` directory:
-
-```
-rm -r node_modules
-npm install
-```
-
-Enjoy!
-
+To be precise: deserialization can trivially determine the type of a Z1/ZObject by
+consulting its `Z1K1` attribute, which reports the ZID corresponding to its type.
+However, serialization must rely on the language's introspection capabilities
+or some other strategy to determine type.
