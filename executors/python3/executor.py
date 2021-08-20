@@ -155,20 +155,48 @@ def _error(message):
     }
 
 
-def _write_zobject(zobject, stream):
-    stream.write(json.dumps(zobject))
+def unit():
+    """Creates a Z23 (Nothing).
+
+    Returns:
+        ZObject corresponding to Z23
+    """
+    # TODO(T282891): Use function-schemata version.
+    return { "Z1K1": "Z9", "Z9K1": "Z23" }
 
 
-def execute(Z7, stdout=sys.stdout, stderr=sys.stderr):
-    # stderr.write(','.join(sys.path))
+def make_pair(good_result=None, bad_result=None):
+    """Creates a Z22 containing goodResult and BadResult.
+
+    Args:
+        good_result: Z22K1 of the resulting Z22
+        bad_result: Z22K2 of the resulting Z22
+    Returns:
+        Z22 encapsulating the arguments
+    """
+    # TODO(T282891): Use function-schemata version.
+    Z1K1 = {
+        "Z1K1": "Z9",
+        "Z9K1": "Z22"
+    }
+    return {
+        "Z1K1": Z1K1,
+        "Z22K1": good_result if good_result is not None else unit(),
+        "Z22K2": bad_result if bad_result is not None else unit()
+    }
+
+
+def execute(Z7):
     # TODO: Handle input that fails to validate all at once instead of ad hoc.
     try:
         function_name = Z7["Z7K1"]["Z8K5"]["Z9K1"]
     except KeyError:
-        _write_zobject(_error("Z7K1 did not contain a valid Function."), stderr)
-        return
+        return make_pair(
+            None,
+            _error("Z7K1 did not contain a valid Function."))
 
     # TODO: Ensure that these match declared arguments? (already done in orchestrator)
+    # TODO(T289319): Handle local keys.
     argument_names = [key for key in Z7 if key.startswith(function_name)]
     bound_values = {
         argument_name: Z7[argument_name]
@@ -178,8 +206,9 @@ def execute(Z7, stdout=sys.stdout, stderr=sys.stderr):
     try:
         implementation = Z7["Z7K1"]["Z8K4"]["Z10K1"]["Z14K3"]["Z16K2"]["Z6K1"]
     except KeyError:
-        _write_zobject(_error("Z8K4 did not contain a valid Implementation."), stderr)
-        return
+        return make_pair(
+            None,
+            _error("Z8K4 did not contain a valid Implementation."))
 
     # TODO: Augment this key with a unique execution ID.
     return_value = function_name + "K0"
@@ -199,23 +228,24 @@ def execute(Z7, stdout=sys.stdout, stderr=sys.stderr):
                 '_SERIALIZE': serialize
             }
         )
-    except EvaluatorError as e:
-        _write_zobject(_error(e.args[0]), stderr)
+    except Exception as e:
+        return make_pair(None, _error(e.args[0]))
     else:
         # TODO: Expire cache after access.
-        _write_zobject(_RESULT_CACHE[return_value], stdout)
+        return make_pair(_RESULT_CACHE[return_value], None)
 
 
 # TODO: If PYTHONPATH could be controlled in Blubber, then stream deps could
 # be mocked in tests instead of injected.
-def main(stdin=sys.stdin, stdout=sys.stdout, stderr=sys.stderr):
+def main(stdin=sys.stdin, stdout=sys.stdout):
     # TODO: Accept chunked input. Probably best just to run a service instead
     # of a subprocess?
     for line in stdin:
         the_input = json.loads(line)
         function_call = the_input.get("function_call")
         if function_call is not None:
-            execute(function_call, stdout, stderr)
+            result = execute(function_call)
+            stdout.write(json.dumps(result))
 
 
 if __name__ == '__main__':

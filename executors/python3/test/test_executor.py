@@ -21,63 +21,72 @@ def _read_test_json(file_name):
 
 class ExecutorTest(unittest.TestCase):
 
-    def setUp(self):
-        self._stdin = io.StringIO()
-        self._stdout = io.StringIO()
-        self._stderr = io.StringIO()
-
-    def _run_test(self, zobject, expected_result=None, expected_stderr=None):
-        executor.execute(zobject, self._stdout, self._stderr)
-        if expected_result is not None:
-            self._stdout.seek(0)
-            self.assertEqual(expected_result, json.loads(self._stdout.read().strip()))
-        if expected_stderr is not None:
-            self._stderr.seek(0)
-            self.assertEqual(expected_stderr, json.loads(self._stderr.read().strip()))
+    def _run_test(self, zobject, expected_result):
+        actual = executor.execute(zobject)
+        self.assertEqual(expected_result, actual)
 
     def test_runs_function_call(self):
         Z7 = _read_test_json('python3_add.json')
-        expected = _read_test_json('python3_add_expected.json')['Z22K1']
-        self._run_test(Z7, expected_result=expected)
+        expected = _read_test_json('add_expected.json')
+        self._run_test(Z7, expected)
 
     def test_runs_lambda(self):
         Z7 = _read_test_json('python3_add_lambda.json')
-        expected = _read_test_json('python3_add_expected.json')['Z22K1']
-        self._run_test(Z7, expected_result=expected)
+        expected = _read_test_json('add_expected.json')
+        self._run_test(Z7, expected)
 
     def test_various_types(self):
         Z7 = _read_test_json('python3_compound_type.json')
-        expected = _read_test_json('compound_type_expected.json')['Z22K1']
-        self._run_test(Z7, expected_result=expected)
+        expected = _read_test_json('compound_type_expected.json')
+        self._run_test(Z7, expected)
 
     def test_undeserializable_type(self):
         Z7 = _read_test_json('python3_unsupported_input.json')
-        expected = _read_test_json('unsupported_input_expected.json')['Z22K2']
-        self._run_test(Z7, expected_stderr=expected)
+        expected = _read_test_json('unsupported_input_expected.json')
+        self._run_test(Z7, expected)
 
     def test_unserializable_type(self):
         Z7 = _read_test_json('python3_unsupported_output.json')
-        expected = _read_test_json('python3_unsupported_output_expected.json')['Z22K2']
-        self._run_test(Z7, expected_stderr=expected)
+        expected = _read_test_json('python3_unsupported_output_expected.json')
+        self._run_test(Z7, expected)
 
     def test_no_Z8(self):
         Z7 = _read_test_json('python3_no_Z8.json')
-        expected = _read_test_json('python3_no_Z8_expected.json')['Z22K2']
-        self._run_test(Z7, expected_stderr=expected)
+        expected = _read_test_json('no_Z8_expected.json')
+        self._run_test(Z7, expected)
 
     def test_no_Z14(self):
         Z7 = _read_test_json('python3_no_Z14.json')
-        expected = _read_test_json('python3_no_Z14_expected.json')['Z22K2']
-        self._run_test(Z7, expected_stderr=expected)
+        expected = _read_test_json('no_Z14_expected.json')
+        self._run_test(Z7, expected)
 
-    def test_main(self):
+
+class MainTest(unittest.TestCase):
+
+    def setUp(self):
+        self._stdin = io.StringIO()
+        self._stdout = io.StringIO()
+
+    def test_main_add(self):
         Z7 = _read_test_json('python3_add.json')
         Z7_full = {'function_call': Z7}
         Z7_string = json.dumps(Z7_full)
-        expected = _read_test_json('python3_add_expected.json')['Z22K1']
+        expected = _read_test_json('add_expected.json')
         self._stdin.write(Z7_string + '\n')
         self._stdin.seek(0)
-        executor.main(self._stdin, self._stdout, self._stderr)
+        executor.main(self._stdin, self._stdout)
+        self._stdin.close()
+        self._stdout.seek(0)
+        self.assertEqual(expected, json.loads(self._stdout.read().strip()))
+
+    def test_main_syntax_failure(self):
+        Z7 = _read_test_json('python3_syntax_failure.json')
+        Z7_full = {'function_call': Z7}
+        Z7_string = json.dumps(Z7_full)
+        expected = _read_test_json('python3_syntax_failure_expected.json')
+        self._stdin.write(Z7_string + '\n')
+        self._stdin.seek(0)
+        executor.main(self._stdin, self._stdout)
         self._stdin.close()
         self._stdout.seek(0)
         self.assertEqual(expected, json.loads(self._stdout.read().strip()))

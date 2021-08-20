@@ -10,11 +10,37 @@ function error( message ) {
 	};
 }
 
-function writeZObject( ZObject, stream ) {
-	stream.write( JSON.stringify( ZObject ) );
+/**
+ * Creates a Z23 (Nothing).
+ *
+ * @return {Object} Z23
+ */
+function Unit() {
+	// TODO(T282891): Use function-schemata version.
+	return { Z1K1: 'Z9', Z9K1: 'Z23' };
 }
 
-function execute( Z7, stdout = process.stdout, stderr = process.stderr ) {
+/**
+ * Creates a Z22 containing goodResult and BadResult.
+ *
+ * @param {Object} goodResult Z22K1 of resulting Z22
+ * @param {Object} badResult Z22K2 of resulting Z22
+ * @return {Object} a Z22
+ */
+function makePair( goodResult = null, badResult = null ) {
+	// TODO(T282891): Use function-schemata version.
+	const Z1K1 = {
+		Z1K1: 'Z9',
+		Z9K1: 'Z22'
+	};
+	return {
+		Z1K1: Z1K1,
+		Z22K1: goodResult === null ? Unit() : goodResult,
+		Z22K2: badResult === null ? Unit() : badResult
+	};
+}
+
+function execute( Z7 ) {
 	const resultCache = new Map();
 	const boundValues = new Map();
 	const argumentNames = [];
@@ -26,11 +52,14 @@ function execute( Z7, stdout = process.stdout, stderr = process.stderr ) {
 	}
 	// TODO: Handle input that fails to validate all at once instead of ad hoc.
 	if ( functionName === undefined ) {
-		writeZObject( error( 'Z7K1 did not contain a valid Function.' ), stderr );
-		return;
+		return makePair(
+			null,
+			error( 'Z7K1 did not contain a valid Function.' )
+		);
 	}
 
 	// TODO: Ensure that these match declared arguments? (already done in orchestrator)
+	// TODO(T289319): Handle local keys.
 	for ( const key of Object.keys( Z7 ) ) {
 		if ( key.startsWith( functionName ) ) {
 			argumentNames.push( key );
@@ -46,8 +75,10 @@ function execute( Z7, stdout = process.stdout, stderr = process.stderr ) {
 		implementation = undefined;
 	}
 	if ( implementation === undefined ) {
-		writeZObject( error( 'Z8K4 did not contain a valid Implementation.' ), stderr );
-		return;
+		return makePair(
+			null,
+			error( 'Z8K4 did not contain a valid Implementation.' )
+		);
 	}
 
 	const returnValue = functionName + 'K0';
@@ -68,21 +99,27 @@ function execute( Z7, stdout = process.stdout, stderr = process.stderr ) {
 	try {
 		eval( functionTemplate ); // eslint-disable-line no-eval
 	} catch ( e ) {
-		writeZObject( error( e.message ), stderr );
-		return;
+		return makePair(
+			null,
+			error( e.message )
+		);
 	}
 
-	writeZObject( resultCache.get( returnValue ), stdout );
+	return makePair(
+		resultCache.get( returnValue ),
+		null
+	);
 }
 
-function main( stdin = process.stdin, stdout = process.stdout, stderr = process.stderr ) {
+function main( stdin = process.stdin, stdout = process.stdout ) {
 	stdin.on( 'readable', () => {
 		let chunk;
 		while ( ( chunk = stdin.read() ) !== null ) {
 			const theInput = JSON.parse( chunk );
 			const functionCall = theInput.function_call;
 			if ( functionCall !== undefined ) {
-				execute( functionCall, stdout, stderr );
+				const result = execute( functionCall );
+				stdout.write( JSON.stringify( result ) );
 			}
 		}
 	} );

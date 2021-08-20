@@ -9,10 +9,10 @@ function readTestJson( fileName ) {
 	return JSON.parse( fs.readFileSync( fileName, { encoding: 'utf8' } ) );
 }
 
-describe( 'JavaScript executor', () => { // eslint-disable-line no-undef
+describe( 'JavaScript executor: main', () => { // eslint-disable-line no-undef
 
-	let stdout, stderr;
-	let stdoutQueue, stderrQueue;
+	let stdout;
+	let stdoutQueue;
 
 	beforeEach( () => { // eslint-disable-line no-undef
 		stdoutQueue = [];
@@ -21,23 +21,53 @@ describe( 'JavaScript executor', () => { // eslint-disable-line no-undef
 			stdoutQueue.push( chunk );
 			next();
 		};
-
-		stderrQueue = [];
-		stderr = new Stream.Writable();
-		stderr._write = ( chunk, encoding, next ) => {
-			stderrQueue.push( chunk );
-			next();
-		};
 	} );
 
-	function runTest( zobject, expectedResult = null, expectedStderr = null ) {
-		execute( zobject, stdout, stderr );
-		if ( expectedResult !== null ) {
-			assert.deepEqual( expectedResult.Z22K1, JSON.parse( stdoutQueue.join( '' ) ) );
-		}
-		if ( expectedStderr !== null ) {
-			assert.deepEqual( expectedStderr.Z22K2, JSON.parse( stderrQueue.join( '' ) ) );
-		}
+	it( 'test main: add', () => { // eslint-disable-line no-undef
+		const Z7 = readTestJson( './test/test_data/javascript_add.json' );
+		const Z7String = JSON.stringify( { function_call: Z7 } );
+		const expected = readTestJson( './test/test_data/add_expected.json' );
+		return new Promise( ( resolve ) => {
+			const stdin = new Stream.Readable();
+			stdin._read = () => {};
+			stdout = new Stream.Writable();
+			stdout._write = ( chunk ) => {
+				stdoutQueue.push( chunk );
+				resolve();
+			};
+			main( stdin, stdout );
+			stdin.push( Z7String );
+		} ).then( () => {
+			assert.deepEqual( expected, JSON.parse( stdoutQueue.join( '' ) ) );
+		} );
+	} );
+
+	it( 'test main: syntax failure', () => { // eslint-disable-line no-undef
+		const Z7 = readTestJson( './test/test_data/javascript_syntax_failure.json' );
+		const Z7String = JSON.stringify( { function_call: Z7 } );
+		const expected = readTestJson( './test/test_data/javascript_syntax_failure_expected.json' );
+		return new Promise( ( resolve ) => {
+			const stdin = new Stream.Readable();
+			stdin._read = () => {};
+			stdout = new Stream.Writable();
+			stdout._write = ( chunk ) => {
+				stdoutQueue.push( chunk );
+				resolve();
+			};
+			main( stdin, stdout );
+			stdin.push( Z7String );
+		} ).then( () => {
+			assert.deepEqual( expected, JSON.parse( stdoutQueue.join( '' ) ) );
+		} );
+	} );
+
+} );
+
+describe( 'JavaScript executor', () => { // eslint-disable-line no-undef
+
+	function runTest( zobject, expectedResult ) {
+		const result = execute( zobject );
+		assert.deepEqual( expectedResult, result );
 	}
 
 	it( 'test runs function call', () => { // eslint-disable-line no-undef
@@ -57,7 +87,6 @@ describe( 'JavaScript executor', () => { // eslint-disable-line no-undef
 	it( 'test undeserializable type', () => { // eslint-disable-line no-undef
 		runTest(
 			readTestJson( './test/test_data/javascript_unsupported_input.json' ),
-			null,
 			readTestJson( './test/test_data/unsupported_input_expected.json' )
 		);
 	} );
@@ -65,7 +94,6 @@ describe( 'JavaScript executor', () => { // eslint-disable-line no-undef
 	it( 'test unserializable type', () => { // eslint-disable-line no-undef
 		runTest(
 			readTestJson( './test/test_data/javascript_unsupported_output.json' ),
-			null,
 			readTestJson( './test/test_data/javascript_unsupported_output_expected.json' )
 		);
 	} );
@@ -73,7 +101,6 @@ describe( 'JavaScript executor', () => { // eslint-disable-line no-undef
 	it( 'test no Z8', () => { // eslint-disable-line no-undef
 		runTest(
 			readTestJson( './test/test_data/javascript_no_Z8.json' ),
-			null,
 			readTestJson( './test/test_data/no_Z8_expected.json' )
 		);
 	} );
@@ -81,28 +108,8 @@ describe( 'JavaScript executor', () => { // eslint-disable-line no-undef
 	it( 'test no Z14', () => { // eslint-disable-line no-undef
 		runTest(
 			readTestJson( './test/test_data/javascript_no_Z14.json' ),
-			null,
 			readTestJson( './test/test_data/no_Z14_expected.json' )
 		);
-	} );
-
-	it( 'test main', () => { // eslint-disable-line no-undef
-		const Z7 = readTestJson( './test/test_data/javascript_add.json' );
-		const Z7String = JSON.stringify( { function_call: Z7 } );
-		const expected = readTestJson( './test/test_data/add_expected.json' ).Z22K1;
-		return new Promise( ( resolve ) => {
-			const stdin = new Stream.Readable();
-			stdin._read = () => {};
-			stdout = new Stream.Writable();
-			stdout._write = ( chunk ) => {
-				stdoutQueue.push( chunk );
-				resolve();
-			};
-			main( stdin, stdout, stderr );
-			stdin.push( Z7String );
-		} ).then( () => {
-			assert.deepEqual( expected, JSON.parse( stdoutQueue.join( '' ) ) );
-		} );
 	} );
 
 } );

@@ -75,7 +75,20 @@ describe( 'evaluate-unit', function () {
 	test(
 		'empty on both ends',
 		'test_data/empty_on_both_ends.py',
-		( json ) => !errorValidator.validate( json )
+		{
+			Z1K1: { Z1K1: 'Z9', Z9K1: 'Z22' },
+			Z22K1: Z23(),
+			Z22K2: {
+				Z1K1: {
+					Z1K1: 'Z9',
+					Z9K1: 'Z5'
+				},
+				Z5K1: {
+					Z1K1: 'Z6',
+					Z6K1: 'Executor returned some nonsense: .'
+				}
+			}
+		}
 	);
 
 	it(
@@ -107,7 +120,7 @@ describe( 'evaluate-unit', function () {
 
 } );
 
-describe( 'evaluate-integration-python3', function () {
+describe( 'evaluate-integration', function () {
 
 	this.timeout( 20000 );
 
