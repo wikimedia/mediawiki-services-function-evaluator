@@ -15,6 +15,16 @@ pipelines:
         run: false
       - name: test
     execution:
-      - [build-python3-executor, test-python3-executor] 
-      - [build-javascript-executor, test-javascript-executor] 
-      - [build, test] 
+      - [build-python3-executor, test-python3-executor]
+      - [build-javascript-executor, test-javascript-executor]
+      - [build, test]
+  publish:
+    stages:
+      - name: production
+        build: production
+        publish: &publish_with_tags
+          image:
+            id: '${.imageID}'
+            tags:
+              - latest
+              - '${setup.tag}'
