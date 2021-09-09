@@ -17,6 +17,7 @@ DESERIALIZERS_.set( 'Z10', deserializeZ10 );
 // eslint-disable-next-line no-unused-vars
 DESERIALIZERS_.set( 'Z21', ( Z21 ) => null );
 DESERIALIZERS_.set( 'Z40', ( Z40 ) => Z40.Z40K1.Z9K1 === 'Z41' );
+DESERIALIZERS_.set( 'Z86', ( Z86 ) => Z86.Z86K1.Z6K1 );
 
 /**
  * Determine the ZID corresponding to the type of a ZObject.
