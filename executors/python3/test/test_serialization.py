@@ -73,10 +73,21 @@ _ZFalse = {
         'Z9K1': 'Z42'
     }
 }
+_Z86 = {
+    'Z1K1': {
+        'Z1K1': 'Z9',
+        'Z9K1': 'Z86'
+    },
+    'Z86K1': {
+        'Z1K1': 'Z6',
+        'Z6K1': '%'
+    }
+}
 
 
 _Z6_DESERIALIZED = 'opiparo'
 _Z10_DESERIALIZED = [True, 'tRue', []]
+_Z86_DESERIALIZED = '%'
 
 
 class DeerializeTest(unittest.TestCase):
@@ -96,20 +107,23 @@ class DeerializeTest(unittest.TestCase):
     def test_deserializes_Z40_Z42(self):
         self.assertEqual(False, executor.deserialize(_ZFalse))
 
+    def test_deserializes_Z86(self):
+        self.assertEqual(_Z86_DESERIALIZED, executor.deserialize(_Z86))
+
 
 class SerializeTest(unittest.TestCase):
     
-    def test_deserializes_Z6(self):
+    def test_serializes_Z6(self):
         self.assertEqual(_Z6, executor.serialize(_Z6_DESERIALIZED))
     
-    def test_deserializes_Z10(self):
+    def test_serializes_Z10(self):
         self.assertEqual(_Z10, executor.serialize(_Z10_DESERIALIZED))
     
-    def test_deserializes_Z21(self):
+    def test_serializes_Z21(self):
         self.assertEqual(_Z21, executor.serialize(None))
     
-    def test_deserializes_Z40_Z41(self):
+    def test_serializes_Z40_Z41(self):
         self.assertEqual(_ZTrue, executor.serialize(True))
     
-    def test_deserializes_Z40_Z42(self):
+    def test_serializes_Z40_Z42(self):
         self.assertEqual(_ZFalse, executor.serialize(False))

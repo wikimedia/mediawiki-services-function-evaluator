@@ -30,6 +30,7 @@ def _DESERIALIZE_Z10(Z10):
 _DESERIALIZE_Z6 = lambda Z6: Z6['Z6K1']
 _DESERIALIZE_Z21 = lambda Z21: None
 _DESERIALIZE_Z40 = lambda Z40: Z40['Z40K1']['Z9K1'] == 'Z41'
+# TODO: Figure out how to serialize Z86s.
 _DESERIALIZE_Z86 = lambda Z86: Z86['Z86K1']['Z6K1']
 _DESERIALIZERS = {
     'Z6': _DESERIALIZE_Z6,
