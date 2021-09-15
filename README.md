@@ -10,7 +10,7 @@ variety of language-specific [executors](#executors).
 The evaluator itself is a thin wrapper (based on [service-template-node](https://www.mediawiki.org/wiki/ServiceTemplateNode))
 responsible for validating incoming objects as Z7/Function calls, determining the correct
 [executor](#executors) to delegate to, and returning either the result of
-function execution or an approprate error back to the caller.
+function execution or an appropriate error back to the caller.
 
 <a href='executors'></a>
 ## Executors
@@ -35,7 +35,8 @@ to `stdout`, which the evaluator collects and returns as JSON.
 ### Implementing a New Executor
 An executor must be able to do three things: 1) communicate with the main
 process via standard I/O streams; 2) deserialize ZObjects as appropriate native
-types (and perform the inverse serialization operation); and 3) execute code.
+types (and perform the inverse serialization operation); and 3) execute code
+(via constructions like, e.g., `exec` or `eval`).
 The existing Python and JavaScript implementations can hopefully serve as a
 reference for how to accomplish these tasks, but serialization and deserialization
 deserve particular attention.
