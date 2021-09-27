@@ -3,6 +3,7 @@
 const sUtil = require( '../lib/util' );
 const subprocess = require( '../src/subprocess.js' );
 const { SchemaFactory } = require( '../function-schemata/javascript/src/schema.js' );
+const { makeResultEnvelope } = require( '../function-schemata/javascript/src/utils.js' );
 
 /**
  * The main router object
@@ -14,43 +15,12 @@ const router = sUtil.router();
  */
 let app; // eslint-disable-line no-unused-vars
 
-/**
- * Creates a Z23 (Nothing).
- *
- * @return {Object} Z23
- */
-function Unit() {
-	// TODO(T282891): Use function-schemata version.
-	return { Z1K1: 'Z9', Z9K1: 'Z23' };
-}
-
-/**
- * Creates an empty Z10 (List).
- *
- * @param {Object} goodResult Z22K1 of resulting Z22
- * @param {Object} badResult Z22K2 of resulting Z22
- * @param {boolean} canonical whether output should be in canonical form
- * @return {Object} a Z22
- */
-function makePair( goodResult = null, badResult = null ) {
-	// TODO(T282891): Use function-schemata version.
-	const Z1K1 = {
-		Z1K1: 'Z9',
-		Z9K1: 'Z22'
-	};
-	return {
-		Z1K1: Z1K1,
-		Z22K1: goodResult === null ? Unit() : goodResult,
-		Z22K2: badResult === null ? Unit() : badResult
-	};
-}
-
 async function maybeRunZ7( ZObject ) {
 	const schema = SchemaFactory.NORMAL().create( 'Z7_backend' );
 	if ( !schema.validate( ZObject ) ) {
 		return {
 			process: null,
-			Z22: makePair(
+			Z22: makeResultEnvelope(
 				null,
 				{
 					Z1K1: {
@@ -104,7 +74,7 @@ async function maybeRunZ7( ZObject ) {
 	if ( executorProcess === null ) {
 		return {
 			process: executorProcess,
-			Z22: makePair(
+			Z22: makeResultEnvelope(
 				null,
 				{
 					Z1K1: {
@@ -152,7 +122,7 @@ async function maybeRunZ7( ZObject ) {
 	try {
 		Z22 = JSON.parse( contents );
 	} catch ( error ) {
-		Z22 = makePair(
+		Z22 = makeResultEnvelope(
 			null,
 			{
 				Z1K1: {
