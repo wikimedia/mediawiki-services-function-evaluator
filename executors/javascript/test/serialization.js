@@ -74,6 +74,16 @@ const ZFalse_ = {
 		Z9K1: 'Z42'
 	}
 };
+const Z86_ = {
+	Z1K1: {
+		Z1K1: 'Z9',
+		Z9K1: 'Z86'
+	},
+	Z86K1: {
+		Z1K1: 'Z6',
+		Z6K1: '%'
+	}
+};
 
 const Z6_DESERIALIZED_ = 'opiparo';
 const Z10_DESERIALIZED_ = [ true, 'tRue', [] ];
@@ -98,6 +108,10 @@ describe( 'Javascript executor: deserialization', () => { // eslint-disable-line
 
 	it( 'test deserializes Z40: Z42', () => { // eslint-disable-line no-undef
 		assert.deepEqual( false, deserialize( ZFalse_ ) );
+	} );
+
+	it( 'test deserializes Z86', () => { // eslint-disable-line no-undef
+		assert.deepEqual( '%', deserialize( Z86_ ) );
 	} );
 } );
 
