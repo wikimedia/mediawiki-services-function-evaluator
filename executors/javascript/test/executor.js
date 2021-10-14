@@ -6,7 +6,7 @@ const { execute, main } = require( '../executor.js' );
 const assert = require( 'chai' ).assert;
 
 function readTestJson( fileName ) {
-	return JSON.parse( fs.readFileSync( fileName, { encoding: 'utf8' } ) );
+	return JSON.parse( fs.readFileSync( './test/test_data/' + fileName, { encoding: 'utf8' } ) );
 }
 
 describe( 'JavaScript executor: main', () => { // eslint-disable-line no-undef
@@ -24,9 +24,9 @@ describe( 'JavaScript executor: main', () => { // eslint-disable-line no-undef
 	} );
 
 	it( 'test main: add', () => { // eslint-disable-line no-undef
-		const Z7 = readTestJson( './test/test_data/javascript_add.json' );
+		const Z7 = readTestJson( 'javascript_add.json' );
 		const Z7String = JSON.stringify( { function_call: Z7 } );
-		const expected = readTestJson( './test/test_data/add_expected.json' );
+		const expected = readTestJson( 'add_expected.json' );
 		return new Promise( ( resolve ) => {
 			const stdin = new Stream.Readable();
 			stdin._read = () => {};
@@ -43,9 +43,9 @@ describe( 'JavaScript executor: main', () => { // eslint-disable-line no-undef
 	} );
 
 	it( 'test main: syntax failure', () => { // eslint-disable-line no-undef
-		const Z7 = readTestJson( './test/test_data/javascript_syntax_failure.json' );
+		const Z7 = readTestJson( 'javascript_syntax_failure.json' );
 		const Z7String = JSON.stringify( { function_call: Z7 } );
-		const expected = readTestJson( './test/test_data/javascript_syntax_failure_expected.json' );
+		const expected = readTestJson( 'javascript_syntax_failure_expected.json' );
 		return new Promise( ( resolve ) => {
 			const stdin = new Stream.Readable();
 			stdin._read = () => {};
@@ -72,43 +72,63 @@ describe( 'JavaScript executor', () => { // eslint-disable-line no-undef
 
 	it( 'test runs function call', () => { // eslint-disable-line no-undef
 		runTest(
-			readTestJson( './test/test_data/javascript_add.json' ),
-			readTestJson( './test/test_data/add_expected.json' )
+			readTestJson( 'javascript_add.json' ),
+			readTestJson( 'add_expected.json' )
 		);
 	} );
 
-	it( 'test compound type', () => { // eslint-disable-line no-undef
+	// TODO(T292808): Re-enable this test once we can serialize Z1s.
+	xit( 'test compound type', () => { // eslint-disable-line no-undef
 		runTest(
-			readTestJson( './test/test_data/javascript_compound_type.json' ),
-			readTestJson( './test/test_data/compound_type_expected.json' )
+			readTestJson( 'javascript_compound_type.json' ),
+			readTestJson( 'compound_type_expected.json' )
 		);
+	} );
+
+	it( 'test list_o_lists_o_strings_input', () => { // eslint-disable-line no-undef
+		const Z7 = readTestJson( 'list_list_string_input.json' );
+		Z7.Z1000K1 = readTestJson( 'list_list_strings.json' );
+		Z7.Z7K1.Z8K4 = readTestJson( 'list_list_string_input_javascript_implementation.json' );
+		const expected = readTestJson( 'result_envelope_template.json' );
+		expected.Z22K1 = readTestJson( 'string_in_lists.json' );
+		runTest( Z7, expected );
+	} );
+
+	it( 'test list_o_lists_o_strings_output', () => { // eslint-disable-line no-undef
+		const Z7 = readTestJson( 'list_list_string_output.json' );
+		Z7.Z1000K1 = readTestJson( 'string_in_lists.json' );
+		Z7.Z7K1.Z8K4 = readTestJson( 'list_list_string_output_javascript_implementation.json' );
+		const expected = readTestJson( 'result_envelope_template.json' );
+		expected.Z22K1 = readTestJson( 'list_list_strings.json' );
+		Z7.Z7K1.Z8K2 = expected.Z22K1.Z1K1;
+		runTest( Z7, expected );
 	} );
 
 	it( 'test undeserializable type', () => { // eslint-disable-line no-undef
 		runTest(
-			readTestJson( './test/test_data/javascript_unsupported_input.json' ),
-			readTestJson( './test/test_data/unsupported_input_expected.json' )
+			readTestJson( 'javascript_unsupported_input.json' ),
+			readTestJson( 'unsupported_input_expected.json' )
 		);
 	} );
 
 	it( 'test unserializable type', () => { // eslint-disable-line no-undef
 		runTest(
-			readTestJson( './test/test_data/javascript_unsupported_output.json' ),
-			readTestJson( './test/test_data/javascript_unsupported_output_expected.json' )
+			readTestJson( 'javascript_unsupported_output.json' ),
+			readTestJson( 'javascript_unsupported_output_expected.json' )
 		);
 	} );
 
 	it( 'test no Z8', () => { // eslint-disable-line no-undef
 		runTest(
-			readTestJson( './test/test_data/javascript_no_Z8.json' ),
-			readTestJson( './test/test_data/no_Z8_expected.json' )
+			readTestJson( 'javascript_no_Z8.json' ),
+			readTestJson( 'no_Z8_expected.json' )
 		);
 	} );
 
 	it( 'test no Z14', () => { // eslint-disable-line no-undef
 		runTest(
-			readTestJson( './test/test_data/javascript_no_Z14.json' ),
-			readTestJson( './test/test_data/no_Z14_expected.json' )
+			readTestJson( 'javascript_no_Z14.json' ),
+			readTestJson( 'no_Z14_expected.json' )
 		);
 	} );
 

@@ -19,7 +19,12 @@ def _read_test_json(file_name):
         return json.load(inp)
 
 
+# TODO(T292808): Re-enable test of python3_compound_type.json.
 class ExecutorTest(unittest.TestCase):
+
+    def setUp(self):
+        super().setUp()
+        self.maxDiff = None
 
     def _run_test(self, zobject, expected_result):
         actual = executor.execute(zobject)
@@ -35,9 +40,21 @@ class ExecutorTest(unittest.TestCase):
         expected = _read_test_json('add_expected.json')
         self._run_test(Z7, expected)
 
-    def test_various_types(self):
-        Z7 = _read_test_json('python3_compound_type.json')
-        expected = _read_test_json('compound_type_expected.json')
+    def test_list_o_lists_o_strings_input(self):
+        Z7 = _read_test_json('list_list_string_input.json')
+        Z7['Z1000K1'] = _read_test_json('list_list_strings.json')
+        Z7['Z7K1']['Z8K4'] = _read_test_json('list_list_string_input_python3_implementation.json')
+        expected = _read_test_json('result_envelope_template.json')
+        expected['Z22K1'] = _read_test_json('string_in_lists.json')
+        self._run_test(Z7, expected)
+
+    def test_list_o_lists_o_strings_output(self):
+        Z7 = _read_test_json('list_list_string_output.json')
+        Z7['Z1000K1'] = _read_test_json('string_in_lists.json')
+        Z7['Z7K1']['Z8K4'] = _read_test_json('list_list_string_output_python3_implementation.json')
+        expected = _read_test_json('result_envelope_template.json')
+        expected['Z22K1'] = _read_test_json('list_list_strings.json')
+        Z7['Z7K1']['Z8K2'] = expected['Z22K1']['Z1K1']
         self._run_test(Z7, expected)
 
     def test_undeserializable_type(self):
