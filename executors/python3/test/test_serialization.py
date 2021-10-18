@@ -1,5 +1,5 @@
 import unittest
-from .. import executor
+from .. import serialization
 
 
 _Z6 = { 'Z1K1': 'Z6', 'Z6K1': 'opiparo' }
@@ -99,39 +99,39 @@ _Z40_Type = { 'Z1K1': 'Z9', 'Z9K1': 'Z40' }
 class DeerializeTest(unittest.TestCase):
     
     def test_deserializes_Z6(self):
-        self.assertEqual(_Z6_DESERIALIZED, executor.deserialize(_Z6))
+        self.assertEqual(_Z6_DESERIALIZED, serialization.deserialize(_Z6))
 
     def test_deserializes_Z10(self):
-        self.assertEqual(_Z10_DESERIALIZED, executor.deserialize(_Z10))
+        self.assertEqual(_Z10_DESERIALIZED, serialization.deserialize(_Z10))
     
     def test_deserializes_Z21(self):
-        self.assertIsNone(executor.deserialize(_Z21))
+        self.assertIsNone(serialization.deserialize(_Z21))
     
     def test_deserializes_Z40_Z41(self):
-        self.assertEqual(True, executor.deserialize(_ZTrue))
+        self.assertEqual(True, serialization.deserialize(_ZTrue))
     
     def test_deserializes_Z40_Z42(self):
-        self.assertEqual(False, executor.deserialize(_ZFalse))
+        self.assertEqual(False, serialization.deserialize(_ZFalse))
 
     def test_deserializes_Z86(self):
-        self.assertEqual(_Z86_DESERIALIZED, executor.deserialize(_Z86))
+        self.assertEqual(_Z86_DESERIALIZED, serialization.deserialize(_Z86))
 
 
 class SerializeTest(unittest.TestCase):
     
     def test_serializes_Z6(self):
-        self.assertEqual(_Z6, executor.serialize(_Z6_DESERIALIZED, _Z6_Type))
+        self.assertEqual(_Z6, serialization.serialize(_Z6_DESERIALIZED, _Z6_Type))
     
     # TODO(T292808): Re-enable this test once we can serialize Z1s.
     @unittest.skip
     def test_serializes_Z10(self):
-        self.assertEqual(_Z10, executor.serialize(_Z10_DESERIALIZED, _Z10_Type))
+        self.assertEqual(_Z10, serialization.serialize(_Z10_DESERIALIZED, _Z10_Type))
     
     def test_serializes_Z21(self):
-        self.assertEqual(_Z21, executor.serialize(None, _Z21_Type))
+        self.assertEqual(_Z21, serialization.serialize(None, _Z21_Type))
     
     def test_serializes_Z40_Z41(self):
-        self.assertEqual(_ZTrue, executor.serialize(True, _Z40_Type))
+        self.assertEqual(_ZTrue, serialization.serialize(True, _Z40_Type))
     
     def test_serializes_Z40_Z42(self):
-        self.assertEqual(_ZFalse, executor.serialize(False, _Z40_Type))
+        self.assertEqual(_ZFalse, serialization.serialize(False, _Z40_Type))
