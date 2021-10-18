@@ -82,6 +82,7 @@ function execute( Z7 ) {
 	}
 
 	const returnValue = functionName + 'K0';
+	const returnType = Z7.Z7K1.Z8K2; // eslint-disable-line no-unused-vars
 	const functionTemplate = `
         ${implementation}
 
@@ -93,7 +94,7 @@ function execute( Z7 ) {
 
         resultCache.set(
             '${returnValue}',
-            serialize(${functionName}.apply(null, boundLocals))
+            serialize(${functionName}.apply(null, boundLocals), returnType)
         );
     `;
 	try {

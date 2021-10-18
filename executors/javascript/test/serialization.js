@@ -88,6 +88,11 @@ const Z86_ = {
 const Z6_DESERIALIZED_ = 'opiparo';
 const Z10_DESERIALIZED_ = [ true, 'tRue', [] ];
 
+const Z6_Type_ = { Z1K1: 'Z9', Z9K1: 'Z6' };
+const Z10_Type_ = { Z1K1: 'Z9', Z9K1: 'Z10' };
+const Z21_Type_ = { Z1K1: 'Z9', Z9K1: 'Z21' };
+const Z40_Type_ = { Z1K1: 'Z9', Z9K1: 'Z40' };
+
 describe( 'Javascript executor: deserialization', () => { // eslint-disable-line no-undef
 
 	it( 'test deserializes Z6', () => { // eslint-disable-line no-undef
@@ -118,22 +123,23 @@ describe( 'Javascript executor: deserialization', () => { // eslint-disable-line
 describe( 'Javascript executor: serialization', () => { // eslint-disable-line no-undef
 
 	it( 'test serializes Z6', () => { // eslint-disable-line no-undef
-		assert.deepEqual( Z6_, serialize( Z6_DESERIALIZED_ ) );
+		assert.deepEqual( Z6_, serialize( Z6_DESERIALIZED_, Z6_Type_ ) );
 	} );
 
-	it( 'test serializes Z10', () => { // eslint-disable-line no-undef
-		assert.deepEqual( Z10_, serialize( Z10_DESERIALIZED_ ) );
+	// TODO(T292808): Re-enable this test once we can serialize Z1s.
+	xit( 'test serializes Z10', () => { // eslint-disable-line no-undef
+		assert.deepEqual( Z10_, serialize( Z10_DESERIALIZED_, Z10_Type_ ) );
 	} );
 
 	it( 'test serializes Z21', () => { // eslint-disable-line no-undef
-		assert.deepEqual( Z21_, serialize( null ) );
+		assert.deepEqual( Z21_, serialize( null, Z21_Type_ ) );
 	} );
 
 	it( 'test serializes Z40: Z41', () => { // eslint-disable-line no-undef
-		assert.deepEqual( ZTrue_, serialize( true ) );
+		assert.deepEqual( ZTrue_, serialize( true, Z40_Type_ ) );
 	} );
 
 	it( 'test serializes Z40: Z42', () => { // eslint-disable-line no-undef
-		assert.deepEqual( ZFalse_, serialize( false ) );
+		assert.deepEqual( ZFalse_, serialize( false, Z40_Type_ ) );
 	} );
 } );

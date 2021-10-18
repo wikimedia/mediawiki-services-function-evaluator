@@ -1,5 +1,7 @@
 'use strict';
 
+const { getZID, getZObjectType, z10ToList } = require( './utils.js' );
+
 const DESERIALIZERS_ = new Map();
 
 function deserializeZ10( Z10 ) {
@@ -12,30 +14,28 @@ function deserializeZ10( Z10 ) {
 	return deserializedTail;
 }
 
+function deserializeZList( ZObject ) {
+	const result = [];
+	let tail = ZObject;
+	while ( true ) {
+		const head = tail.K1;
+		if ( head === undefined ) {
+			break;
+		}
+		result.push( deserialize( head ) );
+		tail = tail.K2;
+	}
+	return result;
+}
+
 DESERIALIZERS_.set( 'Z6', ( Z6 ) => Z6.Z6K1 );
 DESERIALIZERS_.set( 'Z10', deserializeZ10 );
 // eslint-disable-next-line no-unused-vars
 DESERIALIZERS_.set( 'Z21', ( Z21 ) => null );
 DESERIALIZERS_.set( 'Z40', ( Z40 ) => Z40.Z40K1.Z9K1 === 'Z41' );
 DESERIALIZERS_.set( 'Z86', ( Z86 ) => Z86.Z86K1.Z6K1 );
-
-/**
- * Determine the ZID corresponding to the type of a ZObject.
- *
- * @param {Object} ZObject
- * @return {string} the object's type ZID
- */
-function getZObjectType( ZObject ) {
-	const Z1K1 = ZObject.Z1K1;
-	const Z9K1 = Z1K1.Z9K1;
-	if ( Z9K1 !== undefined ) {
-		// Z1K1 for most types is a Z9.
-		return Z9K1;
-	}
-	// Otherwise, Z1K1 is a string or None, meaning original object was a Z6
-	// or Z9 (or not a good ZObject).
-	return Z1K1;
-}
+// TODO(T292260): Get a non-criminal ZID.
+DESERIALIZERS_.set( 'Z1010', deserializeZList );
 
 /**
  * Convert a ZObject into the corresponding JS type.
@@ -93,6 +93,20 @@ function serializeZ40( theBoolean ) {
 	};
 }
 
+function serializeZList( theArray, expectedType, index = 0 ) {
+	const result = {
+		Z1K1: expectedType
+	};
+	if ( index < theArray.length ) {
+		const expectedArgs = z10ToList( expectedType.Z4K2 );
+		const headKey = expectedArgs[ 0 ];
+		result[ headKey.Z3K2.Z6K1 ] = serialize( theArray[ index ], headKey.Z3K1 );
+		const tailKey = expectedArgs[ 1 ];
+		result[ tailKey.Z3K2.Z6K1 ] = serializeZList( theArray, expectedType, index + 1 );
+	}
+	return result;
+}
+
 const SERIALIZERS_ = new Map();
 SERIALIZERS_.set( 'Z6', ( theString ) => {
 	return { Z1K1: 'Z6', Z6K1: theString };
@@ -100,30 +114,8 @@ SERIALIZERS_.set( 'Z6', ( theString ) => {
 SERIALIZERS_.set( 'Z10', serializeZ10 );
 SERIALIZERS_.set( 'Z21', serializeZ21 );
 SERIALIZERS_.set( 'Z40', serializeZ40 );
-
-const typeMap = new Map();
-typeMap.set( 'String', 'Z6' );
-typeMap.set( 'Array', 'Z10' );
-typeMap.set( 'Null', 'Z21' );
-typeMap.set( 'Boolean', 'Z40' );
-
-/**
- * Infer the type of a JS object and try to find the corresponding ZID.
- * String -> Z6
- * Array -> Z10
- * Null -> Z21
- * Boolean -> Z40
- *
- * @param {Object} theObject
- * @return {string} the ZID corresponding to the appropriate serialized type
- */
-function getZIDForJSType( theObject ) {
-	const typeRegex = /\[object (\w*)\]/;
-	// Object.toString will retur n[object <TYPE>]; <TYPE> is what we're after.
-	const typeString = Object.prototype.toString.call( theObject ).replace( typeRegex, '$1' );
-	const ZID = typeMap.get( typeString );
-	return ZID;
-}
+// TODO(T292260): Get a non-criminal ZID.
+SERIALIZERS_.set( 'Z1010', serializeZList );
 
 /**
  * Convert a JS object into the corresponding ZObject type.
@@ -133,15 +125,16 @@ function getZIDForJSType( theObject ) {
  * Boolean -> Z40
  *
  * @param {Object} theObject
+ * @param {Object} expectedType
  * @return {Object} the serialized ZObject
  */
-function serialize( theObject ) {
-	const ZID = getZIDForJSType( theObject );
+function serialize( theObject, expectedType ) {
+	const ZID = getZID( expectedType );
 	const serializer = SERIALIZERS_.get( ZID );
 	if ( ZID === null || serializer === undefined ) {
 		throw Error( 'Could not serialize input JS object: ' + Object.prototype.toString.call( theObject ) );
 	}
-	return serializer( theObject );
+	return serializer( theObject, expectedType );
 }
 
 module.exports = { deserialize, serialize };
