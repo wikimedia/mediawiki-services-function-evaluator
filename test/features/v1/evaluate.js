@@ -35,7 +35,7 @@ describe( 'evaluate-unit', function () {
 	const test = ( name, pyFile, output ) => {
 		it( name, function () {
 			function mockExecutor() {
-				return subprocess.createExecutorSubprocess( 'python3', [ pyFile ] );
+				return subprocess.createExecutorSubprocess( 'python3', { args: [ pyFile ] } );
 			}
 			const stubProcess = sinon.stub( subprocess, 'runExecutorSubprocess' ).callsFake( mockExecutor );
 
