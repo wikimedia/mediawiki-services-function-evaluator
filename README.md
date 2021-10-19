@@ -64,3 +64,21 @@ To be precise: deserialization can trivially determine the type of a Z1/ZObject 
 consulting its `Z1K1` attribute, which reports the ZID corresponding to its type.
 However, serialization must rely on the language's introspection capabilities
 or some other strategy to determine type.
+
+<a href='repository-stewardship'></a>
+## Formatting Python Source Code
+
+- ### Create a Python Virtual Environment
+```
+VENVNAME=venv
+python3.6 -m venv ${VENVNAME}
+# Any Python version >= 3.6 will work; 3.6 is chosen here to keep pace with the
+# base Docker image in .pipeline/blubber.yaml#build-format-python3
+. ./${VENVNAME}/bin/activate
+pip install -r executors/python3/requirements-format.txt
+```
+
+- ### Run Black
+```
+python -m black executors/python3
+```

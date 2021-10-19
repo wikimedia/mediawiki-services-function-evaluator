@@ -6,6 +6,10 @@ pipelines:
         build: build-python3-executor
         run: false
       - name: test-python3-executor
+      - name: build-format-python3
+        build: build-format-python3
+        run: false
+      - name: format-python3
       - name: build-javascript-executor
         build: build-javascript-executor
         run: false
@@ -16,6 +20,7 @@ pipelines:
       - name: test
     execution:
       - [build-python3-executor, test-python3-executor]
+      - [build-format-python3, format-python3]
       - [build-javascript-executor, test-javascript-executor]
       - [build, test]
   publish:

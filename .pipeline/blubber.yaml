@@ -46,16 +46,33 @@ variants:
     includes: [build-python3-executor]
     lives:
       in: /executors/python3
-    runs:
-      environment: { PYTHONPATH: /executors/python3 }
     python:
       use-system-flag: false
-      # TODO: Figure out why black can't be installed.
       requirements:
       - from: local
         source: executors/python3/requirements-dev.txt
         destination: ./requirements-dev.txt
     entrypoint: [pytest]
+
+  build-format-python3:
+    base: docker-registry.wikimedia.org/python3-build-bullseye
+    lives:
+      in: /executors/python3
+    copies:
+    - from: local
+      source: executors/python3
+      destination: .
+  format-python3:
+    includes: [build-format-python3]
+    lives:
+      in: /executors/python3
+    python:
+      use-system-flag: false
+      requirements:
+      - from: local
+        source: executors/python3/requirements-format.txt
+        destination: ./requirements-format.txt
+    entrypoint: [sh, "./format.sh"]
 
   build-javascript-executor:
     base: docker-registry.wikimedia.org/nodejs12-devel
