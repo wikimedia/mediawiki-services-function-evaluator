@@ -77,8 +77,7 @@ describe( 'JavaScript executor', () => { // eslint-disable-line no-undef
 		);
 	} );
 
-	// TODO(T292808): Re-enable this test once we can serialize Z1s.
-	xit( 'test compound type', () => { // eslint-disable-line no-undef
+	it( 'test compound type', () => { // eslint-disable-line no-undef
 		runTest(
 			readTestJson( 'javascript_compound_type.json' ),
 			readTestJson( 'compound_type_expected.json' )

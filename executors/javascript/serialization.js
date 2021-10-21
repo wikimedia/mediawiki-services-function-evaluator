@@ -1,6 +1,7 @@
 'use strict';
 
-const { getZID, getZObjectType, z10ToList } = require( './utils.js' );
+const { getZID, getZIDForJSType, getZObjectType, z10ToList } = require( './utils.js' );
+const { inspect } = require( 'util' );
 
 const DESERIALIZERS_ = new Map();
 
@@ -65,11 +66,20 @@ function emptyZ10() {
 	};
 }
 
+function serializeZ1( theObject ) {
+	const ZID = getZIDForJSType( theObject );
+	if ( ZID === undefined ) {
+		throw Error( 'Could not serialize input JS object: ' + inspect( theObject ) );
+	}
+	const Z4 = { Z1K1: 'Z9', Z9K1: ZID };
+	return serialize( theObject, Z4 );
+}
+
 function serializeZ10( theArray ) {
 	const result = emptyZ10();
 	const nextElement = theArray.shift();
 	if ( nextElement !== undefined ) {
-		result.Z10K1 = serialize( nextElement );
+		result.Z10K1 = serialize( nextElement, { Z1K1: 'Z9', Z9K1: 'Z1' } );
 		result.Z10K2 = serializeZ10( theArray );
 	}
 	return result;
@@ -93,6 +103,19 @@ function serializeZ40( theBoolean ) {
 	};
 }
 
+function serializeZ86( theCodePoint ) {
+	return {
+		Z1K1: {
+			Z1K1: 'Z9',
+			Z9K1: 'Z86'
+		},
+		Z86K1: {
+			Z1K1: 'Z6',
+			Z6K1: theCodePoint
+		}
+	};
+}
+
 function serializeZList( theArray, expectedType, index = 0 ) {
 	const result = {
 		Z1K1: expectedType
@@ -108,12 +131,14 @@ function serializeZList( theArray, expectedType, index = 0 ) {
 }
 
 const SERIALIZERS_ = new Map();
+SERIALIZERS_.set( 'Z1', serializeZ1 );
 SERIALIZERS_.set( 'Z6', ( theString ) => {
 	return { Z1K1: 'Z6', Z6K1: theString };
 } );
 SERIALIZERS_.set( 'Z10', serializeZ10 );
 SERIALIZERS_.set( 'Z21', serializeZ21 );
 SERIALIZERS_.set( 'Z40', serializeZ40 );
+SERIALIZERS_.set( 'Z86', serializeZ86 );
 // TODO(T292260): Get a non-criminal ZID.
 SERIALIZERS_.set( 'Z1010', serializeZList );
 
@@ -132,7 +157,7 @@ function serialize( theObject, expectedType ) {
 	const ZID = getZID( expectedType );
 	const serializer = SERIALIZERS_.get( ZID );
 	if ( ZID === null || serializer === undefined ) {
-		throw Error( 'Could not serialize input JS object: ' + Object.prototype.toString.call( theObject ) );
+		throw Error( 'Could not serialize input JS object: ' + inspect( theObject ) );
 	}
 	return serializer( theObject, expectedType );
 }

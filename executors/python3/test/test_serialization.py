@@ -63,8 +63,6 @@ class SerializeTest(unittest.TestCase):
     def test_serializes_Z6(self):
         self.assertEqual(_Z6, serialization.serialize(_Z6_DESERIALIZED, _Z6_Type))
 
-    # TODO(T292808): Re-enable this test once we can serialize Z1s.
-    @unittest.skip
     def test_serializes_Z10(self):
         self.assertEqual(_Z10, serialization.serialize(_Z10_DESERIALIZED, _Z10_Type))
 

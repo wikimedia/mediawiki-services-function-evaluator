@@ -56,6 +56,15 @@ def deserialize(ZObject):
     return deserializer(ZObject)
 
 
+def _SERIALIZE_Z1(anything, _):
+    ZID = utils.get_python_type(anything)
+    if ZID is None:
+        raise exceptions.EvaluatorError(
+            "Could not serialize input python object: {}".format(repr(anything))
+        )
+    return serialize(anything, {"Z1K1": "Z9", "Z9K1": ZID})
+
+
 # TODO(T292788): Eliminate this function.
 def _SERIALIZE_Z10(iterable, _):
     def _empty_Z10():
@@ -63,7 +72,7 @@ def _SERIALIZE_Z10(iterable, _):
 
     result = current = _empty_Z10()
     for element in iterable:
-        current["Z10K1"] = serialize(element)
+        current["Z10K1"] = serialize(element, {"Z1K1": "Z9", "Z9K1": "Z1"})
         current["Z10K2"] = _empty_Z10()
         current = current["Z10K2"]
     return result
@@ -113,6 +122,7 @@ def _SERIALIZE_Z86(code_point, _):
 
 _SERIALIZE_Z6 = lambda string, _: {"Z1K1": "Z6", "Z6K1": string}
 _SERIALIZERS = {
+    "Z1": _SERIALIZE_Z1,
     "Z6": _SERIALIZE_Z6,
     # TODO(T292788): Eliminate Z10.
     "Z10": _SERIALIZE_Z10,
@@ -137,7 +147,6 @@ def serialize(py_object, expected_type):
         try:
             return serializer(py_object, expected_type)
         except:
-            raise
             pass
     raise exceptions.EvaluatorError(
         "Could not serialize input python object: {}".format(repr(py_object))

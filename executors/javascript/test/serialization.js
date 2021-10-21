@@ -126,8 +126,7 @@ describe( 'Javascript executor: serialization', () => { // eslint-disable-line n
 		assert.deepEqual( Z6_, serialize( Z6_DESERIALIZED_, Z6_Type_ ) );
 	} );
 
-	// TODO(T292808): Re-enable this test once we can serialize Z1s.
-	xit( 'test serializes Z10', () => { // eslint-disable-line no-undef
+	it( 'test serializes Z10', () => { // eslint-disable-line no-undef
 		assert.deepEqual( Z10_, serialize( Z10_DESERIALIZED_, Z10_Type_ ) );
 	} );
 

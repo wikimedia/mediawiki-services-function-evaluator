@@ -14,7 +14,7 @@
 		},
 		"Z5K2": {
 			"Z1K1": "Z6",
-			"Z6K1": "Could not serialize input JS object: [object Object]"
+			"Z6K1": "Could not serialize input JS object: A {}"
 		}
 	}
 }
