@@ -5,6 +5,23 @@ The evaluator service executes user-written 'native' code in a variety of progra
 The repository consists of the [evaluator service](#evaluator-service) and a
 variety of language-specific [executors](#executors).
 
+## Local installation
+You should use one of the [Docker images](https://docker-registry.wikimedia.org/wikimedia/mediawiki-services-function-evaluator)
+for local use, and you do not need to download the raw code unless you want to
+modify the evalautor. If you're going to attempt that, remember to clone the
+repository with the `--recurse-submodules` flag:
+
+```
+git clone --recurse-submodules ssh://gerrit.wikimedia.org:29418/mediawiki/services/function-evaluator
+```
+
+If you've already cloned the repository but forgot that flag, you can adjust
+your local check-out with:
+
+```
+git submodule update --init
+```
+
 <a href='evaluator-service'></a>
 ## Evaluator Service
 The evaluator itself is a thin wrapper (based on [service-template-node](https://www.mediawiki.org/wiki/ServiceTemplateNode))
