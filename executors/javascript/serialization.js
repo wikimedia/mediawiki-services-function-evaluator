@@ -1,7 +1,9 @@
 'use strict';
 
-const { getZID, getZIDForJSType, getZObjectType, z10ToList } = require( './utils.js' );
+const { getZID, getZIDForJSType, getZObjectType, isString, listToZ10, z10ToList } = require( './utils.js' );
+const { ZPair } = require( './utils.js' );
 const { inspect } = require( 'util' );
+const stableStringify = require( 'json-stable-stringify-without-jsonify' );
 
 const DESERIALIZERS_ = new Map();
 
@@ -27,14 +29,6 @@ function deserializeZList( ZObject ) {
 		tail = tail.K2;
 	}
 	return result;
-}
-
-class ZPair {
-	constructor( K1, K2, originalZ1K1 = null ) {
-		this.Z1K1_ = originalZ1K1;
-		this.K1 = K1;
-		this.K2 = K2;
-	}
 }
 
 // TODO(T290898): This can serve as a model for default deserialization--all
@@ -80,15 +74,6 @@ function emptyZ10() {
 	};
 }
 
-function serializeZ1( theObject ) {
-	const ZID = getZIDForJSType( theObject );
-	if ( ZID === undefined ) {
-		throw new Error( 'Could not serialize input JS object: ' + inspect( theObject ) );
-	}
-	const Z4 = { Z1K1: 'Z9', Z9K1: ZID };
-	return serialize( theObject, Z4 );
-}
-
 function serializeZ10( theArray ) {
 	const result = emptyZ10();
 	const nextElement = theArray.shift();
@@ -130,16 +115,72 @@ function serializeZ86( theCodePoint ) {
 	};
 }
 
-function serializeZList( theArray, expectedType, index = 0 ) {
+function soupUpZ1K1( Z1K1 ) {
+	if ( isString( Z1K1 ) ) {
+		return { Z1K1: 'Z9', Z9K1: Z1K1 };
+	}
+	return Z1K1;
+}
+
+function Z3For( keyType, keyLabel ) {
+	return {
+		Z1K1: { Z1K1: 'Z9', Z9K1: 'Z3' },
+		Z3K1: keyType,
+		Z3K2: { Z1K1: 'Z6', Z6K1: keyLabel },
+		Z3K3: { Z1K1: 'Z12', Z12K1: { Z1K1: { Z1K1: 'Z9', Z9K1: 'Z10' } } }
+	};
+}
+
+function serializeZListInternal( elements, expectedType ) {
+	function emptyList() {
+		return {
+			Z1K1: expectedType
+		};
+	}
+	const expectedArgs = z10ToList( expectedType.Z4K2 );
+	const headKey = expectedArgs[ 0 ].Z3K2.Z6K1;
+	const tailKey = expectedArgs[ 1 ].Z3K2.Z6K1;
+	const result = emptyList();
+	let tail = result;
+	for ( const element of elements ) {
+		tail[ headKey ] = element;
+		tail[ tailKey ] = emptyList();
+		tail = tail[ tailKey ];
+	}
+	return result;
+}
+
+function serializeZList( theArray, expectedType ) {
+	const expectedArgs = z10ToList( expectedType.Z4K2 );
+	const headKey = expectedArgs[ 0 ];
+	const elements = [];
+	for ( const element of theArray ) {
+		elements.push( serialize( element, headKey.Z3K1 ) );
+	}
+	return serializeZListInternal( elements, expectedType );
+}
+
+function Z4ForZList( expectedType ) {
+	const Z4K1 = {
+		Z1K1: { Z1K1: 'Z9', Z9K1: 'Z7' },
+		Z7K1: { Z1K1: 'Z9', Z9K1: 'Z881' },
+		Z881K1: expectedType
+	};
+	const argumentDeclarations = [ Z3For( expectedType, 'K1' ), Z3For( Z4K1, 'K2' ) ];
+	return {
+		Z1K1: { Z1K1: 'Z9', Z9K1: 'Z4' },
+		Z4K1: Z4K1,
+		Z4K2: listToZ10( argumentDeclarations ),
+		Z4K3: { Z1K1: 'Z9', Z9K1: 'Z1000' }
+	};
+}
+
+function serializeZPairInternal( expectedType, kwargs ) {
 	const result = {
 		Z1K1: expectedType
 	};
-	if ( index < theArray.length ) {
-		const expectedArgs = z10ToList( expectedType.Z4K2 );
-		const headKey = expectedArgs[ 0 ];
-		result[ headKey.Z3K2.Z6K1 ] = serialize( theArray[ index ], headKey.Z3K1 );
-		const tailKey = expectedArgs[ 1 ];
-		result[ tailKey.Z3K2.Z6K1 ] = serializeZList( theArray, expectedType, index + 1 );
+	for ( const entry of kwargs.entries() ) {
+		result[ entry[ 0 ] ] = entry[ 1 ];
 	}
 	return result;
 }
@@ -147,16 +188,64 @@ function serializeZList( theArray, expectedType, index = 0 ) {
 // TODO(T290898): This can serve as a model for default deserialization--all
 // local keys can be serialized and set as members.
 function serializeZPair( thePair, expectedType ) {
-	const result = {
-		Z1K1: expectedType
-	};
 	const expectedArgs = z10ToList( expectedType.Z4K2 );
+	const kwargs = new Map();
 	for ( const expectedArg of expectedArgs ) {
 		const theKey = expectedArg.Z3K2.Z6K1;
 		const subType = expectedArg.Z3K1;
-		result[ theKey ] = serialize( thePair[ theKey ], subType );
+		kwargs.set( theKey, serialize( thePair[ theKey ], subType ) );
 	}
-	return result;
+	return serializeZPairInternal( expectedType, kwargs );
+}
+
+function Z4ForZPair( firstType, secondType ) {
+	const Z4K1 = {
+		Z1K1: { Z1K1: 'Z9', Z9K1: 'Z7' },
+		Z7K1: { Z1K1: 'Z9', Z9K1: 'Z882' },
+		Z882K1: firstType,
+		Z882K2: secondType
+	};
+	const argumentDeclarations = [ Z3For( firstType, 'K1' ), Z3For( secondType, 'K2' ) ];
+	return {
+		Z1K1: { Z1K1: 'Z9', Z9K1: 'Z4' },
+		Z4K1: Z4K1,
+		Z4K2: listToZ10( argumentDeclarations ),
+		Z4K3: { Z1K1: 'Z9', Z9K1: 'Z1000' }
+	};
+}
+
+function serializeZ1( theObject ) {
+	const ZID = getZIDForJSType( theObject );
+	if ( ZID === undefined ) {
+		throw new Error( 'Could not serialize input JS object: ' + inspect( theObject ) );
+	}
+	const Z1Type = { Z1K1: 'Z9', Z9K1: 'Z1' };
+	if ( ZID === 'Z881' ) {
+		const elements = [];
+		for ( const thing of theObject ) {
+			elements.push( serialize( thing, Z1Type ) );
+		}
+		const Z1K1s = new Set();
+		for ( const element of elements ) {
+			Z1K1s.add( stableStringify( element.Z1K1 ) );
+		}
+		let elementType;
+		if ( Z1K1s.size === 1 ) {
+			elementType = soupUpZ1K1( JSON.parse( Z1K1s.values().next().value ) );
+		} else {
+			elementType = Z1Type;
+		}
+		return serializeZListInternal( elements, Z4ForZList( elementType ) );
+	}
+	if ( ZID === 'Z882' ) {
+		const kwargs = new Map();
+		kwargs.set( 'K1', serialize( theObject.K1, Z1Type ) );
+		kwargs.set( 'K2', serialize( theObject.K2, Z1Type ) );
+		const Z1K1 = Z4ForZPair( soupUpZ1K1( kwargs.get( 'K1' ).Z1K1 ), soupUpZ1K1( kwargs.get( 'K2' ).Z1K1 ) );
+		return serializeZPairInternal( Z1K1, kwargs );
+	}
+	const Z4 = { Z1K1: 'Z9', Z9K1: ZID };
+	return serialize( theObject, Z4 );
 }
 
 const SERIALIZERS_ = new Map();
@@ -191,4 +280,4 @@ function serialize( theObject, expectedType ) {
 	return serializer( theObject, expectedType );
 }
 
-module.exports = { deserialize, serialize, ZPair };
+module.exports = { deserialize, serialize };

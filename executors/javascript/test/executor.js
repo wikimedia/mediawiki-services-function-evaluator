@@ -103,6 +103,16 @@ describe( 'JavaScript executor', () => { // eslint-disable-line no-undef
 		runTest( Z7, expected );
 	} );
 
+	it( 'test list_o_lists_o_strings_output_unspecified', () => { // eslint-disable-line no-undef
+		const Z7 = readTestJson( 'generic_type_output.json' );
+		Z7.Z1000K1 = readTestJson( 'string_in_lists.json' );
+		Z7.Z7K1.Z8K4 = readTestJson( 'list_list_string_output_javascript_implementation.json' );
+		const expected = readTestJson( 'result_envelope_template.json' );
+		expected.Z22K1 = readTestJson( 'list_list_strings.json' );
+		Z7.Z7K1.Z8K2 = { Z1K1: 'Z9', Z9K1: 'Z1' };
+		runTest( Z7, expected );
+	} );
+
 	it( 'test pair_string_pair_string_string_input', () => { // eslint-disable-line no-undef
 		const Z7 = readTestJson( 'generic_type_input.json' );
 		Z7.Z1000K1 = readTestJson( 'pair_string_pair_string_string.json' );
@@ -119,6 +129,16 @@ describe( 'JavaScript executor', () => { // eslint-disable-line no-undef
 		const expected = readTestJson( 'result_envelope_template.json' );
 		expected.Z22K1 = readTestJson( 'pair_string_pair_string_string.json' );
 		Z7.Z7K1.Z8K2 = expected.Z22K1.Z1K1;
+		runTest( Z7, expected );
+	} );
+
+	it( 'test pair_string_pair_string_string_output_unspecified', () => { // eslint-disable-line no-undef
+		const Z7 = readTestJson( 'generic_type_output.json' );
+		Z7.Z1000K1 = readTestJson( 'string_in_pairs.json' );
+		Z7.Z7K1.Z8K4 = readTestJson( 'pair_string_pair_string_string_output_javascript_implementation.json' );
+		const expected = readTestJson( 'result_envelope_template.json' );
+		expected.Z22K1 = readTestJson( 'pair_string_pair_string_string.json' );
+		Z7.Z7K1.Z8K2 = { Z1K1: 'Z9', Z9K1: 'Z1' };
 		runTest( Z7, expected );
 	} );
 

@@ -1,5 +1,15 @@
 'use strict';
 
+const { inspect } = require( 'util' );
+
+class ZPair {
+	constructor( K1, K2, originalZ1K1 = null ) {
+		this.Z1K1_ = originalZ1K1;
+		this.K1 = K1;
+		this.K2 = K2;
+	}
+}
+
 function z10ToList( Z10 ) {
 	const result = [];
 	let tail = Z10;
@@ -14,8 +24,27 @@ function z10ToList( Z10 ) {
 	return result;
 }
 
+function listToZ10( theList ) {
+	function emptyZ10() {
+		return {
+			Z1K1: {
+				Z1K1: 'Z9',
+				Z9K1: 'Z10'
+			}
+		};
+	}
+	const result = emptyZ10();
+	let tail = result;
+	for ( const element of theList ) {
+		tail.Z10K1 = element;
+		tail.Z10K2 = emptyZ10();
+		tail = tail.Z10K2;
+	}
+	return result;
+}
+
 function isString( str ) {
-	return typeof str === 'string';
+	return typeof str === 'string' || str instanceof String;
 }
 
 // TODO: All isZWhatev functions should use function-schemata.
@@ -68,9 +97,9 @@ function getZObjectType( ZObject ) {
 
 const typeMap = new Map();
 typeMap.set( 'String', 'Z6' );
-typeMap.set( 'Array', 'Z10' );
 typeMap.set( 'Null', 'Z21' );
 typeMap.set( 'Boolean', 'Z40' );
+typeMap.set( 'Array', 'Z881' );
 
 /**
  * Infer the type of a JS object and try to find the corresponding ZID.
@@ -83,6 +112,11 @@ typeMap.set( 'Boolean', 'Z40' );
  * @return {string} the ZID corresponding to the appropriate serialized type
  */
 function getZIDForJSType( theObject ) {
+	const inspected = inspect( theObject );
+	// TODO: Make this consistent with toString below.
+	if ( inspected.startsWith( 'ZPair' ) ) {
+		return 'Z882';
+	}
 	const typeRegex = /\[object (\w*)\]/;
 	// Object.toString will return [object <TYPE>]; <TYPE> is what we're after.
 	const typeString = Object.prototype.toString.call( theObject ).replace( typeRegex, '$1' );
@@ -94,5 +128,8 @@ module.exports = {
 	getZIDForJSType,
 	getZID,
 	getZObjectType,
-	z10ToList
+	isString,
+	listToZ10,
+	z10ToList,
+	ZPair
 };

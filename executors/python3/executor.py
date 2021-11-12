@@ -4,7 +4,7 @@ import sys
 import os
 
 from python3 import serialization
-from python3.serialization import ZPair
+from python3 import utils
 
 
 _RESULT_CACHE = {}
@@ -94,7 +94,7 @@ def execute(Z7):
             ),
             {
                 "_RESULT_CACHE": _RESULT_CACHE,
-                "ZPair": ZPair,
+                "ZPair": utils.ZPair,
             },
             {
                 "_BOUND_VALUES": bound_values,

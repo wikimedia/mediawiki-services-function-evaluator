@@ -13,6 +13,7 @@
 	"license": "ISC",
 	"dependencies": {
 		"chai": "4.3.4",
+		"json-stable-stringify-without-jsonify": "^1.0.1",
 		"mocha": "9.0.1"
 	}
 }

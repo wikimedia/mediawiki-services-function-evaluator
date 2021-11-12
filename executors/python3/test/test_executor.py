@@ -20,9 +20,8 @@ def _read_test_json(file_name):
 
 
 class ExecutorTest(unittest.TestCase):
-    def setUp(self):
-        super().setUp()
-        self.maxDiff = None
+
+    maxDiff = None
 
     def _run_test(self, zobject, expected_result):
         actual = executor.execute(zobject)
@@ -64,6 +63,17 @@ class ExecutorTest(unittest.TestCase):
         Z7["Z7K1"]["Z8K2"] = expected["Z22K1"]["Z1K1"]
         self._run_test(Z7, expected)
 
+    def test_list_o_lists_o_strings_output_unspecified(self):
+        Z7 = _read_test_json("generic_type_output.json")
+        Z7["Z1000K1"] = _read_test_json("string_in_lists.json")
+        Z7["Z7K1"]["Z8K4"] = _read_test_json(
+            "list_list_string_output_python3_implementation.json"
+        )
+        expected = _read_test_json("result_envelope_template.json")
+        expected["Z22K1"] = _read_test_json("list_list_strings.json")
+        Z7["Z7K1"]["Z8K2"] = {"Z1K1": "Z9", "Z9K1": "Z1"}
+        self._run_test(Z7, expected)
+
     def test_pair_string_pair_string_string_input(self):
         Z7 = _read_test_json("generic_type_input.json")
         Z7["Z1000K1"] = _read_test_json("pair_string_pair_string_string.json")
@@ -83,6 +93,17 @@ class ExecutorTest(unittest.TestCase):
         expected = _read_test_json("result_envelope_template.json")
         expected["Z22K1"] = _read_test_json("pair_string_pair_string_string.json")
         Z7["Z7K1"]["Z8K2"] = expected["Z22K1"]["Z1K1"]
+        self._run_test(Z7, expected)
+
+    def test_pair_string_pair_string_string_output_unspecified(self):
+        Z7 = _read_test_json("generic_type_output.json")
+        Z7["Z1000K1"] = _read_test_json("string_in_pairs.json")
+        Z7["Z7K1"]["Z8K4"] = _read_test_json(
+            "pair_string_pair_string_string_output_python3_implementation.json"
+        )
+        expected = _read_test_json("result_envelope_template.json")
+        expected["Z22K1"] = _read_test_json("pair_string_pair_string_string.json")
+        Z7["Z7K1"]["Z8K2"] = {"Z1K1": "Z9", "Z9K1": "Z1"}
         self._run_test(Z7, expected)
 
     def test_undeserializable_type(self):
