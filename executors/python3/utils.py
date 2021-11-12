@@ -4,7 +4,7 @@ from python3 import exceptions
 def z10_to_list(Z10):
     result = []
     tail = Z10
-    while tail is not None:
+    while tail.get("Z10K1") is not None:
         result.append(tail.get("Z10K1"))
         tail = tail.get("Z10K2")
     return result

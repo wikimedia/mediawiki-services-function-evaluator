@@ -25,6 +25,33 @@ def _DESERIALIZE_ZLIST(ZObject):
     return result
 
 
+class ZPair:
+    def __init__(self, K1, K2, original_Z1K1=None):
+        self._Z1K1 = original_Z1K1
+        self._K1 = K1
+        self._K2 = K2
+
+    @property
+    def K1(self):
+        return self._K1
+
+    @property
+    def K2(self):
+        return self._K2
+
+    @property
+    def Z1K1(self):
+        return self._Z1K1
+
+
+# TODO(T290898): This can serve as a model for default deserialization--all
+# local keys can be deserialized and set as members.
+def _DESERIALIZE_ZPAIR(Z_object):
+    return ZPair(
+        deserialize(Z_object["K1"]), deserialize(Z_object["K2"]), Z_object["Z1K1"]
+    )
+
+
 _DESERIALIZE_Z6 = lambda Z6: Z6["Z6K1"]
 _DESERIALIZE_Z21 = lambda Z21: None
 _DESERIALIZE_Z40 = lambda Z40: Z40["Z40K1"]["Z9K1"] == "Z41"
@@ -35,6 +62,7 @@ _DESERIALIZERS = {
     "Z21": _DESERIALIZE_Z21,
     "Z40": _DESERIALIZE_Z40,
     "Z86": _DESERIALIZE_Z86,
+    "Z882": _DESERIALIZE_ZPAIR,
     # TODO(T292260): What's the real ZID, bub?
     "Z1010": _DESERIALIZE_ZLIST,
 }
@@ -104,6 +132,16 @@ def _SERIALIZE_ZLIST(iterable, expected_type):
     return _serialize_zlist_internal(_to_generator(iterable), expected_type)
 
 
+def _SERIALIZE_ZPAIR(the_pair, expected_type):
+    result = {"Z1K1": expected_type}
+    expected_args = utils.z10_to_list(expected_type["Z4K2"])
+    for expected_arg in expected_args:
+        the_key = expected_arg["Z3K2"]["Z6K1"]
+        subtype = expected_arg["Z3K1"]
+        result[the_key] = serialize(getattr(the_pair, the_key), subtype)
+    return result
+
+
 def _SERIALIZE_Z21(nothing, _):
     return {"Z1K1": {"Z1K1": "Z9", "Z9K1": "Z21"}}
 
@@ -129,6 +167,7 @@ _SERIALIZERS = {
     "Z21": _SERIALIZE_Z21,
     "Z40": _SERIALIZE_Z40,
     "Z86": _SERIALIZE_Z86,
+    "Z882": _SERIALIZE_ZPAIR,
     # TODO(T292260): What's the real ZID, bub?
     "Z1010": _SERIALIZE_ZLIST,
 }
@@ -146,7 +185,7 @@ def serialize(py_object, expected_type):
     if ZID is not None and serializer is not None:
         try:
             return serializer(py_object, expected_type)
-        except:
+        except Exception as e:
             pass
     raise exceptions.EvaluatorError(
         "Could not serialize input python object: {}".format(repr(py_object))
