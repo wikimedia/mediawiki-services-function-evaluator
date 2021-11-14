@@ -1,7 +1,7 @@
 'use strict';
 
 // eslint-disable-next-line no-unused-vars
-const { serialize, deserialize } = require( './serialization.js' );
+const { serialize, deserialize, ZPair } = require( './serialization.js' );
 
 function error( message ) {
 	return {

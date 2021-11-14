@@ -29,12 +29,27 @@ function deserializeZList( ZObject ) {
 	return result;
 }
 
+class ZPair {
+	constructor( K1, K2, originalZ1K1 = null ) {
+		this.Z1K1_ = originalZ1K1;
+		this.K1 = K1;
+		this.K2 = K2;
+	}
+}
+
+// TODO(T290898): This can serve as a model for default deserialization--all
+// local keys can be deserialized and set as members.
+function deserializeZPair( ZObject ) {
+	return new ZPair( deserialize( ZObject.K1 ), deserialize( ZObject.K2 ), ZObject.Z1K1 );
+}
+
 DESERIALIZERS_.set( 'Z6', ( Z6 ) => Z6.Z6K1 );
 DESERIALIZERS_.set( 'Z10', deserializeZ10 );
 // eslint-disable-next-line no-unused-vars
 DESERIALIZERS_.set( 'Z21', ( Z21 ) => null );
 DESERIALIZERS_.set( 'Z40', ( Z40 ) => Z40.Z40K1.Z9K1 === 'Z41' );
 DESERIALIZERS_.set( 'Z86', ( Z86 ) => Z86.Z86K1.Z6K1 );
+DESERIALIZERS_.set( 'Z882', deserializeZPair );
 // TODO(T292260): Get a non-criminal ZID.
 DESERIALIZERS_.set( 'Z1010', deserializeZList );
 
@@ -130,6 +145,21 @@ function serializeZList( theArray, expectedType, index = 0 ) {
 	return result;
 }
 
+// TODO(T290898): This can serve as a model for default deserialization--all
+// local keys can be serialized and set as members.
+function serializeZPair( thePair, expectedType ) {
+	const result = {
+		Z1K1: expectedType
+	};
+	const expectedArgs = z10ToList( expectedType.Z4K2 );
+	for ( const expectedArg of expectedArgs ) {
+		const theKey = expectedArg.Z3K2.Z6K1;
+		const subType = expectedArg.Z3K1;
+		result[ theKey ] = serialize( thePair[ theKey ], subType );
+	}
+	return result;
+}
+
 const SERIALIZERS_ = new Map();
 SERIALIZERS_.set( 'Z1', serializeZ1 );
 SERIALIZERS_.set( 'Z6', ( theString ) => {
@@ -139,6 +169,7 @@ SERIALIZERS_.set( 'Z10', serializeZ10 );
 SERIALIZERS_.set( 'Z21', serializeZ21 );
 SERIALIZERS_.set( 'Z40', serializeZ40 );
 SERIALIZERS_.set( 'Z86', serializeZ86 );
+SERIALIZERS_.set( 'Z882', serializeZPair );
 // TODO(T292260): Get a non-criminal ZID.
 SERIALIZERS_.set( 'Z1010', serializeZList );
 
@@ -162,4 +193,4 @@ function serialize( theObject, expectedType ) {
 	return serializer( theObject, expectedType );
 }
 
-module.exports = { deserialize, serialize };
+module.exports = { deserialize, serialize, ZPair };

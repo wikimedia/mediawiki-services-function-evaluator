@@ -85,7 +85,7 @@ describe( 'JavaScript executor', () => { // eslint-disable-line no-undef
 	} );
 
 	it( 'test list_o_lists_o_strings_input', () => { // eslint-disable-line no-undef
-		const Z7 = readTestJson( 'list_list_string_input.json' );
+		const Z7 = readTestJson( 'generic_type_input.json' );
 		Z7.Z1000K1 = readTestJson( 'list_list_strings.json' );
 		Z7.Z7K1.Z8K4 = readTestJson( 'list_list_string_input_javascript_implementation.json' );
 		const expected = readTestJson( 'result_envelope_template.json' );
@@ -94,11 +94,30 @@ describe( 'JavaScript executor', () => { // eslint-disable-line no-undef
 	} );
 
 	it( 'test list_o_lists_o_strings_output', () => { // eslint-disable-line no-undef
-		const Z7 = readTestJson( 'list_list_string_output.json' );
+		const Z7 = readTestJson( 'generic_type_output.json' );
 		Z7.Z1000K1 = readTestJson( 'string_in_lists.json' );
 		Z7.Z7K1.Z8K4 = readTestJson( 'list_list_string_output_javascript_implementation.json' );
 		const expected = readTestJson( 'result_envelope_template.json' );
 		expected.Z22K1 = readTestJson( 'list_list_strings.json' );
+		Z7.Z7K1.Z8K2 = expected.Z22K1.Z1K1;
+		runTest( Z7, expected );
+	} );
+
+	it( 'test pair_string_pair_string_string_input', () => { // eslint-disable-line no-undef
+		const Z7 = readTestJson( 'generic_type_input.json' );
+		Z7.Z1000K1 = readTestJson( 'pair_string_pair_string_string.json' );
+		Z7.Z7K1.Z8K4 = readTestJson( 'pair_string_pair_string_string_input_javascript_implementation.json' );
+		const expected = readTestJson( 'result_envelope_template.json' );
+		expected.Z22K1 = readTestJson( 'string_in_pairs.json' );
+		runTest( Z7, expected );
+	} );
+
+	it( 'test pair_string_pair_string_string_output', () => { // eslint-disable-line no-undef
+		const Z7 = readTestJson( 'generic_type_output.json' );
+		Z7.Z1000K1 = readTestJson( 'string_in_pairs.json' );
+		Z7.Z7K1.Z8K4 = readTestJson( 'pair_string_pair_string_string_output_javascript_implementation.json' );
+		const expected = readTestJson( 'result_envelope_template.json' );
+		expected.Z22K1 = readTestJson( 'pair_string_pair_string_string.json' );
 		Z7.Z7K1.Z8K2 = expected.Z22K1.Z1K1;
 		runTest( Z7, expected );
 	} );
