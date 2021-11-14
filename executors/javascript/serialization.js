@@ -67,7 +67,7 @@ function deserialize( ZObject ) {
 	const ZID = getZObjectType( ZObject );
 	const deserializer = DESERIALIZERS_.get( ZID );
 	if ( deserializer === undefined ) {
-		throw Error( 'Could not deserialize input ZObject type: ' + ZID );
+		throw new Error( 'Could not deserialize input ZObject type: ' + ZID );
 	}
 	return deserializer( ZObject );
 }
@@ -84,7 +84,7 @@ function emptyZ10() {
 function serializeZ1( theObject ) {
 	const ZID = getZIDForJSType( theObject );
 	if ( ZID === undefined ) {
-		throw Error( 'Could not serialize input JS object: ' + inspect( theObject ) );
+		throw new Error( 'Could not serialize input JS object: ' + inspect( theObject ) );
 	}
 	const Z4 = { Z1K1: 'Z9', Z9K1: ZID };
 	return serialize( theObject, Z4 );
@@ -188,7 +188,7 @@ function serialize( theObject, expectedType ) {
 	const ZID = getZID( expectedType );
 	const serializer = SERIALIZERS_.get( ZID );
 	if ( ZID === null || serializer === undefined ) {
-		throw Error( 'Could not serialize input JS object: ' + inspect( theObject ) );
+		throw new Error( 'Could not serialize input JS object: ' + inspect( theObject ) );
 	}
 	return serializer( theObject, expectedType );
 }
