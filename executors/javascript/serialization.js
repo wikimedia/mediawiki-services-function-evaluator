@@ -49,9 +49,8 @@ DESERIALIZERS_.set( 'Z10', deserializeZ10 );
 DESERIALIZERS_.set( 'Z21', ( Z21 ) => null );
 DESERIALIZERS_.set( 'Z40', ( Z40 ) => Z40.Z40K1.Z9K1 === 'Z41' );
 DESERIALIZERS_.set( 'Z86', ( Z86 ) => Z86.Z86K1.Z6K1 );
+DESERIALIZERS_.set( 'Z881', deserializeZList );
 DESERIALIZERS_.set( 'Z882', deserializeZPair );
-// TODO(T292260): Get a non-criminal ZID.
-DESERIALIZERS_.set( 'Z1010', deserializeZList );
 
 /**
  * Convert a ZObject into the corresponding JS type.
@@ -169,9 +168,8 @@ SERIALIZERS_.set( 'Z10', serializeZ10 );
 SERIALIZERS_.set( 'Z21', serializeZ21 );
 SERIALIZERS_.set( 'Z40', serializeZ40 );
 SERIALIZERS_.set( 'Z86', serializeZ86 );
+SERIALIZERS_.set( 'Z881', serializeZList );
 SERIALIZERS_.set( 'Z882', serializeZPair );
-// TODO(T292260): Get a non-criminal ZID.
-SERIALIZERS_.set( 'Z1010', serializeZList );
 
 /**
  * Convert a JS object into the corresponding ZObject type.
