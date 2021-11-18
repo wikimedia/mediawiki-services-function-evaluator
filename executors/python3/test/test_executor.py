@@ -8,6 +8,7 @@ from unittest.mock import patch
 
 # TODO(T282795): This is a kludge due to how env variables work in Blubber;
 # would be better if PYTHONPATH could be controlled directly.
+from . import utils as test_utils
 from .. import executor
 
 
@@ -25,7 +26,9 @@ class ExecutorTest(unittest.TestCase):
 
     def _run_test(self, zobject, expected_result):
         actual = executor.execute(zobject)
-        self.assertEqual(expected_result, actual)
+        self.assertEqual(
+            test_utils.without_z1k1s(expected_result), test_utils.without_z1k1s(actual)
+        )
 
     def test_runs_function_call(self):
         Z7 = _read_test_json("python3_add.json")
@@ -142,7 +145,10 @@ class MainTest(unittest.TestCase):
         executor.main(self._stdin, self._stdout)
         self._stdin.close()
         self._stdout.seek(0)
-        self.assertEqual(expected, json.loads(self._stdout.read().strip()))
+        self.assertEqual(
+            test_utils.without_z1k1s(expected),
+            test_utils.without_z1k1s(json.loads(self._stdout.read().strip())),
+        )
 
     def test_main_syntax_failure(self):
         Z7 = _read_test_json("python3_syntax_failure.json")
@@ -154,7 +160,10 @@ class MainTest(unittest.TestCase):
         executor.main(self._stdin, self._stdout)
         self._stdin.close()
         self._stdout.seek(0)
-        self.assertEqual(expected, json.loads(self._stdout.read().strip()))
+        self.assertEqual(
+            test_utils.without_z1k1s(expected),
+            test_utils.without_z1k1s(json.loads(self._stdout.read().strip())),
+        )
 
 
 if __name__ == "__main__":

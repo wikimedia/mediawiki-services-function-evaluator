@@ -1,6 +1,7 @@
 import unittest
 from .. import serialization
 from .. import utils
+from . import utils as test_utils
 
 
 _Z6 = {"Z1K1": "Z6", "Z6K1": "opiparo"}
@@ -212,35 +213,40 @@ class DeserializeTest(unittest.TestCase):
 
 
 class SerializeTest(unittest.TestCase):
+    def _run_test(self, expected, actual):
+        self.assertEqual(
+            test_utils.without_z1k1s(expected), test_utils.without_z1k1s(actual)
+        )
+
     def test_serializes_Z6(self):
-        self.assertEqual(_Z6, serialization.serialize(_Z6_DESERIALIZED, _Z6_Type))
+        self._run_test(_Z6, serialization.serialize(_Z6_DESERIALIZED, _Z6_Type))
 
     def test_serializes_Z10(self):
-        self.assertEqual(
+        self._run_test(
             _Z10_OUTPUT, serialization.serialize(_Z10_DESERIALIZED, _Z10_Type)
         )
 
     def test_serializes_Z21(self):
-        self.assertEqual(_Z21, serialization.serialize(None, _Z21_Type))
+        self._run_test(_Z21, serialization.serialize(None, _Z21_Type))
 
     def test_serializes_Z40_Z41(self):
-        self.assertEqual(_ZTrue, serialization.serialize(True, _Z40_Type))
+        self._run_test(_ZTrue, serialization.serialize(True, _Z40_Type))
 
     def test_serializes_Z40_Z42(self):
-        self.assertEqual(_ZFalse, serialization.serialize(False, _Z40_Type))
+        self._run_test(_ZFalse, serialization.serialize(False, _Z40_Type))
 
     def test_serializes_Z882(self):
-        self.assertEqual(_Z882, serialization.serialize(_Z882_DESERIALIZED, _Z882_Type))
+        self._run_test(_Z882, serialization.serialize(_Z882_DESERIALIZED, _Z882_Type))
 
     def test_serializes_Z882_default(self):
-        self.assertEqual(_Z882, serialization.serialize(_Z882_DESERIALIZED, _Z1_Type))
+        self._run_test(_Z882, serialization.serialize(_Z882_DESERIALIZED, _Z1_Type))
 
     def test_serializes_Z881(self):
-        self.assertEqual(
+        self._run_test(
             _Z881_Z6, serialization.serialize(_Z881_Z6_DESERIALIZED, _Z881_Z6_Type)
         )
 
     def test_serializes_Z881_default(self):
-        self.assertEqual(
+        self._run_test(
             _Z881_Z6, serialization.serialize(_Z881_Z6_DESERIALIZED, _Z1_Type)
         )

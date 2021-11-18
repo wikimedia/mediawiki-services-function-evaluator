@@ -3,6 +3,7 @@
 const fs = require( 'fs' );
 const Stream = require( 'stream' );
 const { execute, main } = require( '../executor.js' );
+const { withoutZ1K1s } = require( './utils.js' );
 const assert = require( 'chai' ).assert;
 
 function readTestJson( fileName ) {
@@ -38,7 +39,7 @@ describe( 'JavaScript executor: main', () => { // eslint-disable-line no-undef
 			main( stdin, stdout );
 			stdin.push( Z7String );
 		} ).then( () => {
-			assert.deepEqual( expected, JSON.parse( stdoutQueue.join( '' ) ) );
+			assert.deepEqual( withoutZ1K1s( expected ), withoutZ1K1s( JSON.parse( stdoutQueue.join( '' ) ) ) );
 		} );
 	} );
 
@@ -57,7 +58,7 @@ describe( 'JavaScript executor: main', () => { // eslint-disable-line no-undef
 			main( stdin, stdout );
 			stdin.push( Z7String );
 		} ).then( () => {
-			assert.deepEqual( expected, JSON.parse( stdoutQueue.join( '' ) ) );
+			assert.deepEqual( withoutZ1K1s( expected ), withoutZ1K1s( JSON.parse( stdoutQueue.join( '' ) ) ) );
 		} );
 	} );
 
@@ -67,7 +68,7 @@ describe( 'JavaScript executor', () => { // eslint-disable-line no-undef
 
 	function runTest( zobject, expectedResult ) {
 		const result = execute( zobject );
-		assert.deepEqual( expectedResult, result );
+		assert.deepEqual( withoutZ1K1s( expectedResult ), withoutZ1K1s( result ) );
 	}
 
 	it( 'test runs function call', () => { // eslint-disable-line no-undef

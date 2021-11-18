@@ -2,6 +2,7 @@
 
 const { serialize, deserialize } = require( '../serialization.js' );
 const { ZPair } = require( '../utils.js' );
+const { withoutZ1K1s } = require( './utils.js' );
 const assert = require( 'chai' ).assert;
 
 const Z881_Z1_Type_ = {
@@ -274,39 +275,43 @@ describe( 'Javascript executor: deserialization', () => { // eslint-disable-line
 
 describe( 'Javascript executor: serialization', () => { // eslint-disable-line no-undef
 
+	function runTest( expected, actual ) {
+		assert.deepEqual( withoutZ1K1s( expected ), withoutZ1K1s( actual ) );
+	}
+
 	it( 'test serializes Z6', () => { // eslint-disable-line no-undef
-		assert.deepEqual( Z6_, serialize( Z6_DESERIALIZED_, Z6_Type_ ) );
+		runTest( Z6_, serialize( Z6_DESERIALIZED_, Z6_Type_ ) );
 	} );
 
 	it( 'test serializes Z10', () => { // eslint-disable-line no-undef
-		assert.deepEqual( Z10_OUTPUT_, serialize( Z10_DESERIALIZED_, Z10_Type_ ) );
+		runTest( Z10_OUTPUT_, serialize( Z10_DESERIALIZED_, Z10_Type_ ) );
 	} );
 
 	it( 'test serializes Z21', () => { // eslint-disable-line no-undef
-		assert.deepEqual( Z21_, serialize( null, Z21_Type_ ) );
+		runTest( Z21_, serialize( null, Z21_Type_ ) );
 	} );
 
 	it( 'test serializes Z40: Z41', () => { // eslint-disable-line no-undef
-		assert.deepEqual( ZTrue_, serialize( true, Z40_Type_ ) );
+		runTest( ZTrue_, serialize( true, Z40_Type_ ) );
 	} );
 
 	it( 'test serializes Z40: Z42', () => { // eslint-disable-line no-undef
-		assert.deepEqual( ZFalse_, serialize( false, Z40_Type_ ) );
+		runTest( ZFalse_, serialize( false, Z40_Type_ ) );
 	} );
 
 	it( 'test serializes Z882', () => { // eslint-disable-line no-undef
-		assert.deepEqual( Z882_, serialize( Z882_DESERIALIZED_, Z882_Type_ ) );
+		runTest( Z882_, serialize( Z882_DESERIALIZED_, Z882_Type_ ) );
 	} );
 
 	it( 'test serializes Z882 default', () => { // eslint-disable-line no-undef
-		assert.deepEqual( Z882_, serialize( Z882_DESERIALIZED_, Z1_Type_ ) );
+		runTest( Z882_, serialize( Z882_DESERIALIZED_, Z1_Type_ ) );
 	} );
 
 	it( 'test serializes Z881', () => { // eslint-disable-line no-undef
-		assert.deepEqual( Z881_Z6_, serialize( Z881_Z6_DESERIALIZED_, Z881_Z6_Type_ ) );
+		runTest( Z881_Z6_, serialize( Z881_Z6_DESERIALIZED_, Z881_Z6_Type_ ) );
 	} );
 
 	it( 'test serializes Z881 default', () => { // eslint-disable-line no-undef
-		assert.deepEqual( Z881_Z6_, serialize( Z881_Z6_DESERIALIZED_, Z1_Type_ ) );
+		runTest( Z881_Z6_, serialize( Z881_Z6_DESERIALIZED_, Z1_Type_ ) );
 	} );
 } );
