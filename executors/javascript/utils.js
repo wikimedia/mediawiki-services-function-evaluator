@@ -53,7 +53,7 @@ function getZID( Z4 ) {
 		return Z4;
 	}
 	// I guess this wasn't a very good ZObject.
-	throw Error( `Could not determine type for ${Z4}` );
+	throw new Error( `Could not determine type for ${Z4}` );
 }
 
 /**
