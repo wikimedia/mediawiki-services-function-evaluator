@@ -1,7 +1,7 @@
 {
 	"name": "service-template-node",
 	"version": "0.8.0",
-	"description": "A blueprint for MediaWiki REST API services",
+	"description": "A Wikifunctions service to evaluator WikiLambda functions",
 	"main": "./app.js",
 	"scripts": {
 		"start": "service-runner",
