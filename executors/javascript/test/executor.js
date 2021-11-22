@@ -143,6 +143,25 @@ describe( 'JavaScript executor', () => { // eslint-disable-line no-undef
 		runTest( Z7, expected );
 	} );
 
+	it( 'test map_string_string', () => { // eslint-disable-line no-undef
+		const Z7 = readTestJson( 'map_string_string_Z7.json' );
+		Z7.Z1802K1 = readTestJson( 'map_string_bool.json' );
+		Z7.Z7K1.Z8K4 = readTestJson( 'map_string_string_javascript_implementation.json' );
+		const expected = readTestJson( 'result_envelope_template.json' );
+		expected.Z22K1 = readTestJson( 'map_string_string.json' );
+		runTest( Z7, expected );
+	} );
+
+	it( 'test map_string_string_unspecified', () => { // eslint-disable-line no-undef
+		const Z7 = readTestJson( 'map_string_string_Z7.json' );
+		Z7.Z1802K1 = readTestJson( 'map_string_bool.json' );
+		Z7.Z7K1.Z8K4 = readTestJson( 'map_string_string_javascript_implementation.json' );
+		const expected = readTestJson( 'result_envelope_template.json' );
+		expected.Z22K1 = readTestJson( 'map_string_string.json' );
+		Z7.Z7K1.Z8K2 = { Z1K1: 'Z9', Z9K1: 'Z1' };
+		runTest( Z7, expected );
+	} );
+
 	it( 'test undeserializable type', () => { // eslint-disable-line no-undef
 		runTest(
 			readTestJson( 'javascript_unsupported_input.json' ),

@@ -33,6 +33,10 @@ def _DESERIALIZE_ZPAIR(Z_object):
     )
 
 
+def _DESERIALIZE_ZMAP(Z_object):
+    return {pair.K1: pair.K2 for pair in deserialize(Z_object["K1"])}
+
+
 _DESERIALIZE_Z6 = lambda Z6: Z6["Z6K1"]
 _DESERIALIZE_Z21 = lambda Z21: None
 _DESERIALIZE_Z40 = lambda Z40: Z40["Z40K1"]["Z9K1"] == "Z41"
@@ -45,6 +49,7 @@ _DESERIALIZERS = {
     "Z86": _DESERIALIZE_Z86,
     "Z881": _DESERIALIZE_ZLIST,
     "Z882": _DESERIALIZE_ZPAIR,
+    "Z883": _DESERIALIZE_ZMAP,
 }
 
 
@@ -64,6 +69,24 @@ def deserialize(ZObject):
     return deserializer(ZObject)
 
 
+def _z3_for(key_type, key_label):
+    return {
+        "Z1K1": {"Z1K1": "Z9", "Z9K1": "Z3"},
+        "Z3K1": key_type,
+        "Z3K2": {"Z1K1": "Z6", "Z6K1": key_label},
+        "Z3K3": {
+            "Z1K1": {"Z1K1": "Z9", "Z9K1": "Z12"},
+            "Z12K1": {"Z1K1": {"Z1K1": "Z9", "Z9K1": "Z10"}},
+        },
+    }
+
+
+def _soup_up_z1k1(Z1K1):
+    if isinstance(Z1K1, str):
+        return {"Z1K1": "Z9", "Z9K1": Z1K1}
+    return Z1K1
+
+
 # TODO(T292788): Eliminate this function.
 def _SERIALIZE_Z10(iterable, _):
     def _empty_Z10():
@@ -75,6 +98,22 @@ def _SERIALIZE_Z10(iterable, _):
         current["Z10K2"] = _empty_Z10()
         current = current["Z10K2"]
     return result
+
+
+def _SERIALIZE_Z21(nothing, _):
+    return {"Z1K1": {"Z1K1": "Z9", "Z9K1": "Z21"}}
+
+
+def _SERIALIZE_Z40(boolean, _):
+    ZID = "Z41" if boolean else "Z42"
+    return {
+        "Z1K1": {"Z1K1": "Z9", "Z9K1": "Z40"},
+        "Z40K1": {"Z1K1": "Z9", "Z9K1": ZID},
+    }
+
+
+def _SERIALIZE_Z86(code_point, _):
+    return {"Z1K1": {"Z1K1": "Z9", "Z9K1": "Z86"}, "Z86K1": _SERIALIZE_Z6(code_point)}
 
 
 def _serialize_zlist_internal(elements, expected_type):
@@ -99,7 +138,22 @@ def _SERIALIZE_ZLIST(iterable, expected_type):
     return _serialize_zlist_internal(elements, expected_type)
 
 
-def _serialize_zpair_internal(expected_type, **kwargs):
+def _z4_for_zlist(element_type):
+    Z4K1 = {
+        "Z1K1": {"Z1K1": "Z9", "Z9K1": "Z7"},
+        "Z7K1": {"Z1K1": "Z9", "Z9K1": "Z881"},
+        "Z881K1": element_type,
+    }
+    argument_declarations = [_z3_for(element_type, "K1"), _z3_for(Z4K1, "K2")]
+    return {
+        "Z1K1": {"Z1K1": "Z9", "Z9K1": "Z4"},
+        "Z4K1": Z4K1,
+        "Z4K2": utils.list_to_z10(argument_declarations),
+        "Z4K3": {"Z1K1": "Z9", "Z9K1": "Z104"},
+    }
+
+
+def _serialize_generic_internal(expected_type, **kwargs):
     result = {"Z1K1": expected_type}
     for key, value in kwargs.items():
         result[key] = value
@@ -113,47 +167,7 @@ def _SERIALIZE_ZPAIR(the_pair, expected_type):
         the_key = expected_arg["Z3K2"]["Z6K1"]
         subtype = expected_arg["Z3K1"]
         kwargs[the_key] = serialize(getattr(the_pair, the_key), subtype)
-    return _serialize_zpair_internal(expected_type, **kwargs)
-
-
-def _SERIALIZE_Z21(nothing, _):
-    return {"Z1K1": {"Z1K1": "Z9", "Z9K1": "Z21"}}
-
-
-def _SERIALIZE_Z40(boolean, _):
-    ZID = "Z41" if boolean else "Z42"
-    return {
-        "Z1K1": {"Z1K1": "Z9", "Z9K1": "Z40"},
-        "Z40K1": {"Z1K1": "Z9", "Z9K1": ZID},
-    }
-
-
-def _SERIALIZE_Z86(code_point, _):
-    return {"Z1K1": {"Z1K1": "Z9", "Z9K1": "Z86"}, "Z86K1": _SERIALIZE_Z6(code_point)}
-
-
-def _z3_for(key_type, key_label):
-    return {
-        "Z1K1": {"Z1K1": "Z9", "Z9K1": "Z3"},
-        "Z3K1": key_type,
-        "Z3K2": {"Z1K1": "Z6", "Z6K1": key_label},
-        "Z3K3": {"Z1K1": "Z12", "Z12K1": {"Z1K1": {"Z1K1": "Z9", "Z9K1": "Z10"}}},
-    }
-
-
-def _z4_for_zlist(element_type):
-    Z4K1 = {
-        "Z1K1": {"Z1K1": "Z9", "Z9K1": "Z7"},
-        "Z7K1": {"Z1K1": "Z9", "Z9K1": "Z881"},
-        "Z881K1": element_type,
-    }
-    argument_declarations = [_z3_for(element_type, "K1"), _z3_for(Z4K1, "K2")]
-    return {
-        "Z1K1": {"Z1K1": "Z9", "Z9K1": "Z4"},
-        "Z4K1": Z4K1,
-        "Z4K2": utils.list_to_z10(argument_declarations),
-        "Z4K3": {"Z1K1": "Z9", "Z9K1": "Z1000"},
-    }
+    return _serialize_generic_internal(expected_type, **kwargs)
 
 
 def _z4_for_zpair(first_type, second_type):
@@ -168,14 +182,35 @@ def _z4_for_zpair(first_type, second_type):
         "Z1K1": {"Z1K1": "Z9", "Z9K1": "Z4"},
         "Z4K1": Z4K1,
         "Z4K2": utils.list_to_z10(argument_declarations),
-        "Z4K3": {"Z1K1": "Z9", "Z9K1": "Z1000"},
+        "Z4K3": {"Z1K1": "Z9", "Z9K1": "Z104"},
     }
 
 
-def _soup_up_z1k1(Z1K1):
-    if isinstance(Z1K1, str):
-        return {"Z1K1": "Z9", "Z9K1": Z1K1}
-    return Z1K1
+def _SERIALIZE_ZMAP(the_dict, expected_type):
+    pair_list = [utils.ZPair(*item) for item in the_dict.items()]
+    expected_args = utils.z10_to_list(expected_type["Z4K2"])
+    the_key = expected_args[0]["Z3K2"]["Z6K1"]
+    subtype = expected_args[0]["Z3K1"]
+    kwargs = {the_key: serialize(pair_list, subtype)}
+    return _serialize_generic_internal(expected_type, **kwargs)
+
+
+def _z4_for_zmap(key_type, value_type):
+    Z4K1 = {
+        "Z1K1": {"Z1K1": "Z9", "Z9K1": "Z7"},
+        "Z7K1": {"Z1K1": "Z9", "Z9K1": "Z883"},
+        "Z883K1": key_type,
+        "Z883K2": value_type,
+    }
+    pair_type = _z4_for_zpair(key_type, value_type)
+    list_pair_type = _z4_for_zlist(pair_type)
+    argument_declarations = [_z3_for(list_pair_type, "K1")]
+    return {
+        "Z1K1": {"Z1K1": "Z9", "Z9K1": "Z4"},
+        "Z4K1": Z4K1,
+        "Z4K2": utils.list_to_z10(argument_declarations),
+        "Z4K3": {"Z1K1": "Z9", "Z9K1": "Z104"},
+    }
 
 
 def _SERIALIZE_Z1(anything, _):
@@ -198,7 +233,18 @@ def _SERIALIZE_Z1(anything, _):
         K1 = serialize(anything.K1, z1_type)
         K2 = serialize(anything.K2, z1_type)
         Z1K1 = _z4_for_zpair(_soup_up_z1k1(K1["Z1K1"]), _soup_up_z1k1(K2["Z1K1"]))
-        return _serialize_zpair_internal(Z1K1, K1=K1, K2=K2)
+        return _serialize_generic_internal(Z1K1, K1=K1, K2=K2)
+    if ZID == "Z883":
+        K1 = serialize((utils.ZPair(*item) for item in anything.items()), z1_type)
+        first_pair = K1.get("K1")
+        if first_pair == None:
+            key_type = z1_type
+            value_type = z1_type
+        else:
+            key_type = _soup_up_z1k1(first_pair["K1"]["Z1K1"])
+            value_type = _soup_up_z1k1(first_pair["K2"]["Z1K1"])
+        Z1K1 = _z4_for_zmap(key_type, value_type)
+        return _serialize_generic_internal(Z1K1, K1=K1)
     return serialize(anything, {"Z1K1": "Z9", "Z9K1": ZID})
 
 
@@ -213,6 +259,7 @@ _SERIALIZERS = {
     "Z86": _SERIALIZE_Z86,
     "Z881": _SERIALIZE_ZLIST,
     "Z882": _SERIALIZE_ZPAIR,
+    "Z883": _SERIALIZE_ZMAP,
 }
 
 
@@ -229,6 +276,9 @@ def serialize(py_object, expected_type):
         try:
             return serializer(py_object, expected_type)
         except Exception as e:
+            import logging
+
+            logging.exception("error in serialization:")
             pass
     raise exceptions.EvaluatorError(
         "Could not serialize input python object: {}".format(repr(py_object))

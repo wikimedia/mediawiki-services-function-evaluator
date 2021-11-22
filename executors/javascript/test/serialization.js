@@ -40,7 +40,7 @@ const Z881_Z1_Type_ = {
 			}
 		}
 	},
-	Z4K3: { Z1K1: 'Z9', Z9K1: 'Z1000' }
+	Z4K3: { Z1K1: 'Z9', Z9K1: 'Z104' }
 };
 const Z882_Type_ = {
 	Z1K1: { Z1K1: 'Z9', Z9K1: 'Z4' },
@@ -74,7 +74,7 @@ const Z882_Type_ = {
 			}
 		}
 	},
-	Z4K3: { Z1K1: 'Z9', Z9K1: 'Z1000' }
+	Z4K3: { Z1K1: 'Z9', Z9K1: 'Z104' }
 };
 
 const Z6_ = { Z1K1: 'Z6', Z6K1: 'opiparo' };
@@ -227,7 +227,7 @@ const Z881_Z6_Type_ = {
 			}
 		}
 	},
-	Z4K3: { Z1K1: 'Z9', Z9K1: 'Z1000' }
+	Z4K3: { Z1K1: 'Z9', Z9K1: 'Z104' }
 };
 const Z881_Z6_ = {
 	Z1K1: Z881_Z6_Type_,
@@ -313,5 +313,21 @@ describe( 'Javascript executor: serialization', () => { // eslint-disable-line n
 
 	it( 'test serializes Z881 default', () => { // eslint-disable-line no-undef
 		runTest( Z881_Z6_, serialize( Z881_Z6_DESERIALIZED_, Z1_Type_ ) );
+	} );
+
+	it( 'test serializes Z882', () => { // eslint-disable-line no-undef
+		assert.deepEqual( Z882_, serialize( Z882_DESERIALIZED_, Z882_Type_ ) );
+	} );
+
+	it( 'test serializes Z882 default', () => { // eslint-disable-line no-undef
+		assert.deepEqual( Z882_, serialize( Z882_DESERIALIZED_, Z1_Type_ ) );
+	} );
+
+	it( 'test serializes Z881', () => { // eslint-disable-line no-undef
+		assert.deepEqual( Z881_Z6_, serialize( Z881_Z6_DESERIALIZED_, Z881_Z6_Type_ ) );
+	} );
+
+	it( 'test serializes Z881 default', () => { // eslint-disable-line no-undef
+		assert.deepEqual( Z881_Z6_, serialize( Z881_Z6_DESERIALIZED_, Z1_Type_ ) );
 	} );
 } );

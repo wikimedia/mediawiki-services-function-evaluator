@@ -31,6 +31,14 @@ function deserializeZList( ZObject ) {
 	return result;
 }
 
+function deserializeZMap( ZObject ) {
+	const result = new Map();
+	for ( const pair of deserialize( ZObject.K1 ) ) {
+		result.set( pair.K1, pair.K2 );
+	}
+	return result;
+}
+
 // TODO(T290898): This can serve as a model for default deserialization--all
 // local keys can be deserialized and set as members.
 function deserializeZPair( ZObject ) {
@@ -45,6 +53,7 @@ DESERIALIZERS_.set( 'Z40', ( Z40 ) => Z40.Z40K1.Z9K1 === 'Z41' );
 DESERIALIZERS_.set( 'Z86', ( Z86 ) => Z86.Z86K1.Z6K1 );
 DESERIALIZERS_.set( 'Z881', deserializeZList );
 DESERIALIZERS_.set( 'Z882', deserializeZPair );
+DESERIALIZERS_.set( 'Z883', deserializeZMap );
 
 /**
  * Convert a ZObject into the corresponding JS type.
@@ -171,11 +180,11 @@ function Z4ForZList( expectedType ) {
 		Z1K1: { Z1K1: 'Z9', Z9K1: 'Z4' },
 		Z4K1: Z4K1,
 		Z4K2: listToZ10( argumentDeclarations ),
-		Z4K3: { Z1K1: 'Z9', Z9K1: 'Z1000' }
+		Z4K3: { Z1K1: 'Z9', Z9K1: 'Z104' }
 	};
 }
 
-function serializeZPairInternal( expectedType, kwargs ) {
+function serializeGenericInternal( expectedType, kwargs ) {
 	const result = {
 		Z1K1: expectedType
 	};
@@ -195,7 +204,7 @@ function serializeZPair( thePair, expectedType ) {
 		const subType = expectedArg.Z3K1;
 		kwargs.set( theKey, serialize( thePair[ theKey ], subType ) );
 	}
-	return serializeZPairInternal( expectedType, kwargs );
+	return serializeGenericInternal( expectedType, kwargs );
 }
 
 function Z4ForZPair( firstType, secondType ) {
@@ -210,7 +219,38 @@ function Z4ForZPair( firstType, secondType ) {
 		Z1K1: { Z1K1: 'Z9', Z9K1: 'Z4' },
 		Z4K1: Z4K1,
 		Z4K2: listToZ10( argumentDeclarations ),
-		Z4K3: { Z1K1: 'Z9', Z9K1: 'Z1000' }
+		Z4K3: { Z1K1: 'Z9', Z9K1: 'Z104' }
+	};
+}
+
+function serializeZMap( theMap, expectedType ) {
+	const pairList = [];
+	for ( const entry of theMap.entries() ) {
+		pairList.push( new ZPair( ...entry ) );
+	}
+	const expectedArgs = z10ToList( expectedType.Z4K2 );
+	const theKey = expectedArgs[ 0 ].Z3K2.Z6K1;
+	const subType = expectedArgs[ 0 ].Z3K1;
+	const kwargs = new Map();
+	kwargs.set( theKey, serialize( pairList, subType ) );
+	return serializeGenericInternal( expectedType, kwargs );
+}
+
+function Z4ForZMap( keyType, valueType ) {
+	const Z4K1 = {
+		Z1K1: { Z1K1: 'Z9', Z9K1: 'Z7' },
+		Z7K1: { Z1K1: 'Z9', Z9K1: 'Z883' },
+		Z883K1: keyType,
+		Z883K2: valueType
+	};
+	const pairType = Z4ForZPair( keyType, valueType );
+	const listPairType = Z4ForZList( pairType );
+	const argumentDeclarations = [ Z3For( listPairType, 'K1' ) ];
+	return {
+		Z1K1: { Z1K1: 'Z9', Z9K1: 'Z4' },
+		Z4K1: Z4K1,
+		Z4K2: listToZ10( argumentDeclarations ),
+		Z4K3: { Z1K1: 'Z9', Z9K1: 'Z104' }
 	};
 }
 
@@ -242,7 +282,26 @@ function serializeZ1( theObject ) {
 		kwargs.set( 'K1', serialize( theObject.K1, Z1Type ) );
 		kwargs.set( 'K2', serialize( theObject.K2, Z1Type ) );
 		const Z1K1 = Z4ForZPair( soupUpZ1K1( kwargs.get( 'K1' ).Z1K1 ), soupUpZ1K1( kwargs.get( 'K2' ).Z1K1 ) );
-		return serializeZPairInternal( Z1K1, kwargs );
+		return serializeGenericInternal( Z1K1, kwargs );
+	}
+	if ( ZID === 'Z883' ) {
+		const pairList = [];
+		for ( const entry of theObject.entries() ) {
+			pairList.push( new ZPair( ...entry ) );
+		}
+		const K1 = serialize( pairList, Z1Type );
+		const firstPair = K1.K1;
+		let keyType, valueType;
+		if ( firstPair === undefined ) {
+			keyType = Z1Type;
+			valueType = Z1Type;
+		} else {
+			keyType = soupUpZ1K1( firstPair.K1.Z1K1 );
+			valueType = soupUpZ1K1( firstPair.K2.Z1K1 );
+		}
+		const Z1K1 = Z4ForZMap( keyType, valueType );
+		const kwargs = new Map( [ [ 'K1', K1 ] ] );
+		return serializeGenericInternal( Z1K1, kwargs );
 	}
 	const Z4 = { Z1K1: 'Z9', Z9K1: ZID };
 	return serialize( theObject, Z4 );
@@ -259,6 +318,7 @@ SERIALIZERS_.set( 'Z40', serializeZ40 );
 SERIALIZERS_.set( 'Z86', serializeZ86 );
 SERIALIZERS_.set( 'Z881', serializeZList );
 SERIALIZERS_.set( 'Z882', serializeZPair );
+SERIALIZERS_.set( 'Z883', serializeZMap );
 
 /**
  * Convert a JS object into the corresponding ZObject type.

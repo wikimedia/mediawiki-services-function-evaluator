@@ -109,6 +109,27 @@ class ExecutorTest(unittest.TestCase):
         Z7["Z7K1"]["Z8K2"] = {"Z1K1": "Z9", "Z9K1": "Z1"}
         self._run_test(Z7, expected)
 
+    def test_map_string_string(self):
+        Z7 = _read_test_json("map_string_string_Z7.json")
+        Z7["Z1802K1"] = _read_test_json("map_string_bool.json")
+        Z7["Z7K1"]["Z8K4"] = _read_test_json(
+            "map_string_string_python3_implementation.json"
+        )
+        expected = _read_test_json("result_envelope_template.json")
+        expected["Z22K1"] = _read_test_json("map_string_string.json")
+        self._run_test(Z7, expected)
+
+    def test_map_string_string_unspecified(self):
+        Z7 = _read_test_json("map_string_string_Z7.json")
+        Z7["Z1802K1"] = _read_test_json("map_string_bool.json")
+        Z7["Z7K1"]["Z8K4"] = _read_test_json(
+            "map_string_string_python3_implementation.json"
+        )
+        expected = _read_test_json("result_envelope_template.json")
+        expected["Z22K1"] = _read_test_json("map_string_string.json")
+        Z7["Z7K1"]["Z8K2"] = {"Z1K1": "Z9", "Z9K1": "Z1"}
+        self._run_test(Z7, expected)
+
     def test_undeserializable_type(self):
         Z7 = _read_test_json("python3_unsupported_input.json")
         expected = _read_test_json("unsupported_input_expected.json")

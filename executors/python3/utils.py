@@ -83,10 +83,6 @@ def get_zobject_type(ZObject):
     return get_zid(ZObject.get("Z1K1"))
 
 
-def _z9_for(ZID):
-    return {"Z1K1": "Z9", "Z9K1": ZID}
-
-
 class ZPair:
     def __init__(self, K1, K2, original_Z1K1=None):
         self._Z1K1 = original_Z1K1
@@ -132,6 +128,8 @@ def get_python_type(py_object):
         return "Z40"
     if isinstance(py_object, ZPair):
         return "Z882"
+    if isinstance(py_object, dict):
+        return "Z883"
     try:
         iterator = iter(py_object)
     except TypeError:

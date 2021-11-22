@@ -100,6 +100,7 @@ typeMap.set( 'String', 'Z6' );
 typeMap.set( 'Null', 'Z21' );
 typeMap.set( 'Boolean', 'Z40' );
 typeMap.set( 'Array', 'Z881' );
+typeMap.set( 'Map', 'Z883' );
 
 /**
  * Infer the type of a JS object and try to find the corresponding ZID.
