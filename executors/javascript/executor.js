@@ -52,7 +52,7 @@ function execute( Z7 ) {
 	} catch ( e ) {
 		functionName = undefined;
 	}
-	// TODO: Handle input that fails to validate all at once instead of ad hoc.
+	// TODO(T282891): Handle input that fails to validate all at once instead of ad hoc.
 	if ( functionName === undefined ) {
 		return makePair(
 			null,
@@ -60,8 +60,7 @@ function execute( Z7 ) {
 		);
 	}
 
-	// TODO: Ensure that these match declared arguments? (already done in orchestrator)
-	// TODO(T289319): Handle local keys.
+	// TODO(T289319): Consider whether to reduce all keys to local keys.
 	for ( const key of Object.keys( Z7 ) ) {
 		if ( key.startsWith( functionName ) ) {
 			argumentNames.push( key );

@@ -61,13 +61,11 @@ async function maybeRunZ7( ZObject ) {
 		};
 	}
 
-	// TODO: If possible, executor processes should be spun up on server start
-	// and stored in app.settings.
 	let programmingLanguage;
 	try {
 		programmingLanguage = ZObject.Z7K1.Z8K4.Z10K1.Z14K3.Z16K1.Z61K1.Z6K1;
 	} catch ( e ) {
-		// TODO: Return error in this case (should be handled by validation).
+		// TODO(T296857): Return error in this case (should be handled by validation).
 		programmingLanguage = 'python-3';
 	}
 	const executorProcess = subprocess.runExecutorSubprocess( programmingLanguage );
@@ -93,7 +91,7 @@ async function maybeRunZ7( ZObject ) {
 	// Captured stdout will become the resultant ZObject; captured stderr will be logged.
 	const stdoutQueue = [];
 	executorProcess.stdout.on( 'data', ( data ) => {
-		// TODO: Avoid toString; find a way to merge Buffers.
+		// TODO(T295699): Avoid toString; find a way to merge Buffers.
 		stdoutQueue.push( data.toString() );
 	} );
 	const stdoutPromise = new Promise( ( resolve ) => {
