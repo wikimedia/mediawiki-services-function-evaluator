@@ -3,7 +3,7 @@
 // eslint-disable-next-line no-unused-vars
 const { serialize, deserialize } = require( './serialization.js' );
 // eslint-disable-next-line no-unused-vars
-const { ZPair } = require( './utils.js' );
+const { ZObject, ZPair } = require( './utils.js' );
 
 function error( message ) {
 	return {
@@ -101,6 +101,7 @@ function execute( Z7 ) {
 	try {
 		eval( functionTemplate ); // eslint-disable-line no-eval
 	} catch ( e ) {
+		console.error( e );
 		return makePair(
 			null,
 			error( e.message )

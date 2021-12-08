@@ -10,6 +10,15 @@ class ZPair {
 	}
 }
 
+class ZObject {
+	constructor( kwargs, originalZ1K1 = null ) {
+		this.Z1K1 = originalZ1K1;
+		for ( const entry of kwargs.entries() ) {
+			this[ entry[ 0 ] ] = entry[ 1 ];
+		}
+	}
+}
+
 function z10ToList( Z10 ) {
 	const result = [];
 	let tail = Z10;
@@ -117,6 +126,9 @@ function getZIDForJSType( theObject ) {
 	if ( inspected.startsWith( 'ZPair' ) ) {
 		return 'Z882';
 	}
+	if ( inspected.startsWith( 'ZObject' ) ) {
+		return 'DEFAULT';
+	}
 	const typeRegex = /\[object (\w*)\]/;
 	// Object.toString will return [object <TYPE>]; <TYPE> is what we're after.
 	const typeString = Object.prototype.toString.call( theObject ).replace( typeRegex, '$1' );
@@ -129,7 +141,9 @@ module.exports = {
 	getZID,
 	getZObjectType,
 	isString,
+	isZType,
 	listToZ10,
 	z10ToList,
+	ZObject,
 	ZPair
 };

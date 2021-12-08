@@ -1,4 +1,5 @@
 import json
+import logging
 import sys
 
 import os
@@ -102,6 +103,7 @@ def execute(Z7):
             },
         )
     except Exception as e:
+        logging.exception(e)
         return make_pair(None, _error(e.args[0]))
     else:
         return make_pair(_RESULT_CACHE[return_value], None)

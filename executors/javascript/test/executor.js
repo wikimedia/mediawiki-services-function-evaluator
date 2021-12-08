@@ -162,11 +162,10 @@ describe( 'JavaScript executor', () => { // eslint-disable-line no-undef
 		runTest( Z7, expected );
 	} );
 
-	it( 'test undeserializable type', () => { // eslint-disable-line no-undef
-		runTest(
-			readTestJson( 'javascript_unsupported_input.json' ),
-			readTestJson( 'unsupported_input_expected.json' )
-		);
+	it( 'test user-defined input', () => { // eslint-disable-line no-undef
+		const Z7 = readTestJson( 'javascript_user_defined_input.json' );
+		Z7.Z1000K1 = readTestJson( 'user_defined_input_Z1000K1.json' );
+		runTest( Z7, readTestJson( 'user_defined_input_expected.json' ) );
 	} );
 
 	it( 'test unserializable type', () => { // eslint-disable-line no-undef
@@ -174,6 +173,9 @@ describe( 'JavaScript executor', () => { // eslint-disable-line no-undef
 			readTestJson( 'javascript_unsupported_output.json' ),
 			readTestJson( 'javascript_unsupported_output_expected.json' )
 		);
+	} );
+
+	it( 'test user-defined output', () => { // eslint-disable-line no-undef
 	} );
 
 	it( 'test no Z8', () => { // eslint-disable-line no-undef

@@ -130,9 +130,10 @@ class ExecutorTest(unittest.TestCase):
         Z7["Z7K1"]["Z8K2"] = {"Z1K1": "Z9", "Z9K1": "Z1"}
         self._run_test(Z7, expected)
 
-    def test_undeserializable_type(self):
-        Z7 = _read_test_json("python3_unsupported_input.json")
-        expected = _read_test_json("unsupported_input_expected.json")
+    def test_user_defined_input(self):
+        Z7 = _read_test_json("python3_user_defined_input.json")
+        Z7["Z1000K1"] = _read_test_json("user_defined_input_Z1000K1.json")
+        expected = _read_test_json("user_defined_input_expected.json")
         self._run_test(Z7, expected)
 
     def test_unserializable_type(self):

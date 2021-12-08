@@ -1,7 +1,7 @@
 'use strict';
 
 const { serialize, deserialize } = require( '../serialization.js' );
-const { ZPair } = require( '../utils.js' );
+const { ZObject, ZPair } = require( '../utils.js' );
 const { withoutZ1K1s } = require( './utils.js' );
 const assert = require( 'chai' ).assert;
 
@@ -239,6 +239,93 @@ const Z881_Z6_ = {
 	}
 };
 
+const USER_DEFINED_TYPE_ = {
+	Z1K1: {
+		Z1K1: 'Z9',
+		Z9K1: 'Z4'
+	},
+	Z4K1: {
+		Z1K1: 'Z9',
+		Z9K1: 'Z10101'
+	},
+	Z4K2: {
+		Z1K1: {
+			Z1K1: 'Z9',
+			Z9K1: 'Z10'
+		},
+		Z10K1: {
+			Z1K1: {
+				Z1K1: 'Z9',
+				Z9K1: 'Z3'
+			},
+			Z3K1: {
+				Z1K1: 'Z9',
+				Z9K1: 'Z6'
+			},
+			Z3K2: {
+				Z1K1: 'Z6',
+				Z6K1: 'Z10101K1'
+			},
+			Z3K3: {
+				Z1K1: 'Z9',
+				Z9K1: 'Z333'
+			}
+		},
+		Z10K2: {
+			Z1K1: {
+				Z1K1: 'Z9',
+				Z9K1: 'Z10'
+			},
+			Z10K1: {
+				Z1K1: {
+					Z1K1: 'Z9',
+					Z9K1: 'Z3'
+				},
+				Z3K1: {
+					Z1K1: 'Z9',
+					Z9K1: 'Z6'
+				},
+				Z3K2: {
+					Z1K1: 'Z6',
+					Z6K1: 'Z10101K2'
+				},
+				Z3K3: {
+					Z1K1: 'Z9',
+					Z9K1: 'Z333'
+				}
+			},
+			Z10K2: {
+				Z1K1: {
+					Z1K1: 'Z9',
+					Z9K1: 'Z10'
+				}
+			}
+		}
+	},
+	Z4K3: {
+		Z1K1: 'Z9',
+		Z9K1: 'Z222'
+	}
+};
+const USER_DEFINED_DESERIALIZED_ = new ZObject(
+	new Map( [ [ 'Z10101K1', 'tRue' ], [ 'Z10101K2', 'trUe' ] ] ),
+	USER_DEFINED_TYPE_
+);
+const USER_DEFINED_DESERIALIZED_NO_Z1K1_ = new ZObject(
+	new Map( [ [ 'Z10101K1', 'tRue' ], [ 'Z10101K2', 'trUe' ] ] )
+);
+const USER_DEFINED_ = {
+	Z1K1: USER_DEFINED_TYPE_,
+	Z10101K1: {
+		Z1K1: 'Z6',
+		Z6K1: 'tRue'
+	},
+	Z10101K2: {
+		Z1K1: 'Z6',
+		Z6K1: 'trUe'
+	}
+};
+
 describe( 'Javascript executor: deserialization', () => { // eslint-disable-line no-undef
 
 	it( 'test deserializes Z6', () => { // eslint-disable-line no-undef
@@ -271,6 +358,13 @@ describe( 'Javascript executor: deserialization', () => { // eslint-disable-line
 		assert.deepEqual( expected.K1, actual.K1 );
 		assert.deepEqual( expected.K2, actual.K2 );
 	} );
+
+	it( 'test deserializes user-defined', () => { // eslint-disable-line no-undef
+		const expected = USER_DEFINED_DESERIALIZED_;
+		const actual = deserialize( USER_DEFINED_ );
+		assert.deepEqual( expected, actual );
+	} );
+
 } );
 
 describe( 'Javascript executor: serialization', () => { // eslint-disable-line no-undef
@@ -329,5 +423,34 @@ describe( 'Javascript executor: serialization', () => { // eslint-disable-line n
 
 	it( 'test serializes Z881 default', () => { // eslint-disable-line no-undef
 		assert.deepEqual( Z881_Z6_, serialize( Z881_Z6_DESERIALIZED_, Z1_Type_ ) );
+	} );
+
+	it( 'test serializes user-defined', () => { // eslint-disable-line no-undef
+		const expected = USER_DEFINED_;
+		const actual = serialize( USER_DEFINED_DESERIALIZED_, USER_DEFINED_TYPE_ );
+		assert.deepEqual( expected, actual );
+	} );
+
+	it( 'test serializes user-defined as Z1', () => { // eslint-disable-line no-undef
+		const expected = USER_DEFINED_;
+		const actual = serialize( USER_DEFINED_DESERIALIZED_, Z1_Type_ );
+		assert.deepEqual( expected, actual );
+	} );
+
+	it( 'test serializes user-defined no Z1K1', () => { // eslint-disable-line no-undef
+		const expected = USER_DEFINED_;
+		const actual = serialize( USER_DEFINED_DESERIALIZED_NO_Z1K1_, USER_DEFINED_TYPE_ );
+		assert.deepEqual( expected, actual );
+	} );
+
+	it( 'test serializes user-defined as Z1 no Z1K1', () => { // eslint-disable-line no-undef
+		const expectedMessage = "Could not serialize input JS object: ZObject { Z1K1: null, Z10101K1: 'tRue', Z10101K2: 'trUe' }";
+		let actualError;
+		try {
+			serialize( USER_DEFINED_DESERIALIZED_NO_Z1K1_, Z1_Type_ );
+		} catch ( error ) {
+			actualError = error;
+		}
+		assert.deepEqual( expectedMessage, actualError.message );
 	} );
 } );

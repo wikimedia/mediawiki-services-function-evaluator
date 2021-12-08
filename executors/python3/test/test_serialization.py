@@ -1,4 +1,5 @@
 import unittest
+from .. import exceptions
 from .. import serialization
 from .. import utils
 from . import utils as test_utils
@@ -184,9 +185,45 @@ _Z881_Z6 = {
         "K2": {"Z1K1": _Z881_Z6_Type},
     },
 }
+_USER_DEFINED_TYPE = {
+    "Z1K1": {"Z1K1": "Z9", "Z9K1": "Z4"},
+    "Z4K1": {"Z1K1": "Z9", "Z9K1": "Z10101"},
+    "Z4K2": {
+        "Z1K1": {"Z1K1": "Z9", "Z9K1": "Z10"},
+        "Z10K1": {
+            "Z1K1": {"Z1K1": "Z9", "Z9K1": "Z3"},
+            "Z3K1": {"Z1K1": "Z9", "Z9K1": "Z6"},
+            "Z3K2": {"Z1K1": "Z6", "Z6K1": "Z10101K1"},
+            "Z3K3": {"Z1K1": "Z9", "Z9K1": "Z333"},
+        },
+        "Z10K2": {
+            "Z1K1": {"Z1K1": "Z9", "Z9K1": "Z10"},
+            "Z10K1": {
+                "Z1K1": {"Z1K1": "Z9", "Z9K1": "Z3"},
+                "Z3K1": {"Z1K1": "Z9", "Z9K1": "Z6"},
+                "Z3K2": {"Z1K1": "Z6", "Z6K1": "Z10101K2"},
+                "Z3K3": {"Z1K1": "Z9", "Z9K1": "Z333"},
+            },
+            "Z10K2": {"Z1K1": {"Z1K1": "Z9", "Z9K1": "Z10"}},
+        },
+    },
+    "Z4K3": {"Z1K1": "Z9", "Z9K1": "Z222"},
+}
+_USER_DEFINED_DESERIALIZED = utils.ZObject(
+    _USER_DEFINED_TYPE, Z10101K1="tRue", Z10101K2="trUe"
+)
+_USER_DEFINED_DESERIALIZED_NO_Z1K1 = utils.ZObject(Z10101K1="tRue", Z10101K2="trUe")
+_USER_DEFINED = {
+    "Z1K1": _USER_DEFINED_TYPE,
+    "Z10101K1": {"Z1K1": "Z6", "Z6K1": "tRue"},
+    "Z10101K2": {"Z1K1": "Z6", "Z6K1": "trUe"},
+}
 
 
 class DeserializeTest(unittest.TestCase):
+
+    maxDiff = None
+
     def test_deserializes_Z6(self):
         self.assertEqual(_Z6_DESERIALIZED, serialization.deserialize(_Z6))
 
@@ -205,14 +242,22 @@ class DeserializeTest(unittest.TestCase):
     def test_deserializes_Z86(self):
         self.assertEqual(_Z86_DESERIALIZED, serialization.deserialize(_Z86))
 
-    def test_deserializes_Z882(self):
-        self.assertEqual(_Z882_DESERIALIZED, serialization.deserialize(_Z882))
-
     def test_deserializes_Z881(self):
         self.assertEqual(_Z881_Z6_DESERIALIZED, serialization.deserialize(_Z881_Z6))
 
+    def test_deserializes_Z882(self):
+        self.assertEqual(_Z882_DESERIALIZED, serialization.deserialize(_Z882))
+
+    def test_deserializes_user_defined(self):
+        self.assertEqual(
+            _USER_DEFINED_DESERIALIZED, serialization.deserialize(_USER_DEFINED)
+        )
+
 
 class SerializeTest(unittest.TestCase):
+
+    maxDiff = None
+
     def _run_test(self, expected, actual):
         self.assertEqual(
             test_utils.without_z1k1s(expected), test_utils.without_z1k1s(actual)
@@ -250,3 +295,28 @@ class SerializeTest(unittest.TestCase):
         self._run_test(
             _Z881_Z6, serialization.serialize(_Z881_Z6_DESERIALIZED, _Z1_Type)
         )
+
+    def test_serializes_user_defined(self):
+        self._run_test(
+            _USER_DEFINED,
+            serialization.serialize(_USER_DEFINED_DESERIALIZED, _USER_DEFINED_TYPE),
+        )
+
+    def test_serializes_user_defined_as_Z1(self):
+        self._run_test(
+            _USER_DEFINED, serialization.serialize(_USER_DEFINED_DESERIALIZED, _Z1_Type)
+        )
+
+    def test_serializes_user_defined_no_Z1K1(self):
+        self._run_test(
+            _USER_DEFINED,
+            serialization.serialize(
+                _USER_DEFINED_DESERIALIZED_NO_Z1K1, _USER_DEFINED_TYPE
+            ),
+        )
+
+    def test_serializes_user_defined_no_Z1K1_as_Z1(self):
+        expected_message = "Could not serialize input Python object: ZObject<Z1K1:None,Z10101K1:tRue,Z10101K2:trUe>"
+        with self.assertRaises(exceptions.EvaluatorError) as exception_context:
+            serialization.serialize(_USER_DEFINED_DESERIALIZED_NO_Z1K1, _Z1_Type)
+        self.assertEquals(expected_message, exception_context.exception.args[0])

@@ -1,7 +1,7 @@
 'use strict';
 
-const { getZID, getZIDForJSType, getZObjectType, isString, listToZ10, z10ToList } = require( './utils.js' );
-const { ZPair } = require( './utils.js' );
+const { getZID, getZIDForJSType, getZObjectType, isString, isZType, listToZ10, z10ToList } = require( './utils.js' );
+const { ZObject, ZPair } = require( './utils.js' );
 const { inspect } = require( 'util' );
 const stableStringify = require( 'json-stable-stringify-without-jsonify' );
 
@@ -45,6 +45,20 @@ function deserializeZPair( ZObject ) {
 	return new ZPair( deserialize( ZObject.K1 ), deserialize( ZObject.K2 ), ZObject.Z1K1 );
 }
 
+function deserializeZType( theObject ) {
+	let Z1K1;
+	const kwargs = new Map();
+	for ( const key of Object.keys( theObject ) ) {
+		const value = theObject[ key ];
+		if ( key === 'Z1K1' ) {
+			Z1K1 = value;
+		} else {
+			kwargs.set( key, deserialize( value ) );
+		}
+	}
+	return new ZObject( kwargs, Z1K1 );
+}
+
 DESERIALIZERS_.set( 'Z6', ( Z6 ) => Z6.Z6K1 );
 DESERIALIZERS_.set( 'Z10', deserializeZ10 );
 // eslint-disable-next-line no-unused-vars
@@ -54,6 +68,7 @@ DESERIALIZERS_.set( 'Z86', ( Z86 ) => Z86.Z86K1.Z6K1 );
 DESERIALIZERS_.set( 'Z881', deserializeZList );
 DESERIALIZERS_.set( 'Z882', deserializeZPair );
 DESERIALIZERS_.set( 'Z883', deserializeZMap );
+const DEFAULT_DESERIALIZER_ = deserializeZType;
 
 /**
  * Convert a ZObject into the corresponding JS type.
@@ -67,9 +82,9 @@ DESERIALIZERS_.set( 'Z883', deserializeZMap );
  */
 function deserialize( ZObject ) {
 	const ZID = getZObjectType( ZObject );
-	const deserializer = DESERIALIZERS_.get( ZID );
+	let deserializer = DESERIALIZERS_.get( ZID );
 	if ( deserializer === undefined ) {
-		throw new Error( 'Could not deserialize input ZObject type: ' + ZID );
+		deserializer = DEFAULT_DESERIALIZER_;
 	}
 	return deserializer( ZObject );
 }
@@ -196,13 +211,23 @@ function serializeGenericInternal( expectedType, kwargs ) {
 
 // TODO(T290898): This can serve as a model for default deserialization--all
 // local keys can be serialized and set as members.
-function serializeZPair( thePair, expectedType ) {
-	const expectedArgs = z10ToList( expectedType.Z4K2 );
+function serializeZType( theObject, expectedType ) {
 	const kwargs = new Map();
-	for ( const expectedArg of expectedArgs ) {
-		const theKey = expectedArg.Z3K2.Z6K1;
-		const subType = expectedArg.Z3K1;
-		kwargs.set( theKey, serialize( thePair[ theKey ], subType ) );
+	if ( isZType( expectedType ) ) {
+		const expectedArgs = z10ToList( expectedType.Z4K2 );
+		for ( const expectedArg of expectedArgs ) {
+			const theKey = expectedArg.Z3K2.Z6K1;
+			const subType = expectedArg.Z3K1;
+			kwargs.set( theKey, serialize( theObject[ theKey ], subType ) );
+		}
+	} else {
+		for ( const key of Object.keys( theObject ) ) {
+			if ( key === 'Z1K1' ) {
+				continue;
+			}
+			const subType = { Z1K1: 'Z9', Z9K1: 'Z1' };
+			kwargs.set( key, serialize( theObject[ key ], subType ) );
+		}
 	}
 	return serializeGenericInternal( expectedType, kwargs );
 }
@@ -267,6 +292,7 @@ function serializeZ1( theObject ) {
 		}
 		const Z1K1s = new Set();
 		for ( const element of elements ) {
+			// TODO(T293915): Use ZObjectKeyFactory to create string representations.
 			Z1K1s.add( stableStringify( element.Z1K1 ) );
 		}
 		let elementType;
@@ -303,7 +329,12 @@ function serializeZ1( theObject ) {
 		const kwargs = new Map( [ [ 'K1', K1 ] ] );
 		return serializeGenericInternal( Z1K1, kwargs );
 	}
-	const Z4 = { Z1K1: 'Z9', Z9K1: ZID };
+	let Z4;
+	if ( ZID === 'DEFAULT' ) {
+		Z4 = theObject.Z1K1;
+	} else {
+		Z4 = { Z1K1: 'Z9', Z9K1: ZID };
+	}
 	return serialize( theObject, Z4 );
 }
 
@@ -317,8 +348,9 @@ SERIALIZERS_.set( 'Z21', serializeZ21 );
 SERIALIZERS_.set( 'Z40', serializeZ40 );
 SERIALIZERS_.set( 'Z86', serializeZ86 );
 SERIALIZERS_.set( 'Z881', serializeZList );
-SERIALIZERS_.set( 'Z882', serializeZPair );
+SERIALIZERS_.set( 'Z882', serializeZType );
 SERIALIZERS_.set( 'Z883', serializeZMap );
+const DEFAULT_SERIALIZER_ = serializeZType;
 
 /**
  * Convert a JS object into the corresponding ZObject type.
@@ -332,10 +364,15 @@ SERIALIZERS_.set( 'Z883', serializeZMap );
  * @return {Object} the serialized ZObject
  */
 function serialize( theObject, expectedType ) {
-	const ZID = getZID( expectedType );
-	const serializer = SERIALIZERS_.get( ZID );
-	if ( ZID === null || serializer === undefined ) {
+	let ZID;
+	try {
+		ZID = getZID( expectedType );
+	} catch ( error ) {
 		throw new Error( 'Could not serialize input JS object: ' + inspect( theObject ) );
+	}
+	let serializer = SERIALIZERS_.get( ZID );
+	if ( serializer === undefined ) {
+		serializer = DEFAULT_SERIALIZER_;
 	}
 	return serializer( theObject, expectedType );
 }

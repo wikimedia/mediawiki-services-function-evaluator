@@ -37,6 +37,17 @@ def _DESERIALIZE_ZMAP(Z_object):
     return {pair.K1: pair.K2 for pair in deserialize(Z_object["K1"])}
 
 
+def _DESERIALIZE_ZTYPE(Z_object):
+    Z1K1 = None
+    kwargs = {}
+    for key, value in Z_object.items():
+        if key == "Z1K1":
+            Z1K1 = value
+        else:
+            kwargs[key] = deserialize(value)
+    return utils.ZObject(Z1K1, **kwargs)
+
+
 _DESERIALIZE_Z6 = lambda Z6: Z6["Z6K1"]
 _DESERIALIZE_Z21 = lambda Z21: None
 _DESERIALIZE_Z40 = lambda Z40: Z40["Z40K1"]["Z9K1"] == "Z41"
@@ -51,6 +62,7 @@ _DESERIALIZERS = {
     "Z882": _DESERIALIZE_ZPAIR,
     "Z883": _DESERIALIZE_ZMAP,
 }
+_DEFAULT_DESERIALIZER = _DESERIALIZE_ZTYPE
 
 
 def deserialize(ZObject):
@@ -63,9 +75,12 @@ def deserialize(ZObject):
     ZID = utils.get_zobject_type(ZObject)
     deserializer = _DESERIALIZERS.get(ZID)
     if deserializer is None:
+        deserializer = _DEFAULT_DESERIALIZER
+        """
         raise exceptions.EvaluatorError(
             "Could not deserialize input ZObject type: {}".format(ZID)
         )
+        """
     return deserializer(ZObject)
 
 
@@ -160,13 +175,20 @@ def _serialize_generic_internal(expected_type, **kwargs):
     return result
 
 
-def _SERIALIZE_ZPAIR(the_pair, expected_type):
-    expected_args = utils.z10_to_list(expected_type["Z4K2"])
+def _SERIALIZE_ZTYPE(the_object, expected_type):
     kwargs = {}
-    for expected_arg in expected_args:
-        the_key = expected_arg["Z3K2"]["Z6K1"]
-        subtype = expected_arg["Z3K1"]
-        kwargs[the_key] = serialize(getattr(the_pair, the_key), subtype)
+    if utils.is_ztype(expected_type):
+        expected_args = utils.z10_to_list(expected_type["Z4K2"])
+        for expected_arg in expected_args:
+            the_key = expected_arg["Z3K2"]["Z6K1"]
+            subtype = expected_arg["Z3K1"]
+            kwargs[the_key] = serialize(getattr(the_object, the_key), subtype)
+    else:
+        for key, value in the_object.items():
+            if key == "Z1K1":
+                continue
+            subtype = {"Z1K1": "Z9", "Z9K1": "Z1"}
+            kwargs[key] = serialize(value, subtype)
     return _serialize_generic_internal(expected_type, **kwargs)
 
 
@@ -217,13 +239,14 @@ def _SERIALIZE_Z1(anything, _):
     ZID = utils.get_python_type(anything)
     if ZID is None:
         raise exceptions.EvaluatorError(
-            "Could not serialize input python object: {}".format(repr(anything))
+            "Could not serialize input Python object: {}".format(repr(anything))
         )
     z1_type = {"Z1K1": "Z9", "Z9K1": "Z1"}
     if ZID == "Z881":
         elements = [serialize(element, z1_type) for element in anything]
         Z1K1s = set(utils.frozendict(element["Z1K1"]) for element in elements)
         if len(Z1K1s) == 1:
+            # TODO(T293915): Use ZObjectKeyFactory to create string representations.
             element_type = _soup_up_z1k1(elements[0]["Z1K1"])
         else:
             element_type = z1_type
@@ -245,7 +268,11 @@ def _SERIALIZE_Z1(anything, _):
             value_type = _soup_up_z1k1(first_pair["K2"]["Z1K1"])
         Z1K1 = _z4_for_zmap(key_type, value_type)
         return _serialize_generic_internal(Z1K1, K1=K1)
-    return serialize(anything, {"Z1K1": "Z9", "Z9K1": ZID})
+    if ZID == "DEFAULT":
+        Z4 = anything.Z1K1
+    else:
+        Z4 = {"Z1K1": "Z9", "Z9K1": ZID}
+    return serialize(anything, Z4)
 
 
 _SERIALIZE_Z6 = lambda string, _: {"Z1K1": "Z6", "Z6K1": string}
@@ -258,9 +285,10 @@ _SERIALIZERS = {
     "Z40": _SERIALIZE_Z40,
     "Z86": _SERIALIZE_Z86,
     "Z881": _SERIALIZE_ZLIST,
-    "Z882": _SERIALIZE_ZPAIR,
+    "Z882": _SERIALIZE_ZTYPE,
     "Z883": _SERIALIZE_ZMAP,
 }
+_DEFAULT_SERIALIZER = _SERIALIZE_ZTYPE
 
 
 def serialize(py_object, expected_type):
@@ -270,16 +298,13 @@ def serialize(py_object, expected_type):
     None -> Z21
     bool -> Z40
     """
-    ZID = utils.get_zid(expected_type)
+    try:
+        ZID = utils.get_zid(expected_type)
+    except exceptions.EvaluatorError:
+        raise exceptions.EvaluatorError(
+            "Could not serialize input Python object: {}".format(repr(py_object))
+        )
     serializer = _SERIALIZERS.get(ZID)
-    if ZID is not None and serializer is not None:
-        try:
-            return serializer(py_object, expected_type)
-        except Exception as e:
-            import logging
-
-            logging.exception("error in serialization:")
-            pass
-    raise exceptions.EvaluatorError(
-        "Could not serialize input python object: {}".format(repr(py_object))
-    )
+    if serializer is None:
+        serializer = _DEFAULT_SERIALIZER
+    return serializer(py_object, expected_type)
