@@ -3,7 +3,7 @@
 const sUtil = require( '../lib/util' );
 const subprocess = require( '../src/subprocess.js' );
 const { SchemaFactory } = require( '../function-schemata/javascript/src/schema.js' );
-const { makeResultEnvelope } = require( '../function-schemata/javascript/src/utils.js' );
+const { convertZListToArray, makeResultEnvelope } = require( '../function-schemata/javascript/src/utils.js' );
 
 /**
  * The main router object
@@ -18,6 +18,20 @@ let app; // eslint-disable-line no-unused-vars
 async function maybeRunZ7( ZObject ) {
 	const schema = SchemaFactory.NORMAL().create( 'Z7_backend' );
 	if ( !schema.validate( ZObject ) ) {
+		const listOfErrorsType = {
+			Z1K1: {
+				Z1K1: 'Z9',
+				Z9K1: 'Z7'
+			},
+			Z7K1: {
+				Z1K1: 'Z9',
+				Z9K1: 'Z881'
+			},
+			Z881K1: {
+				Z1K1: 'Z9',
+				Z9K1: 'Z5'
+			}
+		};
 		return {
 			process: null,
 			Z22: makeResultEnvelope(
@@ -29,19 +43,16 @@ async function maybeRunZ7( ZObject ) {
 					},
 					Z5K2: schema.errors.reduce( ( errors, error ) => {
 						function setEmptyListItemData( list, string ) {
-							if ( list.Z10K1 === undefined ) {
-								list.Z10K1 = string;
-								list.Z10K2 = {
-									Z1K1: {
-										Z1K1: 'Z9',
-										Z9K1: 'Z10'
-									}
+							if ( list.K1 === undefined ) {
+								list.K1 = string;
+								list.K2 = {
+									Z1K1: listOfErrorsType
 								};
 								return list;
 							} else {
 								return {
 									...list,
-									Z10K2: setEmptyListItemData( list.Z10K2, string )
+									K2: setEmptyListItemData( list.K2, string )
 								};
 							}
 						}
@@ -51,10 +62,7 @@ async function maybeRunZ7( ZObject ) {
 							Z6K1: `${error.dataPath} ${error.message}.`
 						} );
 					}, {
-						Z1K1: {
-							Z1K1: 'Z9',
-							Z9K1: 'Z10'
-						}
+						Z1K1: listOfErrorsType
 					} )
 				}
 			)
@@ -63,7 +71,8 @@ async function maybeRunZ7( ZObject ) {
 
 	let programmingLanguage;
 	try {
-		programmingLanguage = ZObject.Z7K1.Z8K4.Z10K1.Z14K3.Z16K1.Z61K1.Z6K1;
+		const implementations = convertZListToArray( ZObject.Z7K1.Z8K4 );
+		programmingLanguage = implementations[ 0 ].Z14K3.Z16K1.Z61K1.Z6K1;
 	} catch ( e ) {
 		// TODO(T296857): Return error in this case (should be handled by validation).
 		programmingLanguage = 'python-3';

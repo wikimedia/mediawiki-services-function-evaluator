@@ -78,6 +78,13 @@ describe( 'JavaScript executor', () => { // eslint-disable-line no-undef
 		);
 	} );
 
+	it( 'test runs function call with generics', () => { // eslint-disable-line no-undef
+		runTest(
+			readTestJson( 'javascript_add_with_generics.json' ),
+			readTestJson( 'add_expected.json' )
+		);
+	} );
+
 	it( 'test compound type', () => { // eslint-disable-line no-undef
 		runTest(
 			readTestJson( 'javascript_compound_type.json' ),

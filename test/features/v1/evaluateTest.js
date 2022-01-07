@@ -9,12 +9,9 @@ const subprocess = require( '../../../src/subprocess.js' );
 const sinon = require( 'sinon' );
 
 const { SchemaFactory } = require( '../../../function-schemata/javascript/src/schema.js' );
+const { makeUnit } = require( '../../../function-schemata/javascript/src/utils.js' );
 
 const errorValidator = SchemaFactory.NORMAL().create( 'Z5' );
-
-function Z23() {
-	return { Z1K1: 'Z9', Z9K1: 'Z23' };
-}
 
 describe( 'evaluate-unit', function () {
 
@@ -68,7 +65,7 @@ describe( 'evaluate-unit', function () {
 		{
 			Z1K1: { Z1K1: 'Z9', Z9K1: 'Z22' },
 			Z22K1: { Z1K1: 'Z6', Z6K1: 'well-behaved' },
-			Z22K2: Z23()
+			Z22K2: makeUnit()
 		}
 	);
 
@@ -77,7 +74,7 @@ describe( 'evaluate-unit', function () {
 		'test_data/empty_on_both_ends.py',
 		{
 			Z1K1: { Z1K1: 'Z9', Z9K1: 'Z22' },
-			Z22K1: Z23(),
+			Z22K1: makeUnit(),
 			Z22K2: {
 				Z1K1: {
 					Z1K1: 'Z9',
@@ -98,7 +95,7 @@ describe( 'evaluate-unit', function () {
 			}
 			const stubProcess = sinon.stub( subprocess, 'runExecutorSubprocess' ).callsFake( mockExecutor );
 
-			const expectedZ22K1 = Z23();
+			const expectedZ22K1 = makeUnit();
 
 			return preq( {
 				method: 'post',
@@ -160,8 +157,20 @@ describe( 'evaluate-integration', function () {
 	}
 
 	integrationTest(
+		'degenerate function call',
+		readJSON( './test_data/degenerate_Z8.json' ),
+		readJSON( './test_data/degenerate_expected.json' )
+	);
+
+	integrationTest(
 		'python - addition',
 		readJSON( './test_data/python3_add.json' ),
+		readJSON( './test_data/add_expected.json' )
+	);
+
+	integrationTest(
+		'python - addition (with generics)',
+		readJSON( './test_data/python3_add_with_generics.json' ),
 		readJSON( './test_data/add_expected.json' )
 	);
 
@@ -180,6 +189,12 @@ describe( 'evaluate-integration', function () {
 	integrationTest(
 		'javascript - addition',
 		readJSON( './test_data/javascript_add.json' ),
+		readJSON( './test_data/add_expected.json' )
+	);
+
+	integrationTest(
+		'javascript - addition (with generics)',
+		readJSON( './test_data/javascript_add_with_generics.json' ),
 		readJSON( './test_data/add_expected.json' )
 	);
 

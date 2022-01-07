@@ -8,7 +8,11 @@ runs:
 variants:
   build:
     base: docker-registry.wikimedia.org/nodejs12-devel
-    copies: [local]
+    copies:
+    - from: local
+    - from: local
+      source: function-schemata
+      destination: ./executors/javascript/function-schemata
     apt: { packages: [git, build-essential, python3-dev] }
     node: { requirements: [package.json, package-lock.json, function-schemata/package.json, function-schemata/package-lock.json] }
     runs: { environment: { LINK: g++ } }
@@ -83,6 +87,9 @@ variants:
       source: executors/javascript/
       destination: .
     - from: local
+      source: function-schemata
+      destination: ./function-schemata
+    - from: local
       source: test_data
       destination: ./test/test_data
     node:
@@ -93,6 +100,12 @@ variants:
       - from: local
         source: executors/javascript/package-lock.json
         destination: ./package-lock.json
+      - from: local
+        source: function-schemata/package.json
+        destination: ./function-schemata/package.json
+      - from: local
+        source: function-schemata/package-lock.json
+        destination: ./function-schemata/package-lock.json
   test-javascript-executor:
     includes: [build-javascript-executor]
     lives:

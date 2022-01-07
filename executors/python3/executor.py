@@ -76,7 +76,8 @@ def execute(Z7):
         argument_name: Z7[argument_name] for argument_name in argument_names
     }
     try:
-        implementation = Z7["Z7K1"]["Z8K4"]["Z10K1"]["Z14K3"]["Z16K2"]["Z6K1"]
+        implementations = utils.convert_zlist_to_list(Z7["Z7K1"]["Z8K4"])
+        implementation = implementations[0]["Z14K3"]["Z16K2"]["Z6K1"]
     except KeyError:
         return make_pair(None, _error("Z8K4 did not contain a valid Implementation."))
 

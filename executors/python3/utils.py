@@ -23,25 +23,20 @@ def _is_zfunction(Z8):
         return False
 
 
-def z10_to_list(Z10):
-    result = []
-    tail = Z10
-    while tail.get("Z10K1") is not None:
-        result.append(tail.get("Z10K1"))
-        tail = tail.get("Z10K2")
-    return result
+def _z9_for(reference):
+    return {"Z1K1": "Z9", "Z9K1": reference}
 
 
-def list_to_z10(the_list):
-    def _empty_z10():
-        return {"Z1K1": {"Z1K1": "Z9", "Z9K1": "Z10"}}
+def make_unit():
+    return _z9_for("Z23")
 
-    result = _empty_z10()
-    tail = result
-    for element in the_list:
-        tail["Z10K1"] = element
-        tail = tail.setdefault("Z10K2", _empty_z10())
-    return result
+
+def make_result_envelope(good_result, bad_result):
+    return {
+        "Z1K1": _z9_for("Z22"),
+        "Z22K1": make_unit() if good_result is None else good_result,
+        "Z22K2": make_unit() if bad_result is None else bad_result,
+    }
 
 
 def frozendict(dictionary):
@@ -52,6 +47,80 @@ def frozendict(dictionary):
     for key, value in dictionary.items():
         result.append((key, frozendict(value)))
     return frozenset(result)
+
+
+def _get_head(zlist):
+    result = zlist.get("Z10K1")
+    if result is None:
+        result = zlist.get("K1")
+    return result
+
+
+def _get_tail(zlist):
+    result = zlist.get("Z10K2")
+    if result is None:
+        result = zlist.get("K2")
+    return result
+
+
+def is_empty_zlist(z_list):
+    """Returns True iff input Typed List is empty."""
+    return _get_head(z_list) is None
+
+
+def convert_zlist_to_list(zlist):
+    """Turns a Typed List into a Python list.
+
+    Arguments:
+        zlist: a Typed List
+
+    Returns:
+        a Python list containing all elements of the input Typed List
+    """
+    tail = zlist
+    result = []
+    while True:
+        if is_empty_zlist(tail):
+            break
+        result.append(_get_head(tail))
+        tail = _get_tail(tail)
+    return result
+
+
+def convert_list_to_zlist(the_list, type_clue=None):
+    """Turns a Python iterable into a Typed List.
+
+    Arguments:
+        the_list: an iterable of ZObjects
+
+    Returns:
+        a Type List corresponding to the input list
+    """
+    Z1K1s = set()
+
+    for i, element in enumerate(the_list):
+        if i == 0:
+            first_Z1K1 = element["Z1K1"]
+        Z1K1s.add(frozendict(element["Z1K1"]))
+    if len(Z1K1s) == 1:
+        head_type = first_Z1K1
+    else:
+        head_type = type_clue or _z9_for("Z1")
+    list_type = {"Z1K1": _z9_for("Z7"), "Z7K1": _z9_for("Z881"), "Z881K1": head_type}
+
+    head_key = "K1"
+    tail_key = "K2"
+
+    def create_tail():
+        return {"Z1K1": list_type}
+
+    result = create_tail()
+    tail = result
+    for element in the_list:
+        tail[head_key] = element
+        tail[tail_key] = create_tail()
+        tail = tail[tail_key]
+    return result
 
 
 def get_zid(Z4):

@@ -68,7 +68,7 @@ _DEFAULT_DESERIALIZER = _DESERIALIZE_ZTYPE
 def deserialize(ZObject):
     """Convert a ZObject into the corresponding Python type.
     Z6 -> str
-    Z10 -> list
+    Z10 or Typed List -> list
     Z21 -> None
     Z40 -> bool
     """
@@ -91,7 +91,7 @@ def _z3_for(key_type, key_label):
         "Z3K2": {"Z1K1": "Z6", "Z6K1": key_label},
         "Z3K3": {
             "Z1K1": {"Z1K1": "Z9", "Z9K1": "Z12"},
-            "Z12K1": {"Z1K1": {"Z1K1": "Z9", "Z9K1": "Z10"}},
+            "Z12K1": utils.convert_list_to_zlist([], {"Z1K1": "Z9", "Z9K1": "Z11"}),
         },
     }
 
@@ -135,7 +135,7 @@ def _serialize_zlist_internal(elements, expected_type):
     def _empty_list():
         return {"Z1K1": expected_type}
 
-    expected_args = utils.z10_to_list(expected_type["Z4K2"])
+    expected_args = utils.convert_zlist_to_list(expected_type["Z4K2"])
     head_key = expected_args[0]["Z3K2"]["Z6K1"]
     tail_key = expected_args[1]["Z3K2"]["Z6K1"]
     result = _empty_list()
@@ -147,7 +147,7 @@ def _serialize_zlist_internal(elements, expected_type):
 
 
 def _SERIALIZE_ZLIST(iterable, expected_type):
-    expected_args = utils.z10_to_list(expected_type["Z4K2"])
+    expected_args = utils.convert_zlist_to_list(expected_type["Z4K2"])
     head_type = expected_args[0]["Z3K1"]
     elements = [serialize(element, head_type) for element in iterable]
     return _serialize_zlist_internal(elements, expected_type)
@@ -163,7 +163,7 @@ def _z4_for_zlist(element_type):
     return {
         "Z1K1": {"Z1K1": "Z9", "Z9K1": "Z4"},
         "Z4K1": Z4K1,
-        "Z4K2": utils.list_to_z10(argument_declarations),
+        "Z4K2": utils.convert_list_to_zlist(argument_declarations),
         "Z4K3": {"Z1K1": "Z9", "Z9K1": "Z104"},
     }
 
@@ -178,7 +178,7 @@ def _serialize_generic_internal(expected_type, **kwargs):
 def _SERIALIZE_ZTYPE(the_object, expected_type):
     kwargs = {}
     if utils.is_ztype(expected_type):
-        expected_args = utils.z10_to_list(expected_type["Z4K2"])
+        expected_args = utils.convert_zlist_to_list(expected_type["Z4K2"])
         for expected_arg in expected_args:
             the_key = expected_arg["Z3K2"]["Z6K1"]
             subtype = expected_arg["Z3K1"]
@@ -203,14 +203,14 @@ def _z4_for_zpair(first_type, second_type):
     return {
         "Z1K1": {"Z1K1": "Z9", "Z9K1": "Z4"},
         "Z4K1": Z4K1,
-        "Z4K2": utils.list_to_z10(argument_declarations),
+        "Z4K2": utils.convert_list_to_zlist(argument_declarations),
         "Z4K3": {"Z1K1": "Z9", "Z9K1": "Z104"},
     }
 
 
 def _SERIALIZE_ZMAP(the_dict, expected_type):
     pair_list = [utils.ZPair(*item) for item in the_dict.items()]
-    expected_args = utils.z10_to_list(expected_type["Z4K2"])
+    expected_args = utils.convert_zlist_to_list(expected_type["Z4K2"])
     the_key = expected_args[0]["Z3K2"]["Z6K1"]
     subtype = expected_args[0]["Z3K1"]
     kwargs = {the_key: serialize(pair_list, subtype)}
@@ -230,7 +230,7 @@ def _z4_for_zmap(key_type, value_type):
     return {
         "Z1K1": {"Z1K1": "Z9", "Z9K1": "Z4"},
         "Z4K1": Z4K1,
-        "Z4K2": utils.list_to_z10(argument_declarations),
+        "Z4K2": utils.convert_list_to_zlist(argument_declarations),
         "Z4K3": {"Z1K1": "Z9", "Z9K1": "Z104"},
     }
 
@@ -294,7 +294,7 @@ _DEFAULT_SERIALIZER = _SERIALIZE_ZTYPE
 def serialize(py_object, expected_type):
     """Convert a Python object into the corresponding ZObject type.
     str -> Z6
-    list -> Z10
+    list -> Typed List (as Returned by Z881)
     None -> Z21
     bool -> Z40
     """

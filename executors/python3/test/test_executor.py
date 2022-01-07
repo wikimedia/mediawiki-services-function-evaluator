@@ -35,6 +35,11 @@ class ExecutorTest(unittest.TestCase):
         expected = _read_test_json("add_expected.json")
         self._run_test(Z7, expected)
 
+    def test_runs_function_call_with_generics(self):
+        Z7 = _read_test_json("python3_add_with_generics.json")
+        expected = _read_test_json("add_expected.json")
+        self._run_test(Z7, expected)
+
     def test_runs_lambda(self):
         Z7 = _read_test_json("python3_add_lambda.json")
         expected = _read_test_json("add_expected.json")
@@ -42,6 +47,11 @@ class ExecutorTest(unittest.TestCase):
 
     def test_various_types(self):
         Z7 = _read_test_json("python3_compound_type.json")
+        expected = _read_test_json("compound_type_expected.json")
+        self._run_test(Z7, expected)
+
+    def test_various_types_generic(self):
+        Z7 = _read_test_json("python3_compound_type_generic.json")
         expected = _read_test_json("compound_type_expected.json")
         self._run_test(Z7, expected)
 

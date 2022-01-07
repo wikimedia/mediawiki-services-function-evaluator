@@ -7,18 +7,36 @@ from . import utils as test_utils
 
 _Z6 = {"Z1K1": "Z6", "Z6K1": "opiparo"}
 _Z10_INPUT = {
-    "Z1K1": {"Z1K1": "Z9", "Z9K1": "Z10"},
-    "Z10K1": {
+    "Z1K1": {
+        "Z1K1": {"Z1K1": "Z9", "Z9K1": "Z7"},
+        "Z7K1": {"Z1K1": "Z9", "Z9K1": "Z881"},
+        "Z881K1": {"Z1K1": "Z9", "Z9K1": "Z1"},
+    },
+    "K1": {
         "Z1K1": {"Z1K1": "Z9", "Z9K1": "Z40"},
         "Z40K1": {"Z1K1": "Z9", "Z9K1": "Z41"},
     },
-    "Z10K2": {
-        "Z1K1": {"Z1K1": "Z9", "Z9K1": "Z10"},
-        "Z10K1": {"Z1K1": "Z6", "Z6K1": "tRue"},
-        "Z10K2": {
-            "Z1K1": {"Z1K1": "Z9", "Z9K1": "Z10"},
-            "Z10K1": {"Z1K1": {"Z1K1": "Z9", "Z9K1": "Z10"}},
-            "Z10K2": {"Z1K1": {"Z1K1": "Z9", "Z9K1": "Z10"}},
+    "K2": {
+        "Z1K1": {
+            "Z1K1": {"Z1K1": "Z9", "Z9K1": "Z7"},
+            "Z7K1": {"Z1K1": "Z9", "Z9K1": "Z881"},
+            "Z881K1": {"Z1K1": "Z9", "Z9K1": "Z1"},
+        },
+        "K1": {"Z1K1": "Z6", "Z6K1": "tRue"},
+        "K2": {
+            "Z1K1": {
+                "Z1K1": {"Z1K1": "Z9", "Z9K1": "Z7"},
+                "Z7K1": {"Z1K1": "Z9", "Z9K1": "Z881"},
+                "Z881K1": {"Z1K1": "Z9", "Z9K1": "Z1"},
+            },
+            "K1": {"Z1K1": {"Z1K1": "Z9", "Z9K1": "Z10"}},
+            "K2": {
+                "Z1K1": {
+                    "Z1K1": {"Z1K1": "Z9", "Z9K1": "Z7"},
+                    "Z7K1": {"Z1K1": "Z9", "Z9K1": "Z881"},
+                    "Z881K1": {"Z1K1": "Z9", "Z9K1": "Z1"},
+                },
+            },
         },
     },
 }
@@ -52,16 +70,24 @@ _Z882_Type = {
         "Z882K2": {"Z1K1": "Z9", "Z9K1": "Z6"},
     },
     "Z4K2": {
-        "Z1K1": {"Z1K1": "Z9", "Z9K1": "Z10"},
-        "Z10K1": {
+        "Z1K1": {
+            "Z1K1": {"Z1K1": "Z9", "Z9K1": "Z7"},
+            "Z7K1": {"Z1K1": "Z9", "Z9K1": "Z881"},
+            "Z881K1": {"Z1K1": "Z9", "Z9K1": "Z3"},
+        },
+        "K1": {
             "Z1K1": {"Z1K1": "Z9", "Z9K1": "Z3"},
             "Z3K1": {"Z1K1": "Z9", "Z9K1": "Z6"},
             "Z3K2": {"Z1K1": "Z6", "Z6K1": "K1"},
             "Z3K3": {"Z1K1": "Z12", "Z12K1": {"Z1K1": {"Z1K1": "Z9", "Z9K1": "Z10"}}},
         },
-        "Z10K2": {
-            "Z1K1": {"Z1K1": "Z9", "Z9K1": "Z10"},
-            "Z10K1": {
+        "K2": {
+            "Z1K1": {
+                "Z1K1": {"Z1K1": "Z9", "Z9K1": "Z7"},
+                "Z7K1": {"Z1K1": "Z9", "Z9K1": "Z881"},
+                "Z881K1": {"Z1K1": "Z9", "Z9K1": "Z3"},
+            },
+            "K1": {
                 "Z1K1": {"Z1K1": "Z9", "Z9K1": "Z3"},
                 "Z3K1": {"Z1K1": "Z9", "Z9K1": "Z6"},
                 "Z3K2": {"Z1K1": "Z6", "Z6K1": "K2"},
@@ -70,8 +96,12 @@ _Z882_Type = {
                     "Z12K1": {"Z1K1": {"Z1K1": "Z9", "Z9K1": "Z10"}},
                 },
             },
-            "Z10K2": {
-                "Z1K1": {"Z1K1": "Z9", "Z9K1": "Z10"},
+            "K2": {
+                "Z1K1": {
+                    "Z1K1": {"Z1K1": "Z9", "Z9K1": "Z7"},
+                    "Z7K1": {"Z1K1": "Z9", "Z9K1": "Z881"},
+                    "Z881K1": {"Z1K1": "Z9", "Z9K1": "Z3"},
+                },
             },
         },
     },
@@ -85,16 +115,24 @@ _Z881_Z1_Type = {
         "Z881K1": {"Z1K1": "Z9", "Z9K1": "Z1"},
     },
     "Z4K2": {
-        "Z1K1": {"Z1K1": "Z9", "Z9K1": "Z10"},
-        "Z10K1": {
+        "Z1K1": {
+            "Z1K1": {"Z1K1": "Z9", "Z9K1": "Z7"},
+            "Z7K1": {"Z1K1": "Z9", "Z9K1": "Z881"},
+            "Z881K1": {"Z1K1": "Z9", "Z9K1": "Z3"},
+        },
+        "K1": {
             "Z1K1": {"Z1K1": "Z9", "Z9K1": "Z3"},
             "Z3K1": {"Z1K1": "Z9", "Z9K1": "Z1"},
             "Z3K2": {"Z1K1": "Z6", "Z6K1": "K1"},
             "Z3K3": {"Z1K1": "Z12", "Z12K1": {"Z1K1": {"Z1K1": "Z9", "Z9K1": "Z10"}}},
         },
-        "Z10K2": {
-            "Z1K1": {"Z1K1": "Z9", "Z9K1": "Z10"},
-            "Z10K1": {
+        "K2": {
+            "Z1K1": {
+                "Z1K1": {"Z1K1": "Z9", "Z9K1": "Z7"},
+                "Z7K1": {"Z1K1": "Z9", "Z9K1": "Z881"},
+                "Z881K1": {"Z1K1": "Z9", "Z9K1": "Z3"},
+            },
+            "K1": {
                 "Z1K1": {"Z1K1": "Z9", "Z9K1": "Z3"},
                 "Z3K1": {
                     "Z1K1": {"Z1K1": "Z9", "Z9K1": "Z7"},
@@ -107,8 +145,12 @@ _Z881_Z1_Type = {
                     "Z12K1": {"Z1K1": {"Z1K1": "Z9", "Z9K1": "Z10"}},
                 },
             },
-            "Z10K2": {
-                "Z1K1": {"Z1K1": "Z9", "Z9K1": "Z10"},
+            "K2": {
+                "Z1K1": {
+                    "Z1K1": {"Z1K1": "Z9", "Z9K1": "Z7"},
+                    "Z7K1": {"Z1K1": "Z9", "Z9K1": "Z881"},
+                    "Z881K1": {"Z1K1": "Z9", "Z9K1": "Z3"},
+                },
             },
         },
     },
@@ -122,16 +164,24 @@ _Z881_Z6_Type = {
         "Z881K1": {"Z1K1": "Z9", "Z9K1": "Z6"},
     },
     "Z4K2": {
-        "Z1K1": {"Z1K1": "Z9", "Z9K1": "Z10"},
-        "Z10K1": {
+        "Z1K1": {
+            "Z1K1": {"Z1K1": "Z9", "Z9K1": "Z7"},
+            "Z7K1": {"Z1K1": "Z9", "Z9K1": "Z881"},
+            "Z881K1": {"Z1K1": "Z9", "Z9K1": "Z3"},
+        },
+        "K1": {
             "Z1K1": {"Z1K1": "Z9", "Z9K1": "Z3"},
             "Z3K1": {"Z1K1": "Z9", "Z9K1": "Z6"},
             "Z3K2": {"Z1K1": "Z6", "Z6K1": "K1"},
             "Z3K3": {"Z1K1": "Z12", "Z12K1": {"Z1K1": {"Z1K1": "Z9", "Z9K1": "Z10"}}},
         },
-        "Z10K2": {
-            "Z1K1": {"Z1K1": "Z9", "Z9K1": "Z10"},
-            "Z10K1": {
+        "K2": {
+            "Z1K1": {
+                "Z1K1": {"Z1K1": "Z9", "Z9K1": "Z7"},
+                "Z7K1": {"Z1K1": "Z9", "Z9K1": "Z881"},
+                "Z881K1": {"Z1K1": "Z9", "Z9K1": "Z3"},
+            },
+            "K1": {
                 "Z1K1": {"Z1K1": "Z9", "Z9K1": "Z3"},
                 "Z3K1": {
                     "Z1K1": {"Z1K1": "Z9", "Z9K1": "Z7"},
@@ -144,8 +194,12 @@ _Z881_Z6_Type = {
                     "Z12K1": {"Z1K1": {"Z1K1": "Z9", "Z9K1": "Z10"}},
                 },
             },
-            "Z10K2": {
-                "Z1K1": {"Z1K1": "Z9", "Z9K1": "Z10"},
+            "K2": {
+                "Z1K1": {
+                    "Z1K1": {"Z1K1": "Z9", "Z9K1": "Z7"},
+                    "Z7K1": {"Z1K1": "Z9", "Z9K1": "Z881"},
+                    "Z881K1": {"Z1K1": "Z9", "Z9K1": "Z3"},
+                },
             },
         },
     },
@@ -189,22 +243,36 @@ _USER_DEFINED_TYPE = {
     "Z1K1": {"Z1K1": "Z9", "Z9K1": "Z4"},
     "Z4K1": {"Z1K1": "Z9", "Z9K1": "Z10101"},
     "Z4K2": {
-        "Z1K1": {"Z1K1": "Z9", "Z9K1": "Z10"},
-        "Z10K1": {
+        "Z1K1": {
+            "Z1K1": {"Z1K1": "Z9", "Z9K1": "Z7"},
+            "Z7K1": {"Z1K1": "Z9", "Z9K1": "Z881"},
+            "Z881K1": {"Z1K1": "Z9", "Z9K1": "Z3"},
+        },
+        "K1": {
             "Z1K1": {"Z1K1": "Z9", "Z9K1": "Z3"},
             "Z3K1": {"Z1K1": "Z9", "Z9K1": "Z6"},
             "Z3K2": {"Z1K1": "Z6", "Z6K1": "Z10101K1"},
             "Z3K3": {"Z1K1": "Z9", "Z9K1": "Z333"},
         },
-        "Z10K2": {
-            "Z1K1": {"Z1K1": "Z9", "Z9K1": "Z10"},
-            "Z10K1": {
+        "K2": {
+            "Z1K1": {
+                "Z1K1": {"Z1K1": "Z9", "Z9K1": "Z7"},
+                "Z7K1": {"Z1K1": "Z9", "Z9K1": "Z881"},
+                "Z881K1": {"Z1K1": "Z9", "Z9K1": "Z3"},
+            },
+            "K1": {
                 "Z1K1": {"Z1K1": "Z9", "Z9K1": "Z3"},
                 "Z3K1": {"Z1K1": "Z9", "Z9K1": "Z6"},
                 "Z3K2": {"Z1K1": "Z6", "Z6K1": "Z10101K2"},
                 "Z3K3": {"Z1K1": "Z9", "Z9K1": "Z333"},
             },
-            "Z10K2": {"Z1K1": {"Z1K1": "Z9", "Z9K1": "Z10"}},
+            "K2": {
+                "Z1K1": {
+                    "Z1K1": {"Z1K1": "Z9", "Z9K1": "Z7"},
+                    "Z7K1": {"Z1K1": "Z9", "Z9K1": "Z881"},
+                    "Z881K1": {"Z1K1": "Z9", "Z9K1": "Z3"},
+                },
+            },
         },
     },
     "Z4K3": {"Z1K1": "Z9", "Z9K1": "Z222"},
@@ -302,6 +370,12 @@ class SerializeTest(unittest.TestCase):
             serialization.serialize(_USER_DEFINED_DESERIALIZED, _USER_DEFINED_TYPE),
         )
 
+    def test_serializes_user_defined_correct_type(self):
+        self.assertEqual(
+            _USER_DEFINED,
+            serialization.serialize(_USER_DEFINED_DESERIALIZED, _USER_DEFINED_TYPE),
+        )
+
     def test_serializes_user_defined_as_Z1(self):
         self._run_test(
             _USER_DEFINED, serialization.serialize(_USER_DEFINED_DESERIALIZED, _Z1_Type)
@@ -319,4 +393,4 @@ class SerializeTest(unittest.TestCase):
         expected_message = "Could not serialize input Python object: ZObject<Z1K1:None,Z10101K1:tRue,Z10101K2:trUe>"
         with self.assertRaises(exceptions.EvaluatorError) as exception_context:
             serialization.serialize(_USER_DEFINED_DESERIALIZED_NO_Z1K1, _Z1_Type)
-        self.assertEquals(expected_message, exception_context.exception.args[0])
+        self.assertEqual(expected_message, exception_context.exception.args[0])

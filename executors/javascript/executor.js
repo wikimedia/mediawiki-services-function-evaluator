@@ -4,41 +4,13 @@
 const { serialize, deserialize } = require( './serialization.js' );
 // eslint-disable-next-line no-unused-vars
 const { ZObject, ZPair } = require( './utils.js' );
+// eslint-disable-next-line node/no-missing-require
+const { convertZListToArray, makeResultEnvelope } = require( './function-schemata/javascript/src/utils.js' );
 
 function error( message ) {
 	return {
 		Z1K1: { Z1K1: 'Z9', Z9K1: 'Z5' },
 		Z5K2: { Z1K1: 'Z6', Z6K1: message }
-	};
-}
-
-/**
- * Creates a Z23 (Nothing).
- *
- * @return {Object} Z23
- */
-function Unit() {
-	// TODO(T282891): Use function-schemata version.
-	return { Z1K1: 'Z9', Z9K1: 'Z23' };
-}
-
-/**
- * Creates a Z22 containing goodResult and BadResult.
- *
- * @param {Object} goodResult Z22K1 of resulting Z22
- * @param {Object} badResult Z22K2 of resulting Z22
- * @return {Object} a Z22
- */
-function makePair( goodResult = null, badResult = null ) {
-	// TODO(T282891): Use function-schemata version.
-	const Z1K1 = {
-		Z1K1: 'Z9',
-		Z9K1: 'Z22'
-	};
-	return {
-		Z1K1: Z1K1,
-		Z22K1: goodResult === null ? Unit() : goodResult,
-		Z22K2: badResult === null ? Unit() : badResult
 	};
 }
 
@@ -54,7 +26,7 @@ function execute( Z7 ) {
 	}
 	// TODO(T282891): Handle input that fails to validate all at once instead of ad hoc.
 	if ( functionName === undefined ) {
-		return makePair(
+		return makeResultEnvelope(
 			null,
 			error( 'Z7K1 did not contain a valid Function.' )
 		);
@@ -71,12 +43,13 @@ function execute( Z7 ) {
 
 	let implementation;
 	try {
-		implementation = Z7.Z7K1.Z8K4.Z10K1.Z14K3.Z16K2.Z6K1;
+		const implementations = convertZListToArray( Z7.Z7K1.Z8K4 );
+		implementation = implementations[ 0 ].Z14K3.Z16K2.Z6K1;
 	} catch ( e ) {
 		implementation = undefined;
 	}
 	if ( implementation === undefined ) {
-		return makePair(
+		return makeResultEnvelope(
 			null,
 			error( 'Z8K4 did not contain a valid Implementation.' )
 		);
@@ -102,13 +75,13 @@ function execute( Z7 ) {
 		eval( functionTemplate ); // eslint-disable-line no-eval
 	} catch ( e ) {
 		console.error( e );
-		return makePair(
+		return makeResultEnvelope(
 			null,
 			error( e.message )
 		);
 	}
 
-	return makePair(
+	return makeResultEnvelope(
 		resultCache.get( returnValue ),
 		null
 	);
