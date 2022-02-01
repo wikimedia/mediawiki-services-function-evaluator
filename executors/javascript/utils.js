@@ -56,7 +56,7 @@ function isString( str ) {
 	return typeof str === 'string' || str instanceof String;
 }
 
-// TODO(T282891): All isZWhatev functions should use function-schemata.
+// TODO (T282891): All isZWhatev functions should use function-schemata.
 function isZReference( Z9 ) {
 	return Z9 !== undefined && Z9.Z1K1 === 'Z9' && isString( Z9.Z9K1 );
 }

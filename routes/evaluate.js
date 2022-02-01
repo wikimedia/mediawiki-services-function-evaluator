@@ -74,7 +74,7 @@ async function maybeRunZ7( ZObject ) {
 		const implementations = convertZListToArray( ZObject.Z7K1.Z8K4 );
 		programmingLanguage = implementations[ 0 ].Z14K3.Z16K1.Z61K1.Z6K1;
 	} catch ( e ) {
-		// TODO(T296857): Return error in this case (should be handled by validation).
+		// TODO (T296857): Return error in this case (should be handled by validation).
 		programmingLanguage = 'python-3';
 	}
 	const executorProcess = subprocess.runExecutorSubprocess( programmingLanguage );
@@ -100,7 +100,7 @@ async function maybeRunZ7( ZObject ) {
 	// Captured stdout will become the resultant ZObject; captured stderr will be logged.
 	const stdoutQueue = [];
 	executorProcess.stdout.on( 'data', ( data ) => {
-		// TODO(T295699): Avoid toString; find a way to merge Buffers.
+		// TODO (T295699): Avoid toString; find a way to merge Buffers.
 		stdoutQueue.push( data.toString() );
 	} );
 	const stdoutPromise = new Promise( ( resolve ) => {

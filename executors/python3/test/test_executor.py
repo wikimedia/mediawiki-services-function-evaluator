@@ -6,7 +6,7 @@ import sys
 import unittest
 from unittest.mock import patch
 
-# TODO(T282795): This is a kludge due to how env variables work in Blubber;
+# TODO (T282795): This is a kludge due to how env variables work in Blubber;
 # would be better if PYTHONPATH could be controlled directly.
 from . import utils as test_utils
 from .. import executor

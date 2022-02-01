@@ -27,7 +27,7 @@ _RESULT_CACHE['{return_value}'] = _SERIALIZE(
 """
 
 
-# TODO(T282891): Collapse this into function-schemata.
+# TODO (T282891): Collapse this into function-schemata.
 def _error(message):
     return {
         "Z1K1": {"Z1K1": "Z9", "Z9K1": "Z5"},
@@ -41,7 +41,7 @@ def unit():
     Returns:
         ZObject corresponding to Z23
     """
-    # TODO(T282891): Use function-schemata version.
+    # TODO (T282891): Use function-schemata version.
     return {"Z1K1": "Z9", "Z9K1": "Z23"}
 
 
@@ -54,7 +54,7 @@ def make_pair(good_result=None, bad_result=None):
     Returns:
         Z22 encapsulating the arguments
     """
-    # TODO(T282891): Use function-schemata version.
+    # TODO (T282891): Use function-schemata version.
     Z1K1 = {"Z1K1": "Z9", "Z9K1": "Z22"}
     return {
         "Z1K1": Z1K1,
@@ -64,13 +64,13 @@ def make_pair(good_result=None, bad_result=None):
 
 
 def execute(Z7):
-    # TODO(T282891): Handle input that fails to validate all at once instead of ad hoc.
+    # TODO (T282891): Handle input that fails to validate all at once instead of ad hoc.
     try:
         function_name = Z7["Z7K1"]["Z8K5"]["Z9K1"]
     except KeyError:
         return make_pair(None, _error("Z7K1 did not contain a valid Function."))
 
-    # TODO(T289319): Consider whether to reduce all keys to local keys.
+    # TODO (T289319): Consider whether to reduce all keys to local keys.
     argument_names = [key for key in Z7 if key.startswith(function_name)]
     bound_values = {
         argument_name: Z7[argument_name] for argument_name in argument_names
@@ -97,7 +97,7 @@ def execute(Z7):
             },
             {
                 "_BOUND_VALUES": bound_values,
-                # TODO(T288555): Pass serialization as native code.
+                # TODO (T288555): Pass serialization as native code.
                 "_DESERIALIZE": serialization.deserialize,
                 "_SERIALIZE": serialization.serialize,
                 "_RETURN_TYPE": return_type,

@@ -2,7 +2,7 @@ from python3 import exceptions
 from python3 import utils
 
 
-# TODO(T292788): Eliminate this function.
+# TODO (T292788): Eliminate this function.
 def _DESERIALIZE_Z10(Z10):
     result = []
     head = Z10.get("Z10K1")
@@ -25,7 +25,7 @@ def _DESERIALIZE_ZLIST(ZObject):
     return result
 
 
-# TODO(T290898): This can serve as a model for default deserialization--all
+# TODO (T290898): This can serve as a model for default deserialization--all
 # local keys can be deserialized and set as members.
 def _DESERIALIZE_ZPAIR(Z_object):
     return utils.ZPair(
@@ -102,7 +102,7 @@ def _soup_up_z1k1(Z1K1):
     return Z1K1
 
 
-# TODO(T292788): Eliminate this function.
+# TODO (T292788): Eliminate this function.
 def _SERIALIZE_Z10(iterable, _):
     def _empty_Z10():
         return {"Z1K1": {"Z1K1": "Z9", "Z9K1": "Z10"}}
@@ -246,7 +246,7 @@ def _SERIALIZE_Z1(anything, _):
         elements = [serialize(element, z1_type) for element in anything]
         Z1K1s = set(utils.frozendict(element["Z1K1"]) for element in elements)
         if len(Z1K1s) == 1:
-            # TODO(T293915): Use ZObjectKeyFactory to create string representations.
+            # TODO (T293915): Use ZObjectKeyFactory to create string representations.
             element_type = _soup_up_z1k1(elements[0]["Z1K1"])
         else:
             element_type = z1_type
@@ -279,7 +279,7 @@ _SERIALIZE_Z6 = lambda string, _: {"Z1K1": "Z6", "Z6K1": string}
 _SERIALIZERS = {
     "Z1": _SERIALIZE_Z1,
     "Z6": _SERIALIZE_Z6,
-    # TODO(T292788): Eliminate Z10.
+    # TODO (T292788): Eliminate Z10.
     "Z10": _SERIALIZE_Z10,
     "Z21": _SERIALIZE_Z21,
     "Z40": _SERIALIZE_Z40,

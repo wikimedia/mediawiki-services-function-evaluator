@@ -41,7 +41,7 @@ function deserializeZMap( ZObject ) {
 	return result;
 }
 
-// TODO(T290898): This can serve as a model for default deserialization--all
+// TODO (T290898): This can serve as a model for default deserialization--all
 // local keys can be deserialized and set as members.
 function deserializeZPair( ZObject ) {
 	return new ZPair( deserialize( ZObject.K1 ), deserialize( ZObject.K2 ), ZObject.Z1K1 );
@@ -211,7 +211,7 @@ function serializeGenericInternal( expectedType, kwargs ) {
 	return result;
 }
 
-// TODO(T290898): This can serve as a model for default deserialization--all
+// TODO (T290898): This can serve as a model for default deserialization--all
 // local keys can be serialized and set as members.
 function serializeZType( theObject, expectedType ) {
 	const kwargs = new Map();
@@ -294,7 +294,7 @@ function serializeZ1( theObject ) {
 		}
 		const Z1K1s = new Set();
 		for ( const element of elements ) {
-			// TODO(T293915): Use ZObjectKeyFactory to create string representations.
+			// TODO (T293915): Use ZObjectKeyFactory to create string representations.
 			Z1K1s.add( stableStringify( element.Z1K1 ) );
 		}
 		let elementType;

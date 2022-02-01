@@ -24,7 +24,7 @@ function execute( Z7 ) {
 	} catch ( e ) {
 		functionName = undefined;
 	}
-	// TODO(T282891): Handle input that fails to validate all at once instead of ad hoc.
+	// TODO (T282891): Handle input that fails to validate all at once instead of ad hoc.
 	if ( functionName === undefined ) {
 		return makeResultEnvelope(
 			null,
@@ -32,7 +32,7 @@ function execute( Z7 ) {
 		);
 	}
 
-	// TODO(T289319): Consider whether to reduce all keys to local keys.
+	// TODO (T289319): Consider whether to reduce all keys to local keys.
 	for ( const key of Object.keys( Z7 ) ) {
 		if ( key.startsWith( functionName ) ) {
 			argumentNames.push( key );
