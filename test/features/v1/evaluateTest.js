@@ -8,7 +8,7 @@ const Server = require( '../../utils/server.js' );
 const subprocess = require( '../../../src/subprocess.js' );
 const sinon = require( 'sinon' );
 
-const { SchemaFactory } = require( '../../../function-schemata/javascript/src/schema.js' );
+const { SchemaFactory, validatesAsUnit } = require( '../../../function-schemata/javascript/src/schema.js' );
 const { makeUnit } = require( '../../../function-schemata/javascript/src/utils.js' );
 
 const errorValidator = SchemaFactory.NORMAL().create( 'Z5' );
@@ -89,29 +89,20 @@ describe( 'evaluate-unit', function () {
 	);
 
 	it(
-		'no output; much errors', function () {
+		'no output; much errors', async function () {
 			function mockExecutor() {
 				return subprocess.createExecutorSubprocess( 'python3', [ 'test_data/no_output_much_errors.py' ] );
 			}
 			const stubProcess = sinon.stub( subprocess, 'runExecutorSubprocess' ).callsFake( mockExecutor );
 
 			const expectedZ22K1 = makeUnit();
-
-			return preq( {
-				method: 'post',
-				uri: uri,
-				body: {}
-			} )
-				.then( ( res ) => {
-					assert.status( res, 200 );
-					assert.contentType( res, 'application/json' );
-					const Z22 = res.body;
-					assert.deepEqual( Z22.Z22K1, expectedZ22K1 );
-					assert.ok( !errorValidator.validate( res.body ) );
-				} )
-				.finally( () => {
-					stubProcess.restore();
-				} );
+			const response = await preq( { method: 'post', uri: uri, body: {} } );
+			assert.status( response, 200 );
+			assert.contentType( response, 'application/json' );
+			const Z22 = response.body;
+			assert.deepEqual( Z22.Z22K1, expectedZ22K1 );
+			assert.ok( !( await errorValidator.validate( response.body ) ) );
+			stubProcess.restore();
 		}
 	);
 
@@ -133,22 +124,18 @@ describe( 'evaluate-integration', function () {
 
 	after( () => server.stop() );
 
-	const integrationTest = ( name, input, output ) => {
-		it( name, function () {
-			return preq( {
-				method: 'post',
-				uri: uri,
-				body: input
-			} )
-				.then( ( res ) => {
-					assert.status( res, 200 );
-					assert.contentType( res, 'application/json' );
-					if ( typeof output === 'function' ) {
-						assert.ok( output( res.body ), name );
-					} else {
-						assert.deepEqual( res.body, output, name );
-					}
-				} );
+	const integrationTest = ( name, input, expectedOutput = null ) => {
+		it( name, async function () {
+			const response = await preq( { method: 'post', uri: uri, body: input } );
+			assert.status( response, 200 );
+			assert.contentType( response, 'application/json' );
+			const Z22K1 = response.body.Z22K1;
+			if ( expectedOutput !== null ) {
+				assert.deepEqual( response.body, expectedOutput, name );
+			} else {
+				const isError = ( await validatesAsUnit( Z22K1 ) ).isValid();
+				assert.ok( isError );
+			}
 		} );
 	};
 
@@ -159,7 +146,8 @@ describe( 'evaluate-integration', function () {
 	integrationTest(
 		'degenerate function call',
 		readJSON( './test_data/degenerate_Z8.json' ),
-		readJSON( './test_data/degenerate_expected.json' )
+		// TODO (T292804): Figure out what error this should actually be.
+		/* expectedOutput= */ null
 	);
 
 	integrationTest(
@@ -177,13 +165,13 @@ describe( 'evaluate-integration', function () {
 	integrationTest(
 		'python - error: no Z8',
 		readJSON( './test_data/python3_no_Z8.json' ),
-		( json ) => !errorValidator.validate( json )
+		/* expectedOutput= */ null
 	);
 
 	integrationTest(
 		'python - error: no Z14',
 		readJSON( './test_data/python3_no_Z14.json' ),
-		( json ) => !errorValidator.validate( json )
+		/* expectedOutput= */ null
 	);
 
 	integrationTest(
@@ -201,13 +189,13 @@ describe( 'evaluate-integration', function () {
 	integrationTest(
 		'javascript - error: no Z8',
 		readJSON( './test_data/javascript_no_Z8.json' ),
-		( json ) => !errorValidator.validate( json )
+		/* expectedOutput= */ null
 	);
 
 	integrationTest(
 		'javascript - error: no Z14',
 		readJSON( './test_data/javascript_no_Z14.json' ),
-		( json ) => !errorValidator.validate( json )
+		/* expectedOutput= */ null
 	);
 
 } );

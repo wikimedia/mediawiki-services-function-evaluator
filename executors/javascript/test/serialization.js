@@ -412,81 +412,81 @@ describe( 'Javascript executor: serialization', () => { // eslint-disable-line n
 		assert.deepEqual( withoutZ1K1s( expected ), withoutZ1K1s( actual ) );
 	}
 
-	it( 'test serializes Z6', () => { // eslint-disable-line no-undef
-		runTest( Z6_, serialize( Z6_DESERIALIZED_, Z6_Type_ ) );
+	it( 'test serializes Z6', async () => { // eslint-disable-line no-undef
+		runTest( Z6_, await serialize( Z6_DESERIALIZED_, Z6_Type_ ) );
 	} );
 
-	it( 'test serializes Z10', () => { // eslint-disable-line no-undef
-		runTest( Z10_OUTPUT_, serialize( Z10_DESERIALIZED_, Z10_Type_ ) );
+	it( 'test serializes Z10', async () => { // eslint-disable-line no-undef
+		runTest( Z10_OUTPUT_, await serialize( Z10_DESERIALIZED_, Z10_Type_ ) );
 	} );
 
-	it( 'test serializes Z21', () => { // eslint-disable-line no-undef
-		runTest( Z21_, serialize( null, Z21_Type_ ) );
+	it( 'test serializes Z21', async () => { // eslint-disable-line no-undef
+		runTest( Z21_, await serialize( null, Z21_Type_ ) );
 	} );
 
-	it( 'test serializes Z40: Z41', () => { // eslint-disable-line no-undef
-		runTest( ZTrue_, serialize( true, Z40_Type_ ) );
+	it( 'test serializes Z40: Z41', async () => { // eslint-disable-line no-undef
+		runTest( ZTrue_, await serialize( true, Z40_Type_ ) );
 	} );
 
-	it( 'test serializes Z40: Z42', () => { // eslint-disable-line no-undef
-		runTest( ZFalse_, serialize( false, Z40_Type_ ) );
+	it( 'test serializes Z40: Z42', async () => { // eslint-disable-line no-undef
+		runTest( ZFalse_, await serialize( false, Z40_Type_ ) );
 	} );
 
-	it( 'test serializes Z882', () => { // eslint-disable-line no-undef
-		runTest( Z882_, serialize( Z882_DESERIALIZED_, Z882_Type_ ) );
+	it( 'test serializes Z882', async () => { // eslint-disable-line no-undef
+		runTest( Z882_, await serialize( Z882_DESERIALIZED_, Z882_Type_ ) );
 	} );
 
-	it( 'test serializes Z882 default', () => { // eslint-disable-line no-undef
-		runTest( Z882_, serialize( Z882_DESERIALIZED_, Z1_Type_ ) );
+	it( 'test serializes Z882 default', async () => { // eslint-disable-line no-undef
+		runTest( Z882_, await serialize( Z882_DESERIALIZED_, Z1_Type_ ) );
 	} );
 
-	it( 'test serializes Z881', () => { // eslint-disable-line no-undef
-		runTest( Z881_Z6_, serialize( Z881_Z6_DESERIALIZED_, Z881_Z6_Type_ ) );
+	it( 'test serializes Z881', async () => { // eslint-disable-line no-undef
+		runTest( Z881_Z6_, await serialize( Z881_Z6_DESERIALIZED_, Z881_Z6_Type_ ) );
 	} );
 
-	it( 'test serializes Z881 default', () => { // eslint-disable-line no-undef
-		runTest( Z881_Z6_, serialize( Z881_Z6_DESERIALIZED_, Z1_Type_ ) );
+	it( 'test serializes Z881 default', async () => { // eslint-disable-line no-undef
+		runTest( Z881_Z6_, await serialize( Z881_Z6_DESERIALIZED_, Z1_Type_ ) );
 	} );
 
-	it( 'test serializes Z882', () => { // eslint-disable-line no-undef
-		assert.deepEqual( Z882_, serialize( Z882_DESERIALIZED_, Z882_Type_ ) );
+	it( 'test serializes Z882', async () => { // eslint-disable-line no-undef
+		assert.deepEqual( Z882_, await serialize( Z882_DESERIALIZED_, Z882_Type_ ) );
 	} );
 
-	it( 'test serializes Z882 default', () => { // eslint-disable-line no-undef
-		assert.deepEqual( Z882_, serialize( Z882_DESERIALIZED_, Z1_Type_ ) );
+	it( 'test serializes Z882 default', async () => { // eslint-disable-line no-undef
+		assert.deepEqual( Z882_, await serialize( Z882_DESERIALIZED_, Z1_Type_ ) );
 	} );
 
-	it( 'test serializes Z881', () => { // eslint-disable-line no-undef
-		assert.deepEqual( Z881_Z6_, serialize( Z881_Z6_DESERIALIZED_, Z881_Z6_Type_ ) );
+	it( 'test serializes Z881', async () => { // eslint-disable-line no-undef
+		assert.deepEqual( Z881_Z6_, await serialize( Z881_Z6_DESERIALIZED_, Z881_Z6_Type_ ) );
 	} );
 
-	it( 'test serializes Z881 default', () => { // eslint-disable-line no-undef
-		assert.deepEqual( Z881_Z6_, serialize( Z881_Z6_DESERIALIZED_, Z1_Type_ ) );
+	it( 'test serializes Z881 default', async () => { // eslint-disable-line no-undef
+		assert.deepEqual( Z881_Z6_, await serialize( Z881_Z6_DESERIALIZED_, Z1_Type_ ) );
 	} );
 
-	it( 'test serializes user-defined', () => { // eslint-disable-line no-undef
+	it( 'test serializes user-defined', async () => { // eslint-disable-line no-undef
 		const expected = USER_DEFINED_;
-		const actual = serialize( USER_DEFINED_DESERIALIZED_, USER_DEFINED_TYPE_ );
+		const actual = await serialize( USER_DEFINED_DESERIALIZED_, USER_DEFINED_TYPE_ );
 		assert.deepEqual( expected, actual );
 	} );
 
-	it( 'test serializes user-defined as Z1', () => { // eslint-disable-line no-undef
+	it( 'test serializes user-defined as Z1', async () => { // eslint-disable-line no-undef
 		const expected = USER_DEFINED_;
-		const actual = serialize( USER_DEFINED_DESERIALIZED_, Z1_Type_ );
+		const actual = await serialize( USER_DEFINED_DESERIALIZED_, Z1_Type_ );
 		assert.deepEqual( expected, actual );
 	} );
 
-	it( 'test serializes user-defined no Z1K1', () => { // eslint-disable-line no-undef
+	it( 'test serializes user-defined no Z1K1', async () => { // eslint-disable-line no-undef
 		const expected = USER_DEFINED_;
-		const actual = serialize( USER_DEFINED_DESERIALIZED_NO_Z1K1_, USER_DEFINED_TYPE_ );
+		const actual = await serialize( USER_DEFINED_DESERIALIZED_NO_Z1K1_, USER_DEFINED_TYPE_ );
 		assert.deepEqual( expected, actual );
 	} );
 
-	it( 'test serializes user-defined as Z1 no Z1K1', () => { // eslint-disable-line no-undef
+	it( 'test serializes user-defined as Z1 no Z1K1', async () => { // eslint-disable-line no-undef
 		const expectedMessage = "Could not serialize input JS object: ZObject { Z1K1: null, Z10101K1: 'tRue', Z10101K2: 'trUe' }";
 		let actualError;
 		try {
-			serialize( USER_DEFINED_DESERIALIZED_NO_Z1K1_, Z1_Type_ );
+			await serialize( USER_DEFINED_DESERIALIZED_NO_Z1K1_, Z1_Type_ );
 		} catch ( error ) {
 			actualError = error;
 		}

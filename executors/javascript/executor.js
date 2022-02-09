@@ -14,7 +14,7 @@ function error( message ) {
 	};
 }
 
-function execute( Z7 ) {
+async function execute( Z7 ) {
 	const resultCache = new Map();
 	const boundValues = new Map();
 	const argumentNames = [];
@@ -57,22 +57,27 @@ function execute( Z7 ) {
 
 	const returnValue = functionName + 'K0';
 	const returnType = Z7.Z7K1.Z8K2; // eslint-disable-line no-unused-vars
+	// Why can't this just be defined directly in the eval statement?
+	let callMe = null; // eslint-disable-line prefer-const
 	const functionTemplate = `
-        ${implementation}
+        callMe = async function () {
+            ${implementation}
 
-        let boundLocals = [];
-        for ( const key of argumentNames ) {
-            const value = boundValues.get(key);
-            boundLocals.push(deserialize(value));
+            let boundLocals = [];
+            for ( const key of argumentNames ) {
+                const value = boundValues.get(key);
+                boundLocals.push(deserialize(value));
+            }
+
+            resultCache.set(
+                '${returnValue}',
+                await serialize(${functionName}.apply(null, boundLocals), returnType)
+            );
         }
-
-        resultCache.set(
-            '${returnValue}',
-            serialize(${functionName}.apply(null, boundLocals), returnType)
-        );
     `;
 	try {
 		eval( functionTemplate ); // eslint-disable-line no-eval
+		await callMe();
 	} catch ( e ) {
 		console.error( e );
 		return makeResultEnvelope(
@@ -88,13 +93,13 @@ function execute( Z7 ) {
 }
 
 function main( stdin = process.stdin, stdout = process.stdout ) {
-	stdin.on( 'readable', () => {
+	stdin.on( 'readable', async () => {
 		let chunk;
 		while ( ( chunk = stdin.read() ) !== null ) {
 			const theInput = JSON.parse( chunk );
 			const functionCall = theInput.function_call;
 			if ( functionCall !== undefined ) {
-				const result = execute( functionCall );
+				const result = await execute( functionCall );
 				stdout.write( JSON.stringify( result ) );
 			}
 		}

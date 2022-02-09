@@ -14,7 +14,7 @@
 		},
 		"Z5K2": {
 			"Z1K1": "Z6",
-			"Z6K1": "Unexpected end of input"
+			"Z6K1": "missing ) after argument list"
 		}
 	}
 }

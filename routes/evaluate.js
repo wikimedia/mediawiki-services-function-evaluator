@@ -17,21 +17,8 @@ let app; // eslint-disable-line no-unused-vars
 
 async function maybeRunZ7( ZObject ) {
 	const schema = SchemaFactory.NORMAL().create( 'Z7_backend' );
-	if ( !schema.validate( ZObject ) ) {
-		const listOfErrorsType = {
-			Z1K1: {
-				Z1K1: 'Z9',
-				Z9K1: 'Z7'
-			},
-			Z7K1: {
-				Z1K1: 'Z9',
-				Z9K1: 'Z881'
-			},
-			Z881K1: {
-				Z1K1: 'Z9',
-				Z9K1: 'Z5'
-			}
-		};
+	const theStatus = await schema.validateStatus( ZObject );
+	if ( !theStatus.isValid() ) {
 		return {
 			process: null,
 			Z22: makeResultEnvelope(
@@ -41,29 +28,8 @@ async function maybeRunZ7( ZObject ) {
 						Z1K1: 'Z9',
 						Z9K1: 'Z5'
 					},
-					Z5K2: schema.errors.reduce( ( errors, error ) => {
-						function setEmptyListItemData( list, string ) {
-							if ( list.K1 === undefined ) {
-								list.K1 = string;
-								list.K2 = {
-									Z1K1: listOfErrorsType
-								};
-								return list;
-							} else {
-								return {
-									...list,
-									K2: setEmptyListItemData( list.K2, string )
-								};
-							}
-						}
-
-						return setEmptyListItemData( errors, {
-							Z1K1: 'Z6',
-							Z6K1: `${error.dataPath} ${error.message}.`
-						} );
-					}, {
-						Z1K1: listOfErrorsType
-					} )
+					// TODO (T292804): Figure out what error this should actually be.
+					Z5K2: theStatus.getZ5()
 				}
 			)
 		};

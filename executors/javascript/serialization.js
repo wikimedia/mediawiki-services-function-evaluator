@@ -100,12 +100,12 @@ function emptyZ10() {
 	};
 }
 
-function serializeZ10( theArray ) {
+async function serializeZ10( theArray ) {
 	const result = emptyZ10();
 	const nextElement = theArray.shift();
 	if ( nextElement !== undefined ) {
-		result.Z10K1 = serialize( nextElement, { Z1K1: 'Z9', Z9K1: 'Z1' } );
-		result.Z10K2 = serializeZ10( theArray );
+		result.Z10K1 = await serialize( nextElement, { Z1K1: 'Z9', Z9K1: 'Z1' } );
+		result.Z10K2 = await serializeZ10( theArray );
 	}
 	return result;
 }
@@ -176,17 +176,17 @@ function serializeZListInternal( elements, expectedType ) {
 	return result;
 }
 
-function serializeZList( theArray, expectedType ) {
+async function serializeZList( theArray, expectedType ) {
 	const expectedArgs = convertZListToArray( expectedType.Z4K2 );
 	const headKey = expectedArgs[ 0 ];
 	const elements = [];
 	for ( const element of theArray ) {
-		elements.push( serialize( element, headKey.Z3K1 ) );
+		elements.push( await serialize( element, headKey.Z3K1 ) );
 	}
 	return serializeZListInternal( elements, expectedType );
 }
 
-function Z4ForZList( expectedType ) {
+async function Z4ForZList( expectedType ) {
 	const Z4K1 = {
 		Z1K1: { Z1K1: 'Z9', Z9K1: 'Z7' },
 		Z7K1: { Z1K1: 'Z9', Z9K1: 'Z881' },
@@ -196,7 +196,7 @@ function Z4ForZList( expectedType ) {
 	return {
 		Z1K1: { Z1K1: 'Z9', Z9K1: 'Z4' },
 		Z4K1: Z4K1,
-		Z4K2: convertArrayToZList( argumentDeclarations ),
+		Z4K2: await convertArrayToZList( argumentDeclarations ),
 		Z4K3: { Z1K1: 'Z9', Z9K1: 'Z104' }
 	};
 }
@@ -213,14 +213,14 @@ function serializeGenericInternal( expectedType, kwargs ) {
 
 // TODO (T290898): This can serve as a model for default deserialization--all
 // local keys can be serialized and set as members.
-function serializeZType( theObject, expectedType ) {
+async function serializeZType( theObject, expectedType ) {
 	const kwargs = new Map();
 	if ( isZType( expectedType ) ) {
 		const expectedArgs = convertZListToArray( expectedType.Z4K2 );
 		for ( const expectedArg of expectedArgs ) {
 			const theKey = expectedArg.Z3K2.Z6K1;
 			const subType = expectedArg.Z3K1;
-			kwargs.set( theKey, serialize( theObject[ theKey ], subType ) );
+			kwargs.set( theKey, await serialize( theObject[ theKey ], subType ) );
 		}
 	} else {
 		for ( const key of Object.keys( theObject ) ) {
@@ -228,13 +228,13 @@ function serializeZType( theObject, expectedType ) {
 				continue;
 			}
 			const subType = { Z1K1: 'Z9', Z9K1: 'Z1' };
-			kwargs.set( key, serialize( theObject[ key ], subType ) );
+			kwargs.set( key, await serialize( theObject[ key ], subType ) );
 		}
 	}
 	return serializeGenericInternal( expectedType, kwargs );
 }
 
-function Z4ForZPair( firstType, secondType ) {
+async function Z4ForZPair( firstType, secondType ) {
 	const Z4K1 = {
 		Z1K1: { Z1K1: 'Z9', Z9K1: 'Z7' },
 		Z7K1: { Z1K1: 'Z9', Z9K1: 'Z882' },
@@ -245,12 +245,12 @@ function Z4ForZPair( firstType, secondType ) {
 	return {
 		Z1K1: { Z1K1: 'Z9', Z9K1: 'Z4' },
 		Z4K1: Z4K1,
-		Z4K2: convertArrayToZList( argumentDeclarations ),
+		Z4K2: await convertArrayToZList( argumentDeclarations ),
 		Z4K3: { Z1K1: 'Z9', Z9K1: 'Z104' }
 	};
 }
 
-function serializeZMap( theMap, expectedType ) {
+async function serializeZMap( theMap, expectedType ) {
 	const pairList = [];
 	for ( const entry of theMap.entries() ) {
 		pairList.push( new ZPair( ...entry ) );
@@ -259,29 +259,29 @@ function serializeZMap( theMap, expectedType ) {
 	const theKey = expectedArgs[ 0 ].Z3K2.Z6K1;
 	const subType = expectedArgs[ 0 ].Z3K1;
 	const kwargs = new Map();
-	kwargs.set( theKey, serialize( pairList, subType ) );
+	kwargs.set( theKey, await serialize( pairList, subType ) );
 	return serializeGenericInternal( expectedType, kwargs );
 }
 
-function Z4ForZMap( keyType, valueType ) {
+async function Z4ForZMap( keyType, valueType ) {
 	const Z4K1 = {
 		Z1K1: { Z1K1: 'Z9', Z9K1: 'Z7' },
 		Z7K1: { Z1K1: 'Z9', Z9K1: 'Z883' },
 		Z883K1: keyType,
 		Z883K2: valueType
 	};
-	const pairType = Z4ForZPair( keyType, valueType );
-	const listPairType = Z4ForZList( pairType );
+	const pairType = await Z4ForZPair( keyType, valueType );
+	const listPairType = await Z4ForZList( pairType );
 	const argumentDeclarations = [ Z3For( listPairType, 'K1' ) ];
 	return {
 		Z1K1: { Z1K1: 'Z9', Z9K1: 'Z4' },
 		Z4K1: Z4K1,
-		Z4K2: convertArrayToZList( argumentDeclarations ),
+		Z4K2: await convertArrayToZList( argumentDeclarations ),
 		Z4K3: { Z1K1: 'Z9', Z9K1: 'Z104' }
 	};
 }
 
-function serializeZ1( theObject ) {
+async function serializeZ1( theObject ) {
 	const ZID = getZIDForJSType( theObject );
 	if ( ZID === undefined ) {
 		throw new Error( 'Could not serialize input JS object: ' + inspect( theObject ) );
@@ -290,7 +290,7 @@ function serializeZ1( theObject ) {
 	if ( ZID === 'Z881' ) {
 		const elements = [];
 		for ( const thing of theObject ) {
-			elements.push( serialize( thing, Z1Type ) );
+			elements.push( await serialize( thing, Z1Type ) );
 		}
 		const Z1K1s = new Set();
 		for ( const element of elements ) {
@@ -303,13 +303,13 @@ function serializeZ1( theObject ) {
 		} else {
 			elementType = Z1Type;
 		}
-		return serializeZListInternal( elements, Z4ForZList( elementType ) );
+		return serializeZListInternal( elements, await Z4ForZList( elementType ) );
 	}
 	if ( ZID === 'Z882' ) {
 		const kwargs = new Map();
-		kwargs.set( 'K1', serialize( theObject.K1, Z1Type ) );
-		kwargs.set( 'K2', serialize( theObject.K2, Z1Type ) );
-		const Z1K1 = Z4ForZPair( soupUpZ1K1( kwargs.get( 'K1' ).Z1K1 ), soupUpZ1K1( kwargs.get( 'K2' ).Z1K1 ) );
+		kwargs.set( 'K1', await serialize( theObject.K1, Z1Type ) );
+		kwargs.set( 'K2', await serialize( theObject.K2, Z1Type ) );
+		const Z1K1 = await Z4ForZPair( soupUpZ1K1( kwargs.get( 'K1' ).Z1K1 ), soupUpZ1K1( kwargs.get( 'K2' ).Z1K1 ) );
 		return serializeGenericInternal( Z1K1, kwargs );
 	}
 	if ( ZID === 'Z883' ) {
@@ -317,7 +317,7 @@ function serializeZ1( theObject ) {
 		for ( const entry of theObject.entries() ) {
 			pairList.push( new ZPair( ...entry ) );
 		}
-		const K1 = serialize( pairList, Z1Type );
+		const K1 = await serialize( pairList, Z1Type );
 		const firstPair = K1.K1;
 		let keyType, valueType;
 		if ( firstPair === undefined ) {
@@ -327,7 +327,7 @@ function serializeZ1( theObject ) {
 			keyType = soupUpZ1K1( firstPair.K1.Z1K1 );
 			valueType = soupUpZ1K1( firstPair.K2.Z1K1 );
 		}
-		const Z1K1 = Z4ForZMap( keyType, valueType );
+		const Z1K1 = await Z4ForZMap( keyType, valueType );
 		const kwargs = new Map( [ [ 'K1', K1 ] ] );
 		return serializeGenericInternal( Z1K1, kwargs );
 	}
@@ -337,7 +337,7 @@ function serializeZ1( theObject ) {
 	} else {
 		Z4 = { Z1K1: 'Z9', Z9K1: ZID };
 	}
-	return serialize( theObject, Z4 );
+	return await serialize( theObject, Z4 );
 }
 
 const SERIALIZERS_ = new Map();
@@ -365,7 +365,7 @@ const DEFAULT_SERIALIZER_ = serializeZType;
  * @param {Object} expectedType
  * @return {Object} the serialized ZObject
  */
-function serialize( theObject, expectedType ) {
+async function serialize( theObject, expectedType ) {
 	let ZID;
 	try {
 		ZID = getZID( expectedType );
@@ -376,7 +376,7 @@ function serialize( theObject, expectedType ) {
 	if ( serializer === undefined ) {
 		serializer = DEFAULT_SERIALIZER_;
 	}
-	return serializer( theObject, expectedType );
+	return await serializer( theObject, expectedType );
 }
 
 module.exports = { deserialize, serialize };
