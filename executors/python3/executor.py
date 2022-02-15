@@ -94,6 +94,7 @@ def execute(Z7):
             {
                 "_RESULT_CACHE": _RESULT_CACHE,
                 "ZPair": utils.ZPair,
+                "ZObject": utils.ZObject,
             },
             {
                 "_BOUND_VALUES": bound_values,

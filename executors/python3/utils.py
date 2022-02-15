@@ -149,8 +149,6 @@ class ZObject:
     def __init__(self, original_Z1K1=None, **kwargs):
         self._Z1K1 = original_Z1K1
         self._kwargs = kwargs
-        for key, value in kwargs.items():
-            setattr(self, key, value)
 
     def items(self):
         return self._kwargs.items()
@@ -158,6 +156,9 @@ class ZObject:
     @property
     def Z1K1(self):
         return self._Z1K1
+
+    def __getattr__(self, key):
+        return self._kwargs[key]
 
     def __getitem__(self, key):
         return self._kwargs[key]
