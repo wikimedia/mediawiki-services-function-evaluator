@@ -148,27 +148,38 @@ def get_zobject_type(ZObject):
 class ZObject:
     def __init__(self, original_Z1K1=None, **kwargs):
         self._Z1K1 = original_Z1K1
-        self._kwargs = kwargs
+        self._keys = []
+        for key, value in kwargs.items():
+            self._keys.append(key)
+            setattr(self, key, value)
+        self._keys.sort()
+
+    def keys(self):
+        if self._Z1K1 is not None:
+            yield "Z1K1"
+        for key in self._keys:
+            yield key
 
     def items(self):
-        return self._kwargs.items()
+        for key in self.keys():
+            yield (key, getattr(self, key))
 
     @property
     def Z1K1(self):
         return self._Z1K1
 
-    def __getattr__(self, key):
-        return self._kwargs[key]
-
     def __getitem__(self, key):
-        return self._kwargs[key]
+        return getattr(self, key, None)
+
+    def _as_dict(self):
+        pass
 
     def __repr__(self):
         return "ZObject<{}>".format(
             ",".join(
                 [
                     "{}:{}".format(attribute, getattr(self, attribute))
-                    for attribute in ["Z1K1"] + sorted(list(self._kwargs.keys()))
+                    for attribute in ["Z1K1"] + sorted(self._keys)
                 ]
             )
         )
@@ -178,7 +189,12 @@ class ZObject:
 
     def __eq__(self, other_zobject):
         if isinstance(other_zobject, type(self)):
-            return self._kwargs == other_zobject._kwargs
+            if self._keys != other_zobject._keys:
+                return False
+            for key in self._keys:
+                if getattr(self, key) != getattr(other_zobject, key):
+                    return False
+            return True
         return False
 
 
