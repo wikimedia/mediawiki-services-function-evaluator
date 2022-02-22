@@ -40,8 +40,14 @@ describe( 'evaluate-unit', function () {
 				method: 'post',
 				uri: uri,
 				body: {
-					Z1K1: 'Z9',
-					Z9K1: 'Z1000'
+					Z1K1: {
+						Z1K1: 'Z9',
+						Z9K1: 'Z7'
+					},
+					Z7K1: {
+						Z1K1: 'Z9',
+						Z9K1: 'Z1000'
+					}
 				}
 			} )
 				.then( ( res ) => {

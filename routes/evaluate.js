@@ -2,7 +2,7 @@
 
 const sUtil = require( '../lib/util' );
 const subprocess = require( '../src/subprocess.js' );
-const { SchemaFactory } = require( '../function-schemata/javascript/src/schema.js' );
+const { validatesAsFunctionCall } = require( '../function-schemata/javascript/src/schema.js' );
 const { convertZListToArray, makeResultEnvelope } = require( '../function-schemata/javascript/src/utils.js' );
 
 /**
@@ -16,9 +16,9 @@ const router = sUtil.router();
 let app; // eslint-disable-line no-unused-vars
 
 async function maybeRunZ7( ZObject ) {
-	const schema = SchemaFactory.NORMAL().create( 'Z7_backend' );
-	const theStatus = await schema.validateStatus( ZObject );
+	const theStatus = await validatesAsFunctionCall( ZObject );
 	if ( !theStatus.isValid() ) {
+		console.log( theStatus.getParserErrors() );
 		return {
 			process: null,
 			Z22: makeResultEnvelope(
