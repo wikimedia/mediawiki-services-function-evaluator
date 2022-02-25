@@ -1,7 +1,7 @@
 {
-	"name": "service-template-node",
-	"version": "0.8.0",
-	"description": "A Wikifunctions service to evaluator WikiLambda functions",
+	"name": "function-evaluator",
+	"version": "0.0.1",
+	"description": "A Wikifunctions service to evaluate WikiLambda functions",
 	"main": "./app.js",
 	"scripts": {
 		"start": "service-runner",
@@ -11,25 +11,24 @@
 		"docker-start": "service-runner docker-start",
 		"docker-test": "service-runner docker-test",
 		"test-build": "service-runner docker-test && service-runner build --deploy-repo --force",
-		"coverage": "PREQ_CONNECT_TIMEOUT=15 nyc --reporter=lcov _mocha"
+		"coverage": "PREQ_CONNECT_TIMEOUT=15 nyc _mocha"
 	},
 	"repository": {
 		"type": "git",
-		"url": "git://github.com/wikimedia/service-template-node.git"
+		"url": "ssh://gerrit.wikimedia.org:29418/mediawiki/services/function-evaluator"
 	},
 	"keywords": [
-		"REST",
-		"API",
-		"service template",
-		"MediaWiki"
+		"lambda function",
+		"Wikifunctions",
+		"Abstract Wikipedia"
 	],
-	"author": "Wikimedia Service Team <services@lists.wikimedia.org>",
+	"author": "Abstract Wikipedia Team <wikitech-l@lists.wikimedia.org>",
 	"contributors": [],
-	"license": "Apache-2.0",
+	"license": "MIT",
 	"bugs": {
-		"url": "https://phabricator.wikimedia.org/tag/service-template-node/"
+		"url": "https://phabricator.wikimedia.org/tag/abstract_wikipedia/"
 	},
-	"homepage": "https://github.com/wikimedia/service-template-node",
+	"homepage": "http://meta.wikimedia.org/wiki/Abstract%20Wikipedia",
 	"dependencies": {
 		"bluebird": "3.7.2",
 		"body-parser": "1.19.0",
