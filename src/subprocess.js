@@ -4,15 +4,23 @@ const { spawn } = require( 'child_process' );
 
 function createExecutorSubprocess( binary, callArguments ) {
 	const args = callArguments.args;
-	const env = callArguments.env;
-	const options = { detached: true };
-	if ( env !== undefined ) {
-		options.env = env;
+	const processEnv = {};
+	// process.env must be sent to the executor subprocess in order to allow coverage
+	// to run properly.
+	for ( const key of Object.keys( process.env ) ) {
+		processEnv[ key ] = process.env[ key ];
 	}
-	const process = spawn( binary, args, options );
-	process.unref();
-	process.stdin.setEncoding( 'utf-8' );
-	return process;
+	if ( callArguments.env !== undefined ) {
+		for ( const key of Object.keys( callArguments.env ) ) {
+			processEnv[ key ] = callArguments.env[ key ];
+		}
+	}
+	const options = { detached: true };
+	options.env = processEnv;
+	const subProcess = spawn( binary, args, options );
+	subProcess.unref();
+	subProcess.stdin.setEncoding( 'utf-8' );
+	return subProcess;
 }
 
 // TODO: Common config between these keys and function-schemata.
