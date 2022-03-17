@@ -50,12 +50,14 @@ def _DESERIALIZE_ZTYPE(Z_object):
 
 _DESERIALIZE_Z6 = lambda Z6: Z6["Z6K1"]
 _DESERIALIZE_Z21 = lambda Z21: None
+_DESERIALIZE_Z39 = lambda Z39: Z39["Z39K1"]["Z6K1"]
 _DESERIALIZE_Z40 = lambda Z40: Z40["Z40K1"]["Z9K1"] == "Z41"
 _DESERIALIZE_Z86 = lambda Z86: Z86["Z86K1"]["Z6K1"]
 _DESERIALIZERS = {
     "Z6": _DESERIALIZE_Z6,
     "Z10": _DESERIALIZE_Z10,
     "Z21": _DESERIALIZE_Z21,
+    "Z39": _DESERIALIZE_Z39,
     "Z40": _DESERIALIZE_Z40,
     "Z86": _DESERIALIZE_Z86,
     "Z881": _DESERIALIZE_ZLIST,
@@ -124,6 +126,13 @@ def _SERIALIZE_Z40(boolean, _):
     return {
         "Z1K1": {"Z1K1": "Z9", "Z9K1": "Z40"},
         "Z40K1": {"Z1K1": "Z9", "Z9K1": ZID},
+    }
+
+
+def _SERIALIZE_Z39(key_reference, _):
+    return {
+        "Z1K1": {"Z1K1": "Z9", "Z9K1": "Z39"},
+        "Z39K1": {"Z1K1": "Z6", "Z6K1": key_reference},
     }
 
 
@@ -282,6 +291,7 @@ _SERIALIZERS = {
     # TODO (T292788): Eliminate Z10.
     "Z10": _SERIALIZE_Z10,
     "Z21": _SERIALIZE_Z21,
+    "Z39": _SERIALIZE_Z39,
     "Z40": _SERIALIZE_Z40,
     "Z86": _SERIALIZE_Z86,
     "Z881": _SERIALIZE_ZLIST,

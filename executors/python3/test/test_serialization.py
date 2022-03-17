@@ -41,6 +41,10 @@ _Z10_INPUT = {
     },
 }
 _Z21 = {"Z1K1": {"Z1K1": "Z9", "Z9K1": "Z21"}}
+_Z39 = {
+    "Z1K1": {"Z1K1": "Z9", "Z9K1": "Z39"},
+    "Z39K1": {"Z1K1": "Z6", "Z6K1": "Z1000K1"},
+}
 _ZTrue = {"Z1K1": {"Z1K1": "Z9", "Z9K1": "Z40"}, "Z40K1": {"Z1K1": "Z9", "Z9K1": "Z41"}}
 _ZFalse = {
     "Z1K1": {"Z1K1": "Z9", "Z9K1": "Z40"},
@@ -60,6 +64,7 @@ _Z1_Type = {"Z1K1": "Z9", "Z9K1": "Z1"}
 _Z6_Type = {"Z1K1": "Z9", "Z9K1": "Z6"}
 _Z10_Type = {"Z1K1": "Z9", "Z9K1": "Z10"}
 _Z21_Type = {"Z1K1": "Z9", "Z9K1": "Z21"}
+_Z39_Type = {"Z1K1": "Z9", "Z9K1": "Z39"}
 _Z40_Type = {"Z1K1": "Z9", "Z9K1": "Z40"}
 _Z882_Type = {
     "Z1K1": {"Z1K1": "Z9", "Z9K1": "Z4"},
@@ -301,6 +306,9 @@ class DeserializeTest(unittest.TestCase):
     def test_deserializes_Z21(self):
         self.assertIsNone(serialization.deserialize(_Z21))
 
+    def test_deserializes_Z39(self):
+        self.assertEqual("Z1000K1", serialization.deserialize(_Z39))
+
     def test_deserializes_Z40_Z41(self):
         self.assertEqual(True, serialization.deserialize(_ZTrue))
 
@@ -341,6 +349,9 @@ class SerializeTest(unittest.TestCase):
 
     def test_serializes_Z21(self):
         self._run_test(_Z21, serialization.serialize(None, _Z21_Type))
+
+    def test_serializes_Z39(self):
+        self.assertEqual(_Z39, serialization.serialize("Z1000K1", _Z39_Type))
 
     def test_serializes_Z40_Z41(self):
         self._run_test(_ZTrue, serialization.serialize(True, _Z40_Type))

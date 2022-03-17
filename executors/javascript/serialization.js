@@ -65,6 +65,7 @@ DESERIALIZERS_.set( 'Z6', ( Z6 ) => Z6.Z6K1 );
 DESERIALIZERS_.set( 'Z10', deserializeZ10 );
 // eslint-disable-next-line no-unused-vars
 DESERIALIZERS_.set( 'Z21', ( Z21 ) => null );
+DESERIALIZERS_.set( 'Z39', ( Z39 ) => Z39.Z39K1.Z6K1 );
 DESERIALIZERS_.set( 'Z40', ( Z40 ) => Z40.Z40K1.Z9K1 === 'Z41' );
 DESERIALIZERS_.set( 'Z86', ( Z86 ) => Z86.Z86K1.Z6K1 );
 DESERIALIZERS_.set( 'Z881', deserializeZList );
@@ -113,6 +114,13 @@ async function serializeZ10( theArray ) {
 // eslint-disable-next-line no-unused-vars
 function serializeZ21( nothing ) {
 	return { Z1K1: { Z1K1: 'Z9', Z9K1: 'Z21' } };
+}
+
+function serializeZ39( theKeyReference ) {
+	return {
+		Z1K1: { Z1K1: 'Z9', Z9K1: 'Z39' },
+		Z39K1: { Z1K1: 'Z6', Z6K1: theKeyReference }
+	};
 }
 
 function serializeZ40( theBoolean ) {
@@ -347,6 +355,7 @@ SERIALIZERS_.set( 'Z6', ( theString ) => {
 } );
 SERIALIZERS_.set( 'Z10', serializeZ10 );
 SERIALIZERS_.set( 'Z21', serializeZ21 );
+SERIALIZERS_.set( 'Z39', serializeZ39 );
 SERIALIZERS_.set( 'Z40', serializeZ40 );
 SERIALIZERS_.set( 'Z86', serializeZ86 );
 SERIALIZERS_.set( 'Z881', serializeZList );

@@ -170,6 +170,16 @@ const Z21_ = {
 		Z9K1: 'Z21'
 	}
 };
+const Z39_ = {
+	Z1K1: {
+		Z1K1: 'Z9',
+		Z9K1: 'Z39'
+	},
+	Z39K1: {
+		Z1K1: 'Z6',
+		Z6K1: 'Z1000K1'
+	}
+};
 const ZTrue_ = {
 	Z1K1: {
 		Z1K1: 'Z9',
@@ -215,6 +225,7 @@ const Z1_Type_ = { Z1K1: 'Z9', Z9K1: 'Z1' };
 const Z6_Type_ = { Z1K1: 'Z9', Z9K1: 'Z6' };
 const Z10_Type_ = { Z1K1: 'Z9', Z9K1: 'Z10' };
 const Z21_Type_ = { Z1K1: 'Z9', Z9K1: 'Z21' };
+const Z39_Type_ = { Z1K1: 'Z9', Z9K1: 'Z39' };
 const Z40_Type_ = { Z1K1: 'Z9', Z9K1: 'Z40' };
 const Z881_Z6_Type_ = {
 	Z1K1: { Z1K1: 'Z9', Z9K1: 'Z4' },
@@ -379,6 +390,10 @@ describe( 'Javascript executor: deserialization', () => { // eslint-disable-line
 		assert.deepEqual( null, deserialize( Z21_ ) );
 	} );
 
+	it( 'test deserializes Z39', () => { // eslint-disable-line no-undef
+		assert.deepEqual( 'Z1000K1', deserialize( Z39_ ) );
+	} );
+
 	it( 'test deserializes Z40: Z41', () => { // eslint-disable-line no-undef
 		assert.deepEqual( true, deserialize( ZTrue_ ) );
 	} );
@@ -422,6 +437,10 @@ describe( 'Javascript executor: serialization', () => { // eslint-disable-line n
 
 	it( 'test serializes Z21', async () => { // eslint-disable-line no-undef
 		runTest( Z21_, await serialize( null, Z21_Type_ ) );
+	} );
+
+	it( 'test serializes Z39', async () => { // eslint-disable-line no-undef
+		runTest( Z39_, await serialize( 'Z1000K1', Z39_Type_ ) );
 	} );
 
 	it( 'test serializes Z40: Z41', async () => { // eslint-disable-line no-undef
