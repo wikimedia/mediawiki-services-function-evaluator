@@ -45,6 +45,16 @@ def unit():
     return {"Z1K1": "Z9", "Z9K1": "Z23"}
 
 
+def void():
+    """Creates a Z24 (Void).
+
+    Returns:
+        ZObject corresponding to Z24
+    """
+    # TODO (T282891): Use function-schemata version.
+    return {"Z1K1": "Z9", "Z9K1": "Z24"}
+
+
 def make_pair(good_result=None, bad_result=None):
     """Creates a Z22 containing goodResult and BadResult.
 
@@ -58,8 +68,8 @@ def make_pair(good_result=None, bad_result=None):
     Z1K1 = {"Z1K1": "Z9", "Z9K1": "Z22"}
     return {
         "Z1K1": Z1K1,
-        "Z22K1": good_result if good_result is not None else unit(),
-        "Z22K2": bad_result if bad_result is not None else unit(),
+        "Z22K1": good_result if good_result is not None else void(),
+        "Z22K2": bad_result if bad_result is not None else void(),
     }
 
 

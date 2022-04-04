@@ -33,7 +33,8 @@ function execution or an appropriate error back to the caller.
 ## Executors
 An executor accepts as input a fully dereferenced Z7/Function call (with a single native-code implementation),
 executes the native code with the provided inputs, and returns a Z22/Pair containing
-in key Z22K1 either the result of successful execution or Z23/Nothing, and in Z22K2 any appropriate Z5/Errors.
+in key Z22K1 either the result of successful execution or Z24/void, and in Z22K2 any appropriate
+Z5/Errors.
 
 ### Communication between the Evaluator and Executor
 As currently implemented, executors run as child processes of the main Node
