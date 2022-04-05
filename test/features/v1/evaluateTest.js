@@ -8,8 +8,8 @@ const Server = require( '../../utils/server.js' );
 const subprocess = require( '../../../src/subprocess.js' );
 const sinon = require( 'sinon' );
 
-const { SchemaFactory } = require( '../../../function-schemata/javascript/src/schema.js' );
-const { makeVoid, isVoid } = require( '../../../function-schemata/javascript/src/utils.js' );
+const { SchemaFactory, validatesAsUnit } = require( '../../../function-schemata/javascript/src/schema.js' );
+const { makeUnit } = require( '../../../function-schemata/javascript/src/utils.js' );
 
 const errorValidator = SchemaFactory.NORMAL().create( 'Z5' );
 
@@ -71,7 +71,7 @@ describe( 'evaluate-unit', function () {
 		{
 			Z1K1: { Z1K1: 'Z9', Z9K1: 'Z22' },
 			Z22K1: { Z1K1: 'Z6', Z6K1: 'well-behaved' },
-			Z22K2: makeVoid()
+			Z22K2: makeUnit()
 		}
 	);
 
@@ -80,7 +80,7 @@ describe( 'evaluate-unit', function () {
 		'test_data/empty_on_both_ends.py',
 		{
 			Z1K1: { Z1K1: 'Z9', Z9K1: 'Z22' },
-			Z22K1: makeVoid(),
+			Z22K1: makeUnit(),
 			Z22K2: {
 				Z1K1: {
 					Z1K1: 'Z9',
@@ -101,7 +101,7 @@ describe( 'evaluate-unit', function () {
 			}
 			const stubProcess = sinon.stub( subprocess, 'runExecutorSubprocess' ).callsFake( mockExecutor );
 
-			const expectedZ22K1 = makeVoid();
+			const expectedZ22K1 = makeUnit();
 			const response = await preq( { method: 'post', uri: uri, body: {} } );
 			assert.status( response, 200 );
 			assert.contentType( response, 'application/json' );
@@ -139,7 +139,7 @@ describe( 'evaluate-integration', function () {
 			if ( expectedOutput !== null ) {
 				assert.deepEqual( response.body, expectedOutput, name );
 			} else {
-				const isError = ( isVoid( Z22K1 ) );
+				const isError = ( await validatesAsUnit( Z22K1 ) ).isValid();
 				assert.ok( isError );
 			}
 		} );

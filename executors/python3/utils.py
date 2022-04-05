@@ -31,15 +31,11 @@ def make_unit():
     return _z9_for("Z23")
 
 
-def make_void():
-    return _z9_for("Z24")
-
-
 def make_result_envelope(good_result, bad_result):
     return {
         "Z1K1": _z9_for("Z22"),
-        "Z22K1": make_void() if good_result is None else good_result,
-        "Z22K2": make_void() if bad_result is None else bad_result,
+        "Z22K1": make_unit() if good_result is None else good_result,
+        "Z22K2": make_unit() if bad_result is None else bad_result,
     }
 
 
