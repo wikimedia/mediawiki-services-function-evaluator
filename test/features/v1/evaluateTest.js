@@ -204,4 +204,10 @@ describe( 'evaluate-integration', function () {
 		/* expectedOutput= */ null
 	);
 
+	integrationTest(
+		'javascript - throw',
+		readJSON( './test_data/javascript_throw.json' ),
+		/* expectedOutput= */ null
+	);
+
 } );
