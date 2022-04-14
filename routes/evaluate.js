@@ -43,6 +43,9 @@ async function maybeRunZ7( ZObject ) {
 		// TODO (T296857): Return error in this case (should be handled by validation).
 		programmingLanguage = 'python-3';
 	}
+
+	const startTime = new Date();
+
 	const executorProcess = subprocess.runExecutorSubprocess( programmingLanguage );
 	if ( executorProcess === null ) {
 		return {
@@ -108,6 +111,12 @@ async function maybeRunZ7( ZObject ) {
 				}
 			} );
 	}
+
+	const endTime = new Date();
+	const duration = endTime.getTime() - startTime.getTime();
+	console.debug( 'Execution initiation: ' + startTime.toISOString() );
+	console.debug( 'Execution completion: ' + endTime.toISOString() );
+	console.debug( 'Execution duration: ' + duration + 'ms' );
 
 	return {
 		process: executorProcess,
