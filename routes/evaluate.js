@@ -3,7 +3,7 @@
 const sUtil = require( '../lib/util' );
 const subprocess = require( '../src/subprocess.js' );
 const { validatesAsFunctionCall } = require( '../function-schemata/javascript/src/schema.js' );
-const { convertZListToArray, makeResultEnvelope } = require( '../function-schemata/javascript/src/utils.js' );
+const { convertZListToArray, makeResultEnvelopeWithVoid } = require( '../function-schemata/javascript/src/utils.js' );
 
 /**
  * The main router object
@@ -21,7 +21,7 @@ async function maybeRunZ7( ZObject ) {
 		console.log( theStatus.getParserErrors() );
 		return {
 			process: null,
-			Z22: makeResultEnvelope(
+			Z22: makeResultEnvelopeWithVoid(
 				null,
 				{
 					Z1K1: {
@@ -50,7 +50,7 @@ async function maybeRunZ7( ZObject ) {
 	if ( executorProcess === null ) {
 		return {
 			process: executorProcess,
-			Z22: makeResultEnvelope(
+			Z22: makeResultEnvelopeWithVoid(
 				null,
 				{
 					Z1K1: {
@@ -98,7 +98,7 @@ async function maybeRunZ7( ZObject ) {
 	try {
 		Z22 = JSON.parse( contents );
 	} catch ( error ) {
-		Z22 = makeResultEnvelope(
+		Z22 = makeResultEnvelopeWithVoid(
 			null,
 			{
 				Z1K1: {
