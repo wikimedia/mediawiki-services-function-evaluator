@@ -13,24 +13,24 @@ const { makeVoid, isVoid } = require( '../../../function-schemata/javascript/src
 
 const errorValidator = SchemaFactory.NORMAL().create( 'Z5' );
 
-describe( 'evaluate-unit', function () {
+describe( 'evaluate-unit', function () { // eslint-disable-line no-undef
 
 	this.timeout( 20000 );
 
 	let uri = null;
 	const server = new Server();
 
-	before( () => {
+	before( () => { // eslint-disable-line no-undef
 		return server.start()
 			.then( () => {
 				uri = `${server.config.uri}wikifunctions.org/v1/evaluate/`;
 			} );
 	} );
 
-	after( () => server.stop() );
+	after( () => server.stop() ); // eslint-disable-line no-undef
 
 	const test = ( name, pyFile, output ) => {
-		it( name, function () {
+		it( name, function () { // eslint-disable-line no-undef
 			function mockExecutor() {
 				return subprocess.createExecutorSubprocess( 'python3', { args: [ pyFile ] } );
 			}
@@ -94,7 +94,7 @@ describe( 'evaluate-unit', function () {
 		}
 	);
 
-	it(
+	it( // eslint-disable-line no-undef
 		'no output; much errors', async function () {
 			function mockExecutor() {
 				return subprocess.createExecutorSubprocess( 'python3', [ 'test_data/no_output_much_errors.py' ] );
@@ -114,24 +114,24 @@ describe( 'evaluate-unit', function () {
 
 } );
 
-describe( 'evaluate-integration', function () {
+describe( 'evaluate-integration', function () { // eslint-disable-line no-undef
 
 	this.timeout( 20000 );
 
 	let uri = null;
 	const server = new Server();
 
-	before( () => {
+	before( () => { // eslint-disable-line no-undef
 		return server.start()
 			.then( () => {
 				uri = `${server.config.uri}wikifunctions.org/v1/evaluate/`;
 			} );
 	} );
 
-	after( () => server.stop() );
+	after( () => server.stop() ); // eslint-disable-line no-undef
 
 	const integrationTest = ( name, input, expectedOutput = null ) => {
-		it( name, async function () {
+		it( name, async function () { // eslint-disable-line no-undef
 			const response = await preq( { method: 'post', uri: uri, body: input } );
 			assert.status( response, 200 );
 			assert.contentType( response, 'application/json' );

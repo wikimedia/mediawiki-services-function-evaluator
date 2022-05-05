@@ -4,22 +4,22 @@ const preq = require( 'preq' );
 const assert = require( '../../utils/assert.js' );
 const Server = require( '../../utils/server.js' );
 
-describe( 'errors', function () {
+describe( 'errors', function () { // eslint-disable-line no-undef
 	this.timeout( 20000 );
 
 	let uri = null;
 	const server = new Server();
 
-	before( () => {
+	before( () => { // eslint-disable-line no-undef
 		return server.start()
 			.then( () => {
 				uri = `${server.config.uri}ex/err/`;
 			} );
 	} );
 
-	after( () => server.stop() );
+	after( () => server.stop() ); // eslint-disable-line no-undef
 
-	it( 'array creation error', () => {
+	it( 'array creation error', () => { // eslint-disable-line no-undef
 		return preq.get( {
 			uri: `${uri}array`
 		} ).then( ( res ) => {
@@ -33,7 +33,7 @@ describe( 'errors', function () {
 		} );
 	} );
 
-	it( 'file read error', () => {
+	it( 'file read error', () => { // eslint-disable-line no-undef
 		return preq.get( {
 			uri: `${uri}file`
 		} ).then( ( res ) => {
@@ -47,7 +47,7 @@ describe( 'errors', function () {
 		} );
 	} );
 
-	it( 'constraint check error', () => {
+	it( 'constraint check error', () => { // eslint-disable-line no-undef
 		return preq.get( {
 			uri: `${uri}manual/error`
 		} ).then( ( res ) => {
@@ -61,7 +61,7 @@ describe( 'errors', function () {
 		} );
 	} );
 
-	it( 'access denied error', () => {
+	it( 'access denied error', () => { // eslint-disable-line no-undef
 		return preq.get( {
 			uri: `${uri}manual/deny`
 		} ).then( ( res ) => {
@@ -75,7 +75,7 @@ describe( 'errors', function () {
 		} );
 	} );
 
-	it( 'authorisation error', () => {
+	it( 'authorisation error', () => { // eslint-disable-line no-undef
 		return preq.get( {
 			uri: `${uri}manual/auth`
 		} ).then( ( res ) => {

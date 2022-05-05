@@ -10,17 +10,22 @@ worker_heap_limit_mb: 250
 # Logger info
 logging:
   level: trace
+#  name: <your app name>
 #  streams:
-#  # Use gelf-stream -> logstash
-#  - type: gelf
-#    host: logstash1003.eqiad.wmnet
-#    port: 12201
+#    - type: syslog
+#      host: localhost
+#      port: 10514
+#      prefix: '@cee: '
+#      name: node
 
+# eslint-disable-next-line yml/no-empty-mapping-value
+metrics:
+#  - type: prometheus
+#    port: 9000
 # Statsd metrics reporter
-# metrics:
-# type: log
-# host: localhost
-# port: 8125
+#  - type: statsd
+#    host: localhost
+#    port: 8125
 
 services:
   - name: service-template-node

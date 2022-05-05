@@ -151,7 +151,7 @@ function cmp( result, expected, errMsg ) {
 	}
 
 	if ( expected.length > 1 && expected[ 0 ] === '/' && expected[ expected.length - 1 ] === '/' ) {
-		if ( ( new RegExp( expected.slice( 1, -1 ) ) ).test( result ) ) {
+		if ( new RegExp( expected.slice( 1, -1 ) ).test( result ) ) {
 			return true;
 		}
 	} else if ( expected.length === 0 && result.length === 0 ) {
@@ -188,7 +188,7 @@ function validateArray( val, resVal, key ) {
 		`Different size of array for field ${key}, expected ${arrVal.length
 		} actual ${resVal.length}` );
 	arrVal.forEach( ( item, index ) => {
-        validateBody(resVal[index], item); // eslint-disable-line
+		validateBody( resVal[ index ], item );
 	} );
 }
 
@@ -244,14 +244,14 @@ function validateTestResponse( testCase, res ) {
 	validateBody( res.body || '', expRes.body );
 }
 
-describe( 'Swagger spec', function () {
+describe( 'Swagger spec', function () { // eslint-disable-line no-undef
 
 	this.timeout( 20000 );
 
-	before( () => server.start() );
-	after( () => server.stop() );
+	before( () => server.start() ); // eslint-disable-line no-undef
+	after( () => server.stop() ); // eslint-disable-line no-undef
 
-	it( 'get the spec', () => {
+	it( 'get the spec', () => { // eslint-disable-line no-undef
 		baseUrl = server.config.uri;
 		return preq.get( `${baseUrl}?spec` )
 			.then( ( res ) => {
@@ -264,34 +264,37 @@ describe( 'Swagger spec', function () {
 			} )
 			.then( ( spec ) => {
 				const routeTests = () => {
-					before( () => server.start() );
-					after( () => server.stop() );
+					before( () => server.start() ); // eslint-disable-line no-undef
+					after( () => server.stop() ); // eslint-disable-line no-undef
 
 					constructTests( spec ).forEach( ( testCase ) => {
-						it( testCase.title, function ( done ) { // eslint-disable-line no-unused-vars
-							return preq( testCase.request )
-								.then( ( res ) => {
-									assert.status( res, testCase.response.status );
-									validateTestResponse( testCase, res );
-								}, ( err ) => {
-									assert.status( err, testCase.response.status );
-									validateTestResponse( testCase, err );
-								} );
-						} );
+						it( // eslint-disable-line no-undef
+							testCase.title,
+							function ( done ) { // eslint-disable-line no-unused-vars
+								return preq( testCase.request )
+									.then( ( res ) => {
+										assert.status( res, testCase.response.status );
+										validateTestResponse( testCase, res );
+									}, ( err ) => {
+										assert.status( err, testCase.response.status );
+										validateTestResponse( testCase, err );
+									} );
+							}
+						);
 					} );
 				};
 				parallel( 'Monitoring routes', routeTests );
 			} );
 	} );
 
-	it( 'should expose valid OpenAPI spec', () => {
+	it( 'should expose valid OpenAPI spec', () => { // eslint-disable-line no-undef
 		return preq.get( { uri: `${server.config.uri}?spec` } )
 			.then( ( res ) => {
 				assert.deepEqual( { errors: [] }, validator.validate( res.body ), 'Spec must have no validation errors' );
 			} );
 	} );
 
-	it( 'spec validation', () => {
+	it( 'spec validation', () => { // eslint-disable-line no-undef
 		// check the high-level attributes
 		[ 'info', 'openapi', 'paths' ].forEach( ( prop ) => {
 			assert.deepEqual( !!spec[ prop ], true, `No ${prop} field present!` );
