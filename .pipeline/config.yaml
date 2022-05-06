@@ -24,12 +24,15 @@ pipelines:
       - [build-javascript-executor, test-javascript-executor]
       - [build, test]
   publish:
+    blubberfile: blubber.yaml
     stages:
+      - name: test
+        build: test
+        run: true
       - name: production
         build: production
-        publish: &publish_with_tags
+        publish:
           image:
-            id: '${.imageID}'
             tags:
               - latest
               - '${setup.tag}'
