@@ -1,8 +1,13 @@
 openapi: 3.0.0
 info:
   version: 0.7.0
-  title: WMF Node.JS Service Template
-  description: A template for creating Node.JS services
+  title: WikiLambda Function Evaluator Service
+  description: >
+    The evaluator service executes user-written code in a variety of
+    programming languages. It is responsible for validating incoming objects
+    as Z7/Function calls, determining the correct executor to delegate to,
+    and returning either the result of function execution or an appropriate
+    error back to the caller.
   termsOfService: https://wikimediafoundation.org/wiki/Terms_of_Use
   contact:
     name: the Wikimedia Services team
