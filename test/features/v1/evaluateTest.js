@@ -88,7 +88,7 @@ describe( 'evaluate-unit', function () { // eslint-disable-line no-undef
 				},
 				Z5K1: {
 					Z1K1: 'Z6',
-					Z6K1: 'Executor returned some nonsense: .'
+					Z6K1: 'Executor returned an empty response.'
 				}
 			}
 		}
