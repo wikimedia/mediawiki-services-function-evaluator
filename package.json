@@ -48,7 +48,7 @@
 	"devDependencies": {
 		"ajv": "^6.5.4",
 		"chai": "^4.3.4",
-		"eslint": "7.32.0",
+		"eslint": "8.9.0",
 		"eslint-config-wikimedia": "0.22.1",
 		"eslint-plugin-jsdoc": "37.9.5",
 		"eslint-plugin-yml": "0.13.0",
