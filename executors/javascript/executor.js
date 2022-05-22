@@ -5,7 +5,7 @@ const { serialize, deserialize } = require( './serialization.js' );
 // eslint-disable-next-line no-unused-vars
 const { ZObject, ZPair } = require( './utils.js' );
 // eslint-disable-next-line node/no-missing-require
-const { convertZListToArray, makeResultEnvelopeWithVoid } = require( './function-schemata/javascript/src/utils.js' );
+const { convertZListToArray, makeMappedResultEnvelope } = require( './function-schemata/javascript/src/utils.js' );
 
 function error( message ) {
 	return {
@@ -26,7 +26,7 @@ async function execute( Z7 ) {
 	}
 	// TODO (T282891): Handle input that fails to validate all at once instead of ad hoc.
 	if ( functionName === undefined ) {
-		return makeResultEnvelopeWithVoid(
+		return makeMappedResultEnvelope(
 			null,
 			error( 'Z7K1 did not contain a valid Function.' )
 		);
@@ -49,7 +49,7 @@ async function execute( Z7 ) {
 		implementation = undefined;
 	}
 	if ( implementation === undefined ) {
-		return makeResultEnvelopeWithVoid(
+		return makeMappedResultEnvelope(
 			null,
 			error( 'Z8K4 did not contain a valid Implementation.' )
 		);
@@ -80,13 +80,13 @@ async function execute( Z7 ) {
 		await callMe();
 	} catch ( e ) {
 		console.error( e );
-		return makeResultEnvelopeWithVoid(
+		return makeMappedResultEnvelope(
 			null,
 			error( e.message )
 		);
 	}
 
-	return makeResultEnvelopeWithVoid(
+	return makeMappedResultEnvelope(
 		resultCache.get( returnValue ),
 		null
 	);

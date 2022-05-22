@@ -1,3 +1,4 @@
+import sys
 from python3 import exceptions
 
 
@@ -23,6 +24,13 @@ def _is_zfunction(Z8):
         return False
 
 
+def _is_zError(Z5):
+    try:
+        return Z5.get("Z1K1", {}).get("Z9K1") == "Z5"
+    except AttributeError:
+        return False
+
+
 def _z9_for(reference):
     return {"Z1K1": "Z9", "Z9K1": reference}
 
@@ -31,11 +39,119 @@ def make_void():
     return _z9_for("Z24")
 
 
-def make_result_envelope(good_result, bad_result):
+def make_empty_zmap(key_type, value_type):
+    """Create a new ZMap with the given key_type and value_type.
+        At present, the key type of a ZMap can only be Z6 / String or Z39 / Key reference.
+    TODO (T302015) When ZMap keys are extended beyond Z6/Z39, update accordingly
+
+    Arguments:
+        key_type: A Z9 instance in normal form
+        value_type: A ZObject in normal form
+            Returns:
+        A Z883 / ZMap with no entries, in normal form
+    """
+    allowed_key_types = ["Z6", "Z39"]
+    if key_type.get("Z9K1") not in allowed_key_types:
+        sys.stderr.write("make_singleton_zmap called with invalid key_type")
+        return None
+    map_type = {
+        "Z1K1": {"Z1K1": "Z9", "Z9K1": "Z7"},
+        "Z7K1": {"Z1K1": "Z9", "Z9K1": "Z883"},
+        "Z883K1": key_type,
+        "Z883K2": value_type,
+    }
+    # The map's K1 property is a list of pairs, and it's required to be present
+    # even when empty
+    list_type = {
+        "Z1K1": {"Z1K1": "Z9", "Z9K1": "Z7"},
+        "Z7K1": {"Z1K1": "Z9", "Z9K1": "Z881"},
+        "Z881K1": {
+            "Z1K1": {"Z1K1": "Z9", "Z9K1": "Z7"},
+            "Z7K1": {"Z1K1": "Z9", "Z9K1": "Z882"},
+            "Z882K1": key_type,
+            "Z882K2": value_type,
+        },
+    }
+    return {"Z1K1": map_type, "K1": {"Z1K1": list_type}}
+
+
+def set_zmap_value(zmap, key, value):
+    """Ensures there is an entry for the given key / value in the given ZMap.  If there is
+    already an entry for the given key, overwrites the corresponding value.  Otherwise,
+    creates a new entry. N.B.: Modifies the value of the ZMap's K1 in place.
+
+    TODO (T302015) When ZMap keys are extended beyond Z6/Z39, update accordingly
+
+    Arguments:
+        zmap: a Z883/Typed map, in normal form
+        key: a Z6 or Z39 instance, in normal form
+        value: a Z1/ZObject, in normal form
+
+       Returns:
+        the updated ZMap, in normal form
+    """
+    if zmap == None:
+        sys.stderr.write("set_zmap_value called with undefined; please fix your caller")
+        return None
+
+    tail = zmap.get("K1")
+    while True:
+        if is_empty_zlist(tail):
+            break
+        entry = get_head(tail)
+        if (
+            entry.get("K1", {}).get("Z1K1") == "Z6"
+            and key.get("Z1K1") == "Z6"
+            and entry.get("K1", {}).get("Z6K1") == key.get("Z6K1")
+        ) or (
+            entry.get("K1", {}).get("Z1K1") == "Z39"
+            and key.get("Z1K1") == "Z39"
+            and entry.get("K1", {}).get("Z39K1", {}).get("Z9K1")
+            == key.get("Z39K1", {}).get("Z9K1")
+        ):
+            entry["K2"] = value
+            return zmap
+        tail = get_tail(tail)
+
+    # The key isn't present in the map, so add an entry for it
+    key_type = zmap.get("Z1K1", {}).get("Z883K1")
+    value_type = zmap.get("Z1K1", {}).get("Z883K2")
+    pair_type = {
+        "Z1K1": {"Z1K1": "Z9", "Z9K1": "Z7"},
+        "Z7K1": {"Z1K1": "Z9", "Z9K1": "Z882"},
+        "Z883K1": key_type,
+        "Z883K2": value_type,
+    }
+    tail["K1"] = {"Z1K1": pair_type, "K1": key, "K2": value}
+    list_type = tail.get("Z1K1")
+    tail["K2"] = {"Z1K1": list_type}
+    return zmap
+
+
+def make_mapped_result_envelope(result, metadata):
+    """Creates a map-based Z22 containing result and metadata.  metadata is normally a Z883 / Map.
+        If metadata is a Z5 / Error object, we place it in a new ZMap, as the value of an entry
+        with key "errors".  This is to support our transition from the older basic Z22s to map-based
+        Z22s.
+
+    Args:
+        result: Z22K1 of the resulting Z22
+        metadata: Z22K2 of the resulting Z22 - either a Z883 / Map or a Z5 / Error
+    Returns:
+        Z22 encapsulating the arguments
+    """
+    if _is_zError(metadata):
+        key_type = {"Z1K1": "Z9", "Z9K1": "Z6"}
+        value_type = {"Z1K1": "Z9", "Z9K1": "Z1"}
+        key = {"Z1K1": "Z6", "Z6K1": "errors"}
+        zmap = make_empty_zmap(key_type, value_type)
+        zmap = set_zmap_value(zmap, key, metadata)
+    else:
+        zmap = metadata
     return {
         "Z1K1": _z9_for("Z22"),
-        "Z22K1": make_void() if good_result is None else good_result,
-        "Z22K2": make_void() if bad_result is None else bad_result,
+        "Z22K1": make_void() if result is None else result,
+        "Z22K2": make_void() if zmap is None else zmap,
     }
 
 

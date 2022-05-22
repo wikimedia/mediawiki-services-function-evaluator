@@ -34,6 +34,7 @@ describe( 'evaluate-unit', function () { // eslint-disable-line no-undef
 			function mockExecutor() {
 				return subprocess.createExecutorSubprocess( 'python3', { args: [ pyFile ] } );
 			}
+
 			const stubProcess = sinon.stub( subprocess, 'runExecutorSubprocess' ).callsFake( mockExecutor );
 
 			return preq( {
@@ -83,12 +84,116 @@ describe( 'evaluate-unit', function () { // eslint-disable-line no-undef
 			Z22K1: makeVoid(),
 			Z22K2: {
 				Z1K1: {
-					Z1K1: 'Z9',
-					Z9K1: 'Z5'
+					Z1K1: {
+						Z1K1: 'Z9',
+						Z9K1: 'Z7'
+					},
+					Z7K1: {
+						Z1K1: 'Z9',
+						Z9K1: 'Z883'
+					},
+					Z883K1: {
+						Z1K1: 'Z9',
+						Z9K1: 'Z6'
+					},
+					Z883K2: {
+						Z1K1: 'Z9',
+						Z9K1: 'Z1'
+					}
 				},
-				Z5K1: {
-					Z1K1: 'Z6',
-					Z6K1: 'Executor returned an empty response.'
+				K1: {
+					Z1K1: {
+						Z1K1: {
+							Z1K1: 'Z9',
+							Z9K1: 'Z7'
+						},
+						Z7K1: {
+							Z1K1: 'Z9',
+							Z9K1: 'Z881'
+						},
+						Z881K1: {
+							Z1K1: {
+								Z1K1: 'Z9',
+								Z9K1: 'Z7'
+							},
+							Z7K1: {
+								Z1K1: 'Z9',
+								Z9K1: 'Z882'
+							},
+							Z882K1: {
+								Z1K1: 'Z9',
+								Z9K1: 'Z6'
+							},
+							Z882K2: {
+								Z1K1: 'Z9',
+								Z9K1: 'Z1'
+							}
+						}
+					},
+					K1: {
+						Z1K1: {
+							Z1K1: {
+								Z1K1: 'Z9',
+								Z9K1: 'Z7'
+							},
+							Z7K1: {
+								Z1K1: 'Z9',
+								Z9K1: 'Z882'
+							},
+							Z882K1: {
+								Z1K1: 'Z9',
+								Z9K1: 'Z6'
+							},
+							Z882K2: {
+								Z1K1: 'Z9',
+								Z9K1: 'Z1'
+							}
+						},
+						K1: {
+							Z1K1: 'Z6',
+							Z6K1: 'errors'
+						},
+						K2: {
+							Z1K1: {
+								Z1K1: 'Z9',
+								Z9K1: 'Z5'
+							},
+							Z5K1: {
+								Z1K1: 'Z6',
+								Z6K1: 'Executor returned an empty response.'
+							}
+						}
+					},
+					K2: {
+						Z1K1: {
+							Z1K1: {
+								Z1K1: 'Z9',
+								Z9K1: 'Z7'
+							},
+							Z7K1: {
+								Z1K1: 'Z9',
+								Z9K1: 'Z881'
+							},
+							Z881K1: {
+								Z1K1: {
+									Z1K1: 'Z9',
+									Z9K1: 'Z7'
+								},
+								Z7K1: {
+									Z1K1: 'Z9',
+									Z9K1: 'Z882'
+								},
+								Z882K1: {
+									Z1K1: 'Z9',
+									Z9K1: 'Z6'
+								},
+								Z882K2: {
+									Z1K1: 'Z9',
+									Z9K1: 'Z1'
+								}
+							}
+						}
+					}
 				}
 			}
 		}
@@ -99,6 +204,7 @@ describe( 'evaluate-unit', function () { // eslint-disable-line no-undef
 			function mockExecutor() {
 				return subprocess.createExecutorSubprocess( 'python3', [ 'test_data/no_output_much_errors.py' ] );
 			}
+
 			const stubProcess = sinon.stub( subprocess, 'runExecutorSubprocess' ).callsFake( mockExecutor );
 
 			const expectedZ22K1 = makeVoid();

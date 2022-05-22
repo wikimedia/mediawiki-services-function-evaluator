@@ -45,30 +45,14 @@ def void():
     return {"Z1K1": "Z9", "Z9K1": "Z24"}
 
 
-def make_pair(good_result=None, bad_result=None):
-    """Creates a Z22 containing goodResult and BadResult.
-
-    Args:
-        good_result: Z22K1 of the resulting Z22
-        bad_result: Z22K2 of the resulting Z22
-    Returns:
-        Z22 encapsulating the arguments
-    """
-    # TODO (T282891): Use function-schemata version.
-    Z1K1 = {"Z1K1": "Z9", "Z9K1": "Z22"}
-    return {
-        "Z1K1": Z1K1,
-        "Z22K1": good_result if good_result is not None else void(),
-        "Z22K2": bad_result if bad_result is not None else void(),
-    }
-
-
 def execute(Z7):
     # TODO (T282891): Handle input that fails to validate all at once instead of ad hoc.
     try:
         function_name = Z7["Z7K1"]["Z8K5"]["Z9K1"]
     except KeyError:
-        return make_pair(None, _error("Z7K1 did not contain a valid Function."))
+        return utils.make_mapped_result_envelope(
+            None, _error("Z7K1 did not contain a valid Function.")
+        )
 
     # TODO (T289319): Consider whether to reduce all keys to local keys.
     argument_names = [key for key in Z7 if key.startswith(function_name)]
@@ -79,7 +63,9 @@ def execute(Z7):
         implementations = utils.convert_zlist_to_list(Z7["Z7K1"]["Z8K4"])
         implementation = implementations[0]["Z14K3"]["Z16K2"]["Z6K1"]
     except KeyError:
-        return make_pair(None, _error("Z8K4 did not contain a valid Implementation."))
+        return utils.make_mapped_result_envelope(
+            None, _error("Z8K4 did not contain a valid Implementation.")
+        )
 
     return_value = function_name + "K0"
     return_type = Z7["Z7K1"]["Z8K2"]
@@ -106,9 +92,9 @@ def execute(Z7):
         )
     except Exception as e:
         logging.exception(e)
-        return make_pair(None, _error(e.args[0]))
+        return utils.make_mapped_result_envelope(None, _error(e.args[0]))
     else:
-        return make_pair(_RESULT_CACHE[return_value], None)
+        return utils.make_mapped_result_envelope(_RESULT_CACHE[return_value], None)
 
 
 def main(stdin=sys.stdin, stdout=sys.stdout):
