@@ -93,11 +93,20 @@ async function maybeRunZ7( ZObject ) {
 
 	// Wait until subprocess exits; return the result of function execution.
 	await Promise.all( [ stdoutPromise, stderrPromise ] );
-	let Z22;
+	let Z22, errorful;
 	const contents = stdoutQueue.join( '' );
-	try {
-		Z22 = JSON.parse( contents );
-	} catch ( error ) {
+
+	if ( contents ) {
+		try {
+			Z22 = JSON.parse( contents );
+		} catch ( error ) {
+			errorful = 'contentful';
+		}
+	} else {
+		errorful = 'empty';
+	}
+
+	if ( errorful ) {
 		Z22 = makeResultEnvelopeWithVoid(
 			null,
 			{
@@ -107,9 +116,12 @@ async function maybeRunZ7( ZObject ) {
 				},
 				Z5K1: {
 					Z1K1: 'Z6',
-					Z6K1: `Executor returned some nonsense: ${contents}.`
+					Z6K1: errorful === 'contentful' ?
+						`Executor returned some nonsense: ${contents}.` :
+						'Executor returned an empty response.'
 				}
 			} );
+
 	}
 
 	const endTime = new Date();
