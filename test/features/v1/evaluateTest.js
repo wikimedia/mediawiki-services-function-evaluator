@@ -9,7 +9,7 @@ const subprocess = require( '../../../src/subprocess.js' );
 const sinon = require( 'sinon' );
 
 const { SchemaFactory } = require( '../../../function-schemata/javascript/src/schema.js' );
-const { makeVoid, isVoid } = require( '../../../function-schemata/javascript/src/utils.js' );
+const { makeVoid, isVoid, getError } = require( '../../../function-schemata/javascript/src/utils.js' );
 
 const errorValidator = SchemaFactory.NORMAL().create( 'Z5' );
 
@@ -57,7 +57,8 @@ describe( 'evaluate-unit', function () { // eslint-disable-line no-undef
 					if ( typeof output === 'function' ) {
 						assert.ok( output( res.body ), name );
 					} else {
-						assert.deepEqual( res.body, output, name );
+						assert.deepEqual( res.body.Z22K1, output.Z22K1, name );
+						assert.deepEqual( getError( res.body ), getError( output ), name );
 					}
 				} )
 				.finally( () => {
@@ -243,7 +244,8 @@ describe( 'evaluate-integration', function () { // eslint-disable-line no-undef
 			assert.contentType( response, 'application/json' );
 			const Z22K1 = response.body.Z22K1;
 			if ( expectedOutput !== null ) {
-				assert.deepEqual( response.body, expectedOutput, name );
+				assert.deepEqual( response.body.Z22K1, expectedOutput.Z22K1, name );
+				assert.deepEqual( getError( response.body ), getError( expectedOutput ), name );
 			} else {
 				const isError = ( isVoid( Z22K1 ) );
 				assert.ok( isError );
