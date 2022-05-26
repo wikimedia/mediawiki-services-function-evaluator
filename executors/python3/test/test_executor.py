@@ -10,6 +10,7 @@ from unittest.mock import patch
 # would be better if PYTHONPATH could be controlled directly.
 from . import utils as test_utils
 from .. import executor
+from .. import utils as src_utils
 
 
 _DATA_DIR = os.path.join(os.path.dirname(__file__), "test_data")
@@ -28,6 +29,11 @@ class ExecutorTest(unittest.TestCase):
         actual = executor.execute(zobject)
         self.assertEqual(
             test_utils.without_z1k1s(expected_result), test_utils.without_z1k1s(actual)
+        )
+        self.assertEqual(
+            True,
+            src_utils._is_zVoid(actual.get("Z22K2"))
+            or src_utils._is_zMap(actual.get("Z22K2")),
         )
 
     def test_runs_function_call(self):

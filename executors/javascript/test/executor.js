@@ -5,6 +5,7 @@ const Stream = require( 'stream' );
 const { execute, main } = require( '../executor.js' );
 const { withoutZ1K1s } = require( './utils.js' );
 const assert = require( 'chai' ).assert;
+const { isVoid, isZMap } = require( '../function-schemata/javascript/src/utils.js' );
 
 function readTestJson( fileName ) {
 	return JSON.parse( fs.readFileSync( './test/test_data/' + fileName, { encoding: 'utf8' } ) );
@@ -40,6 +41,8 @@ describe( 'JavaScript executor: main', () => { // eslint-disable-line no-undef
 			stdin.push( Z7String );
 		} ).then( () => {
 			assert.deepEqual( withoutZ1K1s( expected ), withoutZ1K1s( JSON.parse( stdoutQueue.join( '' ) ) ) );
+			assert.ok( isVoid( JSON.parse( stdoutQueue.join( '' ) ).Z22K2 ) ||
+				isZMap( JSON.parse( stdoutQueue.join( '' ) ).Z22K2 ) );
 		} );
 	} );
 
@@ -69,6 +72,7 @@ describe( 'JavaScript executor', () => { // eslint-disable-line no-undef
 	async function runTest( zobject, expectedResult ) {
 		const result = await execute( zobject );
 		assert.deepEqual( withoutZ1K1s( expectedResult ), withoutZ1K1s( result ) );
+		assert.ok( isVoid( result.Z22K2 ) || isZMap( result.Z22K2 ) );
 	}
 
 	it( 'test runs function call', async () => { // eslint-disable-line no-undef

@@ -1,7 +1,6 @@
 import sys
 from python3 import exceptions
 
-
 # TODO (T282891): All _is_zwhatev functions should use function-schemata.
 def _is_zreference(Z9):
     try:
@@ -27,6 +26,20 @@ def _is_zfunction(Z8):
 def _is_zError(Z5):
     try:
         return Z5.get("Z1K1", {}).get("Z9K1") == "Z5"
+    except AttributeError:
+        return False
+
+
+def _is_zMap(Z883):
+    try:
+        return Z883.get("Z1K1", {}).get("Z7K1", {}).get("Z9K1") == "Z883"
+    except AttributeError:
+        return False
+
+
+def _is_zVoid(Z24):
+    try:
+        return Z24.get("Z9K1") == "Z24"
     except AttributeError:
         return False
 
