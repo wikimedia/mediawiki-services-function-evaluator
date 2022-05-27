@@ -29,6 +29,7 @@ variants:
   production:
     copies: [prep]
     node: { env: production }
+    apt: { packages: [python3] }
     entrypoint: [node, server.js]
 
   build-python3-executor:
