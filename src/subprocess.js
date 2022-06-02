@@ -42,7 +42,8 @@ for ( const languageVersion of [
 	executors.set( languageVersion, {
 		executable: 'python3',
 		callArguments: {
-			args: [ 'executors/python3/executor.py' ],
+			// -u forces std* streams to be unbuffered
+			args: [ '-u', 'executors/python3/executor.py' ],
 			env: { PYTHONPATH: 'executors' }
 		}
 	} );

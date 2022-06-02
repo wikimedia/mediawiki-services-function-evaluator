@@ -12,6 +12,7 @@ const packageInfo = require( './package.json' );
 const yaml = require( 'js-yaml' );
 const addShutdown = require( 'http-shutdown' );
 const path = require( 'path' );
+const WebSocket = require( 'ws' );
 
 /**
  * Creates an express app and initialises it
@@ -198,6 +199,7 @@ function createServer( app ) {
 	// attaches the app to it, and starts accepting
 	// incoming client requests
 	let server;
+	let wss;
 	return new BBPromise( ( resolve ) => {
 		server = http.createServer( app ).listen(
 			app.conf.port,
@@ -205,6 +207,9 @@ function createServer( app ) {
 			resolve
 		);
 		server = addShutdown( server );
+		wss = new WebSocket.Server( {
+			server: server
+		} );
 	} ).then( () => {
 		app.logger.log( 'info',
 			`Worker ${process.pid} listening on ${app.conf.interface || '*'}:${app.conf.port}` );
@@ -216,6 +221,7 @@ function createServer( app ) {
 			socket.setNoDelay( true );
 		} );
 
+		app.wss = wss;
 		return server;
 	} );
 

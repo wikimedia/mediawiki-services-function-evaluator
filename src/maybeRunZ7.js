@@ -7,7 +7,7 @@ const os = require( 'os' );
 const pidusage = require( 'pidusage' );
 const { cpuUsage, memoryUsage } = require( 'node:process' );
 
-async function maybeRunZ7( ZObject ) {
+async function maybeRunZ7( ZObject, websocket = null ) {
 	const theStatus = await validatesAsFunctionCall( ZObject );
 	if ( !theStatus.isValid() ) {
 		// console.log( theStatus.getParserErrors() );
@@ -92,7 +92,17 @@ async function maybeRunZ7( ZObject ) {
 	const stdoutQueue = [];
 	executorProcess.stdout.on( 'data', ( data ) => {
 		// TODO (T295699): Avoid toString; find a way to merge Buffers.
-		stdoutQueue.push( data.toString() );
+		data = data.toString();
+
+		if ( data.match( /^\s*call / ) ) {
+			// When the data starts with "call ", request a subsequent orchestration
+			// via the websocket.
+			websocket.send( data );
+		} else if ( data.replace( /\s/g, '' ) ) {
+			// Skip data that contains only whitespaces; all other data becomes
+			// part of the eventual result.
+			stdoutQueue.push( data );
+		}
 	} );
 	const stdoutPromise = new Promise( ( resolve ) => {
 		executorProcess.stdout.on( 'close', () => {
@@ -101,7 +111,14 @@ async function maybeRunZ7( ZObject ) {
 	} );
 
 	executorProcess.stderr.on( 'data', ( data ) => {
-		console.log( data.toString() );
+		data = data.toString();
+		if ( data.match( /^\s*end/ ) ) {
+			executorProcess.stdin.end();
+		} else {
+			// TODO (T322097): Use a logger; consider whether this should be
+			// logged to INFO or ERROR or what.
+			console.log( data.toString() );
+		}
 	} );
 	const stderrPromise = new Promise( ( resolve ) => {
 		executorProcess.stderr.on( 'close', () => {
@@ -109,9 +126,19 @@ async function maybeRunZ7( ZObject ) {
 		} );
 	} );
 
+	if ( websocket !== null ) {
+		websocket.on( 'message', ( message ) => {
+			executorProcess.stdin.write( message + '\n' );
+		} );
+	}
+
 	// Write ZObject to executor process.
+	executorProcess.stdin.cork();
 	executorProcess.stdin.write( JSON.stringify( { function_call: ZObject } ) );
-	executorProcess.stdin.end();
+	executorProcess.stdin.write( '\n' );
+	executorProcess.stdin.uncork();
+	executorProcess.stdin.write( '\n' );
+	executorProcess.stdin.uncork();
 
 	let pidStats;
 	// TODO(T313460): Take a closer look at how useful the pidusage results are

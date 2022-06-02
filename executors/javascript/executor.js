@@ -92,7 +92,7 @@ async function execute( Z7, stdin = process.stdin, stdout = process.stdout ) {
 	);
 }
 
-function main( stdin = process.stdin, stdout = process.stdout ) {
+function main( stdin = process.stdin, stdout = process.stdout, stderr = process.stderr ) {
 	stdin.on( 'readable', async () => {
 		let chunk;
 		while ( ( chunk = stdin.read() ) !== null ) {
@@ -101,8 +101,12 @@ function main( stdin = process.stdin, stdout = process.stdout ) {
 			if ( functionCall !== undefined ) {
 				const result = await execute( functionCall, stdin, stdout );
 				stdout.write( JSON.stringify( result ) );
+				stdout.write( '\n' );
+				break;
 			}
 		}
+		stderr.write( 'end' );
+		stderr.write( '\n' );
 	} );
 }
 

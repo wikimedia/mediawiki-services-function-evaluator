@@ -7,6 +7,7 @@ import os
 from python3 import serialization
 from python3 import utils
 from python3 import ztypes
+from python3 import wikifunctions
 
 
 _RESULT_CACHE = {}
@@ -79,6 +80,7 @@ def execute(Z7, stdin=sys.stdin, stdout=sys.stdout):
             ),
             {
                 "_RESULT_CACHE": _RESULT_CACHE,
+                "W": wikifunctions.Wikifunctions(stdin, stdout),
                 "ZPair": ztypes.ZPair,
                 "ZObject": ztypes.ZObject,
             },
@@ -96,13 +98,19 @@ def execute(Z7, stdin=sys.stdin, stdout=sys.stdout):
         return utils.make_mapped_result_envelope(_RESULT_CACHE[return_value], None)
 
 
-def main(stdin=sys.stdin, stdout=sys.stdout):
+def main(stdin=sys.stdin, stdout=sys.stdout, stderr=sys.stderr):
     for line in stdin:
         the_input = json.loads(line)
         function_call = the_input.get("function_call")
         if function_call is not None:
             result = execute(function_call, stdin, stdout)
             stdout.write(json.dumps(result))
+            stdout.write("\n")
+            stdout.flush()
+            break
+    stderr.write("end")
+    stderr.write("\n")
+    stderr.flush()
 
 
 if __name__ == "__main__":
