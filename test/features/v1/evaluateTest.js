@@ -13,6 +13,10 @@ const { makeVoid, isVoid, getError, isZMap } = require( '../../../function-schem
 
 const errorValidator = SchemaFactory.NORMAL().create( 'Z5' );
 
+function readJSON( fileName ) {
+	return JSON.parse( fs.readFileSync( fileName, { encoding: 'utf8' } ) );
+}
+
 describe( 'evaluate-unit', function () { // eslint-disable-line no-undef
 
 	this.timeout( 20000 );
@@ -40,16 +44,7 @@ describe( 'evaluate-unit', function () { // eslint-disable-line no-undef
 			return preq( {
 				method: 'post',
 				uri: uri,
-				body: {
-					Z1K1: {
-						Z1K1: 'Z9',
-						Z9K1: 'Z7'
-					},
-					Z7K1: {
-						Z1K1: 'Z9',
-						Z9K1: 'Z1000'
-					}
-				}
+				body: readJSON( './test_data/python3_foo.json' )
 			} )
 				.then( ( res ) => {
 					assert.status( res, 200 );
@@ -161,6 +156,10 @@ describe( 'evaluate-unit', function () { // eslint-disable-line no-undef
 								Z9K1: 'Z5'
 							},
 							Z5K1: {
+								Z1K1: 'Z9',
+								Z9K1: 'Z507'
+							},
+							Z5K2: {
 								Z1K1: 'Z6',
 								Z6K1: 'Executor returned an empty response.'
 							}
@@ -238,7 +237,7 @@ describe( 'evaluate-integration', function () { // eslint-disable-line no-undef
 
 	after( () => server.stop() ); // eslint-disable-line no-undef
 
-	const integrationTest = ( name, input, expectedOutput = null ) => {
+	const integrationTest = ( name, input, expectedOutput = null, expectedErrorKeyPhrase = '' ) => {
 		it( name, async function () { // eslint-disable-line no-undef
 			const response = await preq( { method: 'post', uri: uri, body: input } );
 			assert.status( response, 200 );
@@ -251,13 +250,12 @@ describe( 'evaluate-integration', function () { // eslint-disable-line no-undef
 			} else {
 				const isError = ( isVoid( Z22K1 ) );
 				assert.ok( isError );
+				// Checks that the error content contains the expected error key phrase.
+				const errorMessage = response.body.Z22K2.K1.K1.K2.Z5K2.Z6K1;
+				assert.ok( errorMessage.includes( expectedErrorKeyPhrase ) );
 			}
 		} );
 	};
-
-	function readJSON( fileName ) {
-		return JSON.parse( fs.readFileSync( fileName, { encoding: 'utf8' } ) );
-	}
 
 	integrationTest(
 		'degenerate function call',
@@ -281,13 +279,16 @@ describe( 'evaluate-integration', function () { // eslint-disable-line no-undef
 	integrationTest(
 		'python - error: no Z8',
 		readJSON( './test_data/python3_no_Z8.json' ),
-		/* expectedOutput= */ null
+		/* expectedOutput= */ null,
+		/* expectedErrorKeyPhrase */ 'Unable to validate function call'
 	);
 
 	integrationTest(
 		'python - error: no Z14',
 		readJSON( './test_data/python3_no_Z14.json' ),
-		/* expectedOutput= */ null
+		/* expectedOutput= */ null,
+		/* expectedErrorKeyPhrase */ 'Unable to validate function call'
+
 	);
 
 	integrationTest(
@@ -305,19 +306,43 @@ describe( 'evaluate-integration', function () { // eslint-disable-line no-undef
 	integrationTest(
 		'javascript - error: no Z8',
 		readJSON( './test_data/javascript_no_Z8.json' ),
-		/* expectedOutput= */ null
+		/* expectedOutput= */ null,
+		/* expectedErrorKeyPhrase */ 'Unable to validate function call'
 	);
 
 	integrationTest(
 		'javascript - error: no Z14',
 		readJSON( './test_data/javascript_no_Z14.json' ),
-		/* expectedOutput= */ null
+		/* expectedOutput= */ null,
+		/* expectedErrorKeyPhrase */ 'Unable to validate function call'
 	);
 
 	integrationTest(
 		'javascript - throw',
 		readJSON( './test_data/javascript_throw.json' ),
-		/* expectedOutput= */ null
+		/* expectedOutput= */ null,
+		/* expectedErrorKeyPhrase */ 'Hello, this is a good day to die'
+	);
+
+	integrationTest(
+		'no implementation - throw',
+		readJSON( './test_data/no_implementation_throw.json' ),
+		/* expectedOutput= */ null,
+		/* expectedErrorKeyPhrase */ 'Unable to find programming language'
+	);
+
+	integrationTest(
+		'python unsupported version - throw',
+		readJSON( './test_data/python_unsupported_version_throw.json' ),
+		/* expectedOutput= */ null,
+		/* expectedErrorKeyPhrase */ 'No executor found for programming language'
+	);
+
+	integrationTest(
+		'unsupported language Java - throw',
+		readJSON( './test_data/unsupported_language_java_throw.json' ),
+		/* expectedOutput= */ null,
+		/* expectedErrorKeyPhrase */ 'No executor found for programming language'
 	);
 
 } );

@@ -18,7 +18,7 @@ const router = sUtil.router();
  * overwrites the corresponding value.  Otherwise, creates a new entry.
  * N.B.: May modify the value of Z22K2 and the ZMap's K1 in place.
  *
- * @param {Object} envelope a Z883/Typed map, in normal form
+ * @param {Object} envelope a Z22/Evaluation result, in normal form
  * @param {Object} key a Z6 or Z39 instance, in normal form
  * @param {Object} value a Z1/ZObject, in normal form
  * @return {Object} the updated envelope, in normal form
@@ -44,6 +44,9 @@ async function maybeRunZ7( ZObject ) {
 	const theStatus = await validatesAsFunctionCall( ZObject );
 	if ( !theStatus.isValid() ) {
 		console.log( theStatus.getParserErrors() );
+		// A flattened list of parser errors. Note that they are from different layers of parsing.
+		// The first message might be the most useful.
+		const parserErrorMessages = theStatus.getParserErrors().map( ( x ) => x.message );
 		return {
 			process: null,
 			Z22: makeMappedResultEnvelope(
@@ -53,8 +56,11 @@ async function maybeRunZ7( ZObject ) {
 						Z1K1: 'Z9',
 						Z9K1: 'Z5'
 					},
-					// TODO (T292804): Figure out what error this should actually be.
-					Z5K2: theStatus.getZ5()
+					Z5K1: theStatus.getZ5().Z5K1,
+					Z5K2: {
+						Z1K1: 'Z6',
+						Z6K1: `Unable to validate function call. Parser errors: ${parserErrorMessages}`
+					}
 				}
 			)
 		};
@@ -65,16 +71,8 @@ async function maybeRunZ7( ZObject ) {
 		const implementations = convertZListToArray( ZObject.Z7K1.Z8K4 );
 		programmingLanguage = implementations[ 0 ].Z14K3.Z16K1.Z61K1.Z6K1;
 	} catch ( e ) {
-		// TODO (T296857): Return error in this case (should be handled by validation).
-		programmingLanguage = 'python-3';
-	}
-
-	const startTime = new Date();
-
-	const executorProcess = subprocess.runExecutorSubprocess( programmingLanguage );
-	if ( executorProcess === null ) {
 		return {
-			process: executorProcess,
+			process: null,
 			Z22: makeMappedResultEnvelope(
 				null,
 				{
@@ -83,6 +81,40 @@ async function maybeRunZ7( ZObject ) {
 						Z9K1: 'Z5'
 					},
 					Z5K1: {
+						Z1K1: 'Z9',
+						// TODO (T310324): Update from this generic evaluation error
+						// to a programming-language-specific error.
+						Z9K1: 'Z507'
+					},
+					Z5K2: {
+						Z1K1: 'Z6',
+						Z6K1: `Unable to find programming language in function call. ${e}`
+					}
+				}
+			)
+		};
+	}
+
+	const startTime = new Date();
+
+	const executorProcess = subprocess.runExecutorSubprocess( programmingLanguage );
+	if ( executorProcess === null ) {
+		return {
+			process: null,
+			Z22: makeMappedResultEnvelope(
+				null,
+				{
+					Z1K1: {
+						Z1K1: 'Z9',
+						Z9K1: 'Z5'
+					},
+					Z5K1: {
+						Z1K1: 'Z9',
+						// TODO (T310324): Update from this generic evaluation error
+						// to a programming-language-specific error.
+						Z9K1: 'Z507'
+					},
+					Z5K2: {
 						Z1K1: 'Z6',
 						Z6K1: `No executor found for programming language ${programmingLanguage}.`
 					}
@@ -140,6 +172,11 @@ async function maybeRunZ7( ZObject ) {
 					Z9K1: 'Z5'
 				},
 				Z5K1: {
+					Z1K1: 'Z9',
+					// Generic evaluation error.
+					Z9K1: 'Z507'
+				},
+				Z5K2: {
 					Z1K1: 'Z6',
 					Z6K1: errorful === 'contentful' ?
 						`Executor returned some nonsense: ${contents}.` :
