@@ -191,12 +191,12 @@ async function maybeRunZ7( ZObject ) {
 	const startTimeStr = startTime.toISOString();
 	const endTimeStr = endTime.toISOString();
 	const durationStr = duration + 'ms';
-	Z22 = setMetadataValue( Z22, { Z1K1: 'Z6', Z6K1: 'Execution initiation' }, { Z1K1: 'Z6', Z6K1: startTimeStr } );
-	Z22 = setMetadataValue( Z22, { Z1K1: 'Z6', Z6K1: 'Execution completion' }, { Z1K1: 'Z6', Z6K1: endTimeStr } );
-	Z22 = setMetadataValue( Z22, { Z1K1: 'Z6', Z6K1: 'Execution duration' }, { Z1K1: 'Z6', Z6K1: durationStr } );
-	console.debug( 'Execution initiation: ' + startTimeStr );
-	console.debug( 'Execution completion: ' + endTimeStr );
-	console.debug( 'Execution duration: ' + durationStr );
+	Z22 = setMetadataValue( Z22, { Z1K1: 'Z6', Z6K1: 'evaluationStartTime' }, { Z1K1: 'Z6', Z6K1: startTimeStr } );
+	Z22 = setMetadataValue( Z22, { Z1K1: 'Z6', Z6K1: 'evaluationEndTime' }, { Z1K1: 'Z6', Z6K1: endTimeStr } );
+	Z22 = setMetadataValue( Z22, { Z1K1: 'Z6', Z6K1: 'evaluationDuration' }, { Z1K1: 'Z6', Z6K1: durationStr } );
+	console.debug( 'Evaluation start time: ' + startTimeStr );
+	console.debug( 'Evaluation end time: ' + endTimeStr );
+	console.debug( 'Evaluation duration: ' + durationStr );
 
 	return {
 		process: executorProcess,
