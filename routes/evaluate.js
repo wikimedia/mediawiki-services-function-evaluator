@@ -3,37 +3,12 @@
 const sUtil = require( '../lib/util' );
 const subprocess = require( '../src/subprocess.js' );
 const { validatesAsFunctionCall } = require( '../function-schemata/javascript/src/schema.js' );
-const { convertZListToArray, makeMappedResultEnvelope } = require( '../function-schemata/javascript/src/utils.js' );
-const { setZMapValue, isVoid, makeEmptyZMap } = require( '../function-schemata/javascript/src/utils' );
+const { convertZListToArray, makeMappedResultEnvelope, setMetadataValue } = require( '../function-schemata/javascript/src/utils.js' );
 
 /**
  * The main router object
  */
 const router = sUtil.router();
-
-/**
- * Ensures there is an entry for the given key / value in the metadata map
- * of the given Z22 / Evaluation result (envelope).  If the envelope has
- * no metadata map, creates one.  If there is already an entry for the given key,
- * overwrites the corresponding value.  Otherwise, creates a new entry.
- * N.B.: May modify the value of Z22K2 and the ZMap's K1 in place.
- *
- * @param {Object} envelope a Z22/Evaluation result, in normal form
- * @param {Object} key a Z6 or Z39 instance, in normal form
- * @param {Object} value a Z1/ZObject, in normal form
- * @return {Object} the updated envelope, in normal form
- */
-function setMetadataValue( envelope, key, value ) {
-	let zMap = envelope.Z22K2;
-	if ( zMap === undefined || isVoid( zMap ) ) {
-		const keyType = { Z1K1: 'Z9', Z9K1: 'Z6' };
-		const valueType = { Z1K1: 'Z9', Z9K1: 'Z1' };
-		zMap = makeEmptyZMap( keyType, valueType );
-	}
-	zMap = setZMapValue( zMap, key, value );
-	envelope.Z22K2 = zMap;
-	return envelope;
-}
 
 /**
  * The main application object reported when this module is require()d
