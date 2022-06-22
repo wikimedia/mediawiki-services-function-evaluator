@@ -3,7 +3,7 @@
 const { getZID, getZIDForJSType, getZObjectType, isString, isZType } = require( './utils.js' );
 const { ZObject, ZPair } = require( './utils.js' );
 // eslint-disable-next-line node/no-missing-require
-const { convertArrayToZList, convertZListToArray } = require( './function-schemata/javascript/src/utils.js' );
+const { convertItemArrayToZList, convertZListToItemArray } = require( './function-schemata/javascript/src/utils.js' );
 const { inspect } = require( 'util' );
 const stableStringify = require( 'json-stable-stringify-without-jsonify' );
 
@@ -171,7 +171,7 @@ function serializeZListInternal( elements, expectedType ) {
 			Z1K1: expectedType
 		};
 	}
-	const expectedArgs = convertZListToArray( expectedType.Z4K2 );
+	const expectedArgs = convertZListToItemArray( expectedType.Z4K2 );
 	const headKey = expectedArgs[ 0 ].Z3K2.Z6K1;
 	const tailKey = expectedArgs[ 1 ].Z3K2.Z6K1;
 	const result = emptyList();
@@ -185,7 +185,7 @@ function serializeZListInternal( elements, expectedType ) {
 }
 
 async function serializeZList( theArray, expectedType ) {
-	const expectedArgs = convertZListToArray( expectedType.Z4K2 );
+	const expectedArgs = convertZListToItemArray( expectedType.Z4K2 );
 	const headKey = expectedArgs[ 0 ];
 	const elements = [];
 	for ( const element of theArray ) {
@@ -204,7 +204,7 @@ async function Z4ForZList( expectedType ) {
 	return {
 		Z1K1: { Z1K1: 'Z9', Z9K1: 'Z4' },
 		Z4K1: Z4K1,
-		Z4K2: await convertArrayToZList( argumentDeclarations ),
+		Z4K2: await convertItemArrayToZList( argumentDeclarations ),
 		Z4K3: { Z1K1: 'Z9', Z9K1: 'Z104' }
 	};
 }
@@ -224,7 +224,7 @@ function serializeGenericInternal( expectedType, kwargs ) {
 async function serializeZType( theObject, expectedType ) {
 	const kwargs = new Map();
 	if ( isZType( expectedType ) ) {
-		const expectedArgs = convertZListToArray( expectedType.Z4K2 );
+		const expectedArgs = convertZListToItemArray( expectedType.Z4K2 );
 		for ( const expectedArg of expectedArgs ) {
 			const theKey = expectedArg.Z3K2.Z6K1;
 			const subType = expectedArg.Z3K1;
@@ -253,7 +253,7 @@ async function Z4ForZPair( firstType, secondType ) {
 	return {
 		Z1K1: { Z1K1: 'Z9', Z9K1: 'Z4' },
 		Z4K1: Z4K1,
-		Z4K2: await convertArrayToZList( argumentDeclarations ),
+		Z4K2: await convertItemArrayToZList( argumentDeclarations ),
 		Z4K3: { Z1K1: 'Z9', Z9K1: 'Z104' }
 	};
 }
@@ -263,7 +263,7 @@ async function serializeZMap( theMap, expectedType ) {
 	for ( const entry of theMap.entries() ) {
 		pairList.push( new ZPair( ...entry ) );
 	}
-	const expectedArgs = convertZListToArray( expectedType.Z4K2 );
+	const expectedArgs = convertZListToItemArray( expectedType.Z4K2 );
 	const theKey = expectedArgs[ 0 ].Z3K2.Z6K1;
 	const subType = expectedArgs[ 0 ].Z3K1;
 	const kwargs = new Map();
@@ -284,7 +284,7 @@ async function Z4ForZMap( keyType, valueType ) {
 	return {
 		Z1K1: { Z1K1: 'Z9', Z9K1: 'Z4' },
 		Z4K1: Z4K1,
-		Z4K2: await convertArrayToZList( argumentDeclarations ),
+		Z4K2: await convertItemArrayToZList( argumentDeclarations ),
 		Z4K3: { Z1K1: 'Z9', Z9K1: 'Z104' }
 	};
 }
