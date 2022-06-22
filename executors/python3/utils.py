@@ -179,17 +179,11 @@ def frozendict(dictionary):
 
 
 def _get_head(zlist):
-    result = zlist.get("Z10K1")
-    if result is None:
-        result = zlist.get("K1")
-    return result
+    return zlist.get("K1")
 
 
 def _get_tail(zlist):
-    result = zlist.get("Z10K2")
-    if result is None:
-        result = zlist.get("K2")
-    return result
+    return zlist.get("K2")
 
 
 def is_empty_zlist(z_list):

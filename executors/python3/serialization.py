@@ -2,17 +2,6 @@ from python3 import exceptions
 from python3 import utils
 
 
-# TODO (T292788): Eliminate this function.
-def _DESERIALIZE_Z10(Z10):
-    result = []
-    head = Z10.get("Z10K1")
-    tail = Z10.get("Z10K2")
-    if head is not None:
-        result.append(deserialize(head))
-        result.extend(_DESERIALIZE_Z10(tail))
-    return result
-
-
 def _DESERIALIZE_ZLIST(ZObject):
     result = []
     tail = ZObject
@@ -55,7 +44,6 @@ _DESERIALIZE_Z40 = lambda Z40: Z40["Z40K1"]["Z9K1"] == "Z41"
 _DESERIALIZE_Z86 = lambda Z86: Z86["Z86K1"]["Z6K1"]
 _DESERIALIZERS = {
     "Z6": _DESERIALIZE_Z6,
-    "Z10": _DESERIALIZE_Z10,
     "Z21": _DESERIALIZE_Z21,
     "Z39": _DESERIALIZE_Z39,
     "Z40": _DESERIALIZE_Z40,
@@ -70,7 +58,7 @@ _DEFAULT_DESERIALIZER = _DESERIALIZE_ZTYPE
 def deserialize(ZObject):
     """Convert a ZObject into the corresponding Python type.
     Z6 -> str
-    Z10 or Typed List -> list
+    Typed List (Z881 instance) -> list
     Z21 -> None
     Z40 -> bool
     """
@@ -102,19 +90,6 @@ def _soup_up_z1k1(Z1K1):
     if isinstance(Z1K1, str):
         return {"Z1K1": "Z9", "Z9K1": Z1K1}
     return Z1K1
-
-
-# TODO (T292788): Eliminate this function.
-def _SERIALIZE_Z10(iterable, _):
-    def _empty_Z10():
-        return {"Z1K1": {"Z1K1": "Z9", "Z9K1": "Z10"}}
-
-    result = current = _empty_Z10()
-    for element in iterable:
-        current["Z10K1"] = serialize(element, {"Z1K1": "Z9", "Z9K1": "Z1"})
-        current["Z10K2"] = _empty_Z10()
-        current = current["Z10K2"]
-    return result
 
 
 def _SERIALIZE_Z21(nothing, _):
@@ -288,8 +263,6 @@ _SERIALIZE_Z6 = lambda string, _: {"Z1K1": "Z6", "Z6K1": string}
 _SERIALIZERS = {
     "Z1": _SERIALIZE_Z1,
     "Z6": _SERIALIZE_Z6,
-    # TODO (T292788): Eliminate Z10.
-    "Z10": _SERIALIZE_Z10,
     "Z21": _SERIALIZE_Z21,
     "Z39": _SERIALIZE_Z39,
     "Z40": _SERIALIZE_Z40,

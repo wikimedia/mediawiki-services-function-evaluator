@@ -9,16 +9,6 @@ const stableStringify = require( 'json-stable-stringify-without-jsonify' );
 
 const DESERIALIZERS_ = new Map();
 
-function deserializeZ10( Z10 ) {
-	const head = Z10.Z10K1;
-	if ( head === undefined ) {
-		return [];
-	}
-	const deserializedTail = deserializeZ10( Z10.Z10K2 );
-	deserializedTail.unshift( deserialize( head ) );
-	return deserializedTail;
-}
-
 function deserializeZList( ZObject ) {
 	const result = [];
 	let tail = ZObject;
@@ -62,7 +52,6 @@ function deserializeZType( theObject ) {
 }
 
 DESERIALIZERS_.set( 'Z6', ( Z6 ) => Z6.Z6K1 );
-DESERIALIZERS_.set( 'Z10', deserializeZ10 );
 // eslint-disable-next-line no-unused-vars
 DESERIALIZERS_.set( 'Z21', ( Z21 ) => null );
 DESERIALIZERS_.set( 'Z39', ( Z39 ) => Z39.Z39K1.Z6K1 );
@@ -76,7 +65,7 @@ const DEFAULT_DESERIALIZER_ = deserializeZType;
 /**
  * Convert a ZObject into the corresponding JS type.
  * Z6 -> String
- * Z10 -> Array
+ * Typed List ( Z881 instance ) -> Array
  * Z21 -> Null
  * Z40 -> Boolean
  *
@@ -90,25 +79,6 @@ function deserialize( ZObject ) {
 		deserializer = DEFAULT_DESERIALIZER_;
 	}
 	return deserializer( ZObject );
-}
-
-function emptyZ10() {
-	return {
-		Z1K1: {
-			Z1K1: 'Z9',
-			Z9K1: 'Z10'
-		}
-	};
-}
-
-async function serializeZ10( theArray ) {
-	const result = emptyZ10();
-	const nextElement = theArray.shift();
-	if ( nextElement !== undefined ) {
-		result.Z10K1 = await serialize( nextElement, { Z1K1: 'Z9', Z9K1: 'Z1' } );
-		result.Z10K2 = await serializeZ10( theArray );
-	}
-	return result;
 }
 
 // eslint-disable-next-line no-unused-vars
@@ -156,12 +126,26 @@ function soupUpZ1K1( Z1K1 ) {
 	return Z1K1;
 }
 
+function emptyTypedList( theType = soupUpZ1K1( 'Z1' ) ) {
+	const listType = {
+		Z1K1: soupUpZ1K1( 'Z7' ),
+		Z7K1: soupUpZ1K1( 'Z881' ),
+		Z881K1: theType
+	};
+	return {
+		Z1K1: listType
+	};
+}
+
 function Z3For( keyType, keyLabel ) {
 	return {
 		Z1K1: { Z1K1: 'Z9', Z9K1: 'Z3' },
 		Z3K1: keyType,
 		Z3K2: { Z1K1: 'Z6', Z6K1: keyLabel },
-		Z3K3: { Z1K1: 'Z12', Z12K1: { Z1K1: { Z1K1: 'Z9', Z9K1: 'Z10' } } }
+		Z3K3: {
+			Z1K1: soupUpZ1K1( 'Z12' ),
+			Z12K1: emptyTypedList( soupUpZ1K1( 'Z11' ) )
+		}
 	};
 }
 
@@ -353,7 +337,6 @@ SERIALIZERS_.set( 'Z1', serializeZ1 );
 SERIALIZERS_.set( 'Z6', ( theString ) => {
 	return { Z1K1: 'Z6', Z6K1: theString };
 } );
-SERIALIZERS_.set( 'Z10', serializeZ10 );
 SERIALIZERS_.set( 'Z21', serializeZ21 );
 SERIALIZERS_.set( 'Z39', serializeZ39 );
 SERIALIZERS_.set( 'Z40', serializeZ40 );
@@ -366,7 +349,7 @@ const DEFAULT_SERIALIZER_ = serializeZType;
 /**
  * Convert a JS object into the corresponding ZObject type.
  * String -> Z6
- * Array -> Z10
+ * Array -> Typed List ( Z881 instance )
  * Null -> Z21
  * Boolean -> Z40
  *

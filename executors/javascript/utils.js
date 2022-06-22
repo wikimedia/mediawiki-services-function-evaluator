@@ -19,39 +19,6 @@ class ZObject {
 	}
 }
 
-function z10ToList( Z10 ) {
-	const result = [];
-	let tail = Z10;
-	while ( true ) {
-		const head = tail.Z10K1;
-		if ( head === undefined ) {
-			break;
-		}
-		result.push( head );
-		tail = tail.Z10K2;
-	}
-	return result;
-}
-
-function listToZ10( theList ) {
-	function emptyZ10() {
-		return {
-			Z1K1: {
-				Z1K1: 'Z9',
-				Z9K1: 'Z10'
-			}
-		};
-	}
-	const result = emptyZ10();
-	let tail = result;
-	for ( const element of theList ) {
-		tail.Z10K1 = element;
-		tail.Z10K2 = emptyZ10();
-		tail = tail.Z10K2;
-	}
-	return result;
-}
-
 function isString( str ) {
 	return typeof str === 'string' || str instanceof String;
 }
@@ -142,8 +109,6 @@ module.exports = {
 	getZObjectType,
 	isString,
 	isZType,
-	listToZ10,
-	z10ToList,
 	ZObject,
 	ZPair
 };

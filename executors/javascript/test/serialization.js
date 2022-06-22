@@ -22,7 +22,19 @@ const Z881_Z1_Type_ = {
 			Z1K1: { Z1K1: 'Z9', Z9K1: 'Z3' },
 			Z3K1: { Z1K1: 'Z9', Z9K1: 'Z1' },
 			Z3K2: { Z1K1: 'Z6', Z6K1: 'K1' },
-			Z3K3: { Z1K1: 'Z12', Z12K1: { Z1K1: { Z1K1: 'Z9', Z9K1: 'Z10' } } }
+			Z3K3: {
+				Z1K1: {
+					Z1K1: 'Z9',
+					Z9K1: 'Z12'
+				},
+				Z12K1: {
+					Z1K1: {
+						Z1K1: { Z1K1: 'Z9', Z9K1: 'Z7' },
+						Z7K1: { Z1K1: 'Z9', Z9K1: 'Z881' },
+						Z881K1: { Z1K1: 'Z9', Z9K1: 'Z11' }
+					}
+				}
+			}
 		},
 		K2: {
 			Z1K1: {
@@ -39,8 +51,17 @@ const Z881_Z1_Type_ = {
 				},
 				Z3K2: { Z1K1: 'Z6', Z6K1: 'K2' },
 				Z3K3: {
-					Z1K1: 'Z12',
-					Z12K1: { Z1K1: { Z1K1: 'Z9', Z9K1: 'Z10' } }
+					Z1K1: {
+						Z1K1: 'Z9',
+						Z9K1: 'Z12'
+					},
+					Z12K1: {
+						Z1K1: {
+							Z1K1: { Z1K1: 'Z9', Z9K1: 'Z7' },
+							Z7K1: { Z1K1: 'Z9', Z9K1: 'Z881' },
+							Z881K1: { Z1K1: 'Z9', Z9K1: 'Z11' }
+						}
+					}
 				}
 			},
 			K2: {
@@ -72,7 +93,19 @@ const Z882_Type_ = {
 			Z1K1: { Z1K1: 'Z9', Z9K1: 'Z3' },
 			Z3K1: { Z1K1: 'Z9', Z9K1: 'Z6' },
 			Z3K2: { Z1K1: 'Z6', Z6K1: 'K1' },
-			Z3K3: { Z1K1: 'Z12', Z12K1: { Z1K1: { Z1K1: 'Z9', Z9K1: 'Z10' } } }
+			Z3K3: {
+				Z1K1: {
+					Z1K1: 'Z9',
+					Z9K1: 'Z12'
+				},
+				Z12K1: {
+					Z1K1: {
+						Z1K1: { Z1K1: 'Z9', Z9K1: 'Z7' },
+						Z7K1: { Z1K1: 'Z9', Z9K1: 'Z881' },
+						Z881K1: { Z1K1: 'Z9', Z9K1: 'Z11' }
+					}
+				}
+			}
 		},
 		K2: {
 			Z1K1: {
@@ -85,8 +118,17 @@ const Z882_Type_ = {
 				Z3K1: { Z1K1: 'Z9', Z9K1: 'Z6' },
 				Z3K2: { Z1K1: 'Z6', Z6K1: 'K2' },
 				Z3K3: {
-					Z1K1: 'Z12',
-					Z12K1: { Z1K1: { Z1K1: 'Z9', Z9K1: 'Z10' } }
+					Z1K1: {
+						Z1K1: 'Z9',
+						Z9K1: 'Z12'
+					},
+					Z12K1: {
+						Z1K1: {
+							Z1K1: { Z1K1: 'Z9', Z9K1: 'Z7' },
+							Z7K1: { Z1K1: 'Z9', Z9K1: 'Z881' },
+							Z881K1: { Z1K1: 'Z9', Z9K1: 'Z11' }
+						}
+					}
 				}
 			},
 			K2: {
@@ -102,12 +144,9 @@ const Z882_Type_ = {
 };
 
 const Z6_ = { Z1K1: 'Z6', Z6K1: 'opiparo' };
-const Z10_INPUT_ = {
-	Z1K1: {
-		Z1K1: 'Z9',
-		Z9K1: 'Z10'
-	},
-	Z10K1: {
+const Z881_Z1_INPUT_ = {
+	Z1K1: Z881_Z1_Type_,
+	K1: {
 		Z1K1: {
 			Z1K1: 'Z9',
 			Z9K1: 'Z40'
@@ -117,50 +156,20 @@ const Z10_INPUT_ = {
 			Z9K1: 'Z41'
 		}
 	},
-	Z10K2: {
-		Z1K1: {
-			Z1K1: 'Z9',
-			Z9K1: 'Z10'
-		},
-		Z10K1: {
+	K2: {
+		Z1K1: Z881_Z1_Type_,
+		K1: {
 			Z1K1: 'Z6',
 			Z6K1: 'tRue'
 		},
-		Z10K2: {
-			Z1K1: {
-				Z1K1: 'Z9',
-				Z9K1: 'Z10'
-			},
-			Z10K1: {
-				Z1K1: {
-					Z1K1: 'Z9',
-					Z9K1: 'Z10'
-				}
-			},
-			Z10K2: {
-				Z1K1: {
-					Z1K1: 'Z9',
-					Z9K1: 'Z10'
-				}
-			}
-		}
-	}
-};
-const Z10_OUTPUT_ = {
-	Z1K1: { Z1K1: 'Z9', Z9K1: 'Z10' },
-	Z10K1: {
-		Z1K1: { Z1K1: 'Z9', Z9K1: 'Z40' },
-		Z40K1: { Z1K1: 'Z9', Z9K1: 'Z41' }
-	},
-	Z10K2: {
-		Z1K1: { Z1K1: 'Z9', Z9K1: 'Z10' },
-		Z10K1: { Z1K1: 'Z6', Z6K1: 'tRue' },
-		Z10K2: {
-			Z1K1: { Z1K1: 'Z9', Z9K1: 'Z10' },
-			Z10K1: {
+		K2: {
+			Z1K1: Z881_Z1_Type_,
+			K1: {
 				Z1K1: Z881_Z1_Type_
 			},
-			Z10K2: { Z1K1: { Z1K1: 'Z9', Z9K1: 'Z10' } }
+			K2: {
+				Z1K1: Z881_Z1_Type_
+			}
 		}
 	}
 };
@@ -217,13 +226,12 @@ const Z882_ = {
 };
 
 const Z6_DESERIALIZED_ = 'opiparo';
-const Z10_DESERIALIZED_ = [ true, 'tRue', [] ];
+const Z881_Z1_DESERIALIZED_ = [ true, 'tRue', [] ];
 const Z881_Z6_DESERIALIZED_ = [ 'horses', 'regular ungulates' ];
 const Z882_DESERIALIZED_ = new ZPair( 'pigs', 'just pigs' );
 
 const Z1_Type_ = { Z1K1: 'Z9', Z9K1: 'Z1' };
 const Z6_Type_ = { Z1K1: 'Z9', Z9K1: 'Z6' };
-const Z10_Type_ = { Z1K1: 'Z9', Z9K1: 'Z10' };
 const Z21_Type_ = { Z1K1: 'Z9', Z9K1: 'Z21' };
 const Z39_Type_ = { Z1K1: 'Z9', Z9K1: 'Z39' };
 const Z40_Type_ = { Z1K1: 'Z9', Z9K1: 'Z40' };
@@ -244,7 +252,19 @@ const Z881_Z6_Type_ = {
 			Z1K1: { Z1K1: 'Z9', Z9K1: 'Z3' },
 			Z3K1: { Z1K1: 'Z9', Z9K1: 'Z6' },
 			Z3K2: { Z1K1: 'Z6', Z6K1: 'K1' },
-			Z3K3: { Z1K1: 'Z12', Z12K1: { Z1K1: { Z1K1: 'Z9', Z9K1: 'Z10' } } }
+			Z3K3: {
+				Z1K1: {
+					Z1K1: 'Z9',
+					Z9K1: 'Z12'
+				},
+				Z12K1: {
+					Z1K1: {
+						Z1K1: { Z1K1: 'Z9', Z9K1: 'Z7' },
+						Z7K1: { Z1K1: 'Z9', Z9K1: 'Z881' },
+						Z881K1: { Z1K1: 'Z9', Z9K1: 'Z11' }
+					}
+				}
+			}
 		},
 		K2: {
 			Z1K1: {
@@ -261,8 +281,17 @@ const Z881_Z6_Type_ = {
 				},
 				Z3K2: { Z1K1: 'Z6', Z6K1: 'K2' },
 				Z3K3: {
-					Z1K1: 'Z12',
-					Z12K1: { Z1K1: { Z1K1: 'Z9', Z9K1: 'Z10' } }
+					Z1K1: {
+						Z1K1: 'Z9',
+						Z9K1: 'Z12'
+					},
+					Z12K1: {
+						Z1K1: {
+							Z1K1: { Z1K1: 'Z9', Z9K1: 'Z7' },
+							Z7K1: { Z1K1: 'Z9', Z9K1: 'Z881' },
+							Z881K1: { Z1K1: 'Z9', Z9K1: 'Z11' }
+						}
+					}
 				}
 			},
 			K2: {
@@ -382,8 +411,8 @@ describe( 'Javascript executor: deserialization', () => { // eslint-disable-line
 		assert.deepEqual( Z6_DESERIALIZED_, deserialize( Z6_ ) );
 	} );
 
-	it( 'test deserializes Z10', () => { // eslint-disable-line no-undef
-		assert.deepEqual( Z10_DESERIALIZED_, deserialize( Z10_INPUT_ ) );
+	it( 'test deserializes list of Z1', () => { // eslint-disable-line no-undef
+		assert.deepEqual( Z881_Z1_DESERIALIZED_, deserialize( Z881_Z1_INPUT_ ) );
 	} );
 
 	it( 'test deserializes Z21', () => { // eslint-disable-line no-undef
@@ -431,8 +460,8 @@ describe( 'Javascript executor: serialization', () => { // eslint-disable-line n
 		runTest( Z6_, await serialize( Z6_DESERIALIZED_, Z6_Type_ ) );
 	} );
 
-	it( 'test serializes Z10', async () => { // eslint-disable-line no-undef
-		runTest( Z10_OUTPUT_, await serialize( Z10_DESERIALIZED_, Z10_Type_ ) );
+	it( 'test serializes list of Z1', async () => { // eslint-disable-line no-undef
+		runTest( Z881_Z1_INPUT_, await serialize( Z881_Z1_DESERIALIZED_, Z881_Z1_Type_ ) );
 	} );
 
 	it( 'test serializes Z21', async () => { // eslint-disable-line no-undef
