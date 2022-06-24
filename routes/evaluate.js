@@ -3,7 +3,7 @@
 const sUtil = require( '../lib/util' );
 const subprocess = require( '../src/subprocess.js' );
 const { validatesAsFunctionCall } = require( '../function-schemata/javascript/src/schema.js' );
-const { convertZListToArray, makeMappedResultEnvelope, setMetadataValue } = require( '../function-schemata/javascript/src/utils.js' );
+const { convertZListToItemArray, makeMappedResultEnvelope, setMetadataValue } = require( '../function-schemata/javascript/src/utils.js' );
 
 /**
  * The main router object
@@ -43,7 +43,7 @@ async function maybeRunZ7( ZObject ) {
 
 	let programmingLanguage;
 	try {
-		const implementations = convertZListToArray( ZObject.Z7K1.Z8K4 );
+		const implementations = convertZListToItemArray( ZObject.Z7K1.Z8K4 );
 		programmingLanguage = implementations[ 0 ].Z14K3.Z16K1.Z61K1.Z6K1;
 	} catch ( e ) {
 		return {

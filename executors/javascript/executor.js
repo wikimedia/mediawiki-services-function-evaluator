@@ -5,7 +5,7 @@ const { serialize, deserialize } = require( './serialization.js' );
 // eslint-disable-next-line no-unused-vars
 const { ZObject, ZPair } = require( './utils.js' );
 // eslint-disable-next-line node/no-missing-require
-const { convertZListToArray, makeMappedResultEnvelope } = require( './function-schemata/javascript/src/utils.js' );
+const { convertZListToItemArray, makeMappedResultEnvelope } = require( './function-schemata/javascript/src/utils.js' );
 
 function error( message ) {
 	return {
@@ -43,7 +43,7 @@ async function execute( Z7 ) {
 
 	let implementation;
 	try {
-		const implementations = convertZListToArray( Z7.Z7K1.Z8K4 );
+		const implementations = convertZListToItemArray( Z7.Z7K1.Z8K4 );
 		implementation = implementations[ 0 ].Z14K3.Z16K2.Z6K1;
 	} catch ( e ) {
 		implementation = undefined;
