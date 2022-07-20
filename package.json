@@ -40,6 +40,7 @@
 		"function-schemata": "file:./function-schemata",
 		"http-shutdown": "^1.2.2",
 		"js-yaml": "^3.14.1",
+		"pidusage": "3.0.0",
 		"preq": "^0.5.14",
 		"service-runner": "^3.1.0",
 		"swagger-router": "^0.7.4",
