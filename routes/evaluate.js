@@ -57,9 +57,7 @@ async function maybeRunZ7( ZObject ) {
 					},
 					Z5K1: {
 						Z1K1: 'Z9',
-						// TODO (T310324): Update from this generic evaluation error
-						// to a programming-language-specific error.
-						Z9K1: 'Z507'
+						Z9K1: 'Z558'
 					},
 					Z5K2: {
 						Z1K1: 'Z6',
@@ -85,9 +83,7 @@ async function maybeRunZ7( ZObject ) {
 					},
 					Z5K1: {
 						Z1K1: 'Z9',
-						// TODO (T310324): Update from this generic evaluation error
-						// to a programming-language-specific error.
-						Z9K1: 'Z507'
+						Z9K1: 'Z558'
 					},
 					Z5K2: {
 						Z1K1: 'Z6',
