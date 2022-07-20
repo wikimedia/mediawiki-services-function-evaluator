@@ -79,7 +79,6 @@ variants:
     entrypoint: [sh, "./format.sh"]
 
   build-javascript-executor:
-    base: docker-registry.wikimedia.org/nodejs12-devel
     lives:
       in: /executors/javascript
     copies:
