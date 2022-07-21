@@ -4,6 +4,8 @@ const sUtil = require( '../lib/util' );
 const subprocess = require( '../src/subprocess.js' );
 const { validatesAsFunctionCall } = require( '../function-schemata/javascript/src/schema.js' );
 const { convertZListToItemArray, makeMappedResultEnvelope, setMetadataValue } = require( '../function-schemata/javascript/src/utils.js' );
+const { cpuUsage, memoryUsage } = require( 'node:process' );
+const pidusage = require( 'pidusage' );
 
 /**
  * The main router object
@@ -69,6 +71,7 @@ async function maybeRunZ7( ZObject ) {
 	}
 
 	const startTime = new Date();
+	const startUsage = cpuUsage();
 
 	const executorProcess = subprocess.runExecutorSubprocess( programmingLanguage );
 	if ( executorProcess === null ) {
@@ -119,8 +122,19 @@ async function maybeRunZ7( ZObject ) {
 	executorProcess.stdin.write( JSON.stringify( { function_call: ZObject } ) );
 	executorProcess.stdin.end();
 
+	let pidStats;
+	// TODO(T313460): Take a closer look at how useful the pidusage results are
+	pidusage( executorProcess.pid, function ( err, stats ) {
+		if ( err ) {
+			console.error( 'pidusage error: ' + err );
+			return;
+		}
+		pidStats = stats;
+	} );
 	// Wait until subprocess exits; return the result of function execution.
 	await Promise.all( [ stdoutPromise, stderrPromise ] );
+	pidusage.clear();
+
 	let Z22, errorful;
 	const contents = stdoutQueue.join( '' );
 
@@ -157,17 +171,37 @@ async function maybeRunZ7( ZObject ) {
 
 	}
 
+	const cpuUsageStats = cpuUsage( startUsage );
+	const cpuUsageStr = ( ( cpuUsageStats.user + cpuUsageStats.system ) / 1000 ) + ' ms';
+	const memoryUsageStr = Math.round( memoryUsage.rss() / 1024 / 1024 * 100 ) / 100 + ' MiB';
 	const endTime = new Date();
-	const duration = endTime.getTime() - startTime.getTime();
 	const startTimeStr = startTime.toISOString();
 	const endTimeStr = endTime.toISOString();
-	const durationStr = duration + 'ms';
+	const durationStr = ( endTime.getTime() - startTime.getTime() ) + ' ms';
+	Z22 = setMetadataValue( Z22, { Z1K1: 'Z6', Z6K1: 'evaluationMemoryUsage' }, { Z1K1: 'Z6', Z6K1: memoryUsageStr } );
+	Z22 = setMetadataValue( Z22, { Z1K1: 'Z6', Z6K1: 'evaluationCpuUsage' }, { Z1K1: 'Z6', Z6K1: cpuUsageStr } );
 	Z22 = setMetadataValue( Z22, { Z1K1: 'Z6', Z6K1: 'evaluationStartTime' }, { Z1K1: 'Z6', Z6K1: startTimeStr } );
 	Z22 = setMetadataValue( Z22, { Z1K1: 'Z6', Z6K1: 'evaluationEndTime' }, { Z1K1: 'Z6', Z6K1: endTimeStr } );
 	Z22 = setMetadataValue( Z22, { Z1K1: 'Z6', Z6K1: 'evaluationDuration' }, { Z1K1: 'Z6', Z6K1: durationStr } );
+	console.debug( 'Evaluation memory usage: ' + memoryUsageStr );
+	console.debug( 'Evaluation CPU usage: ' + cpuUsageStr );
 	console.debug( 'Evaluation start time: ' + startTimeStr );
 	console.debug( 'Evaluation end time: ' + endTimeStr );
 	console.debug( 'Evaluation duration: ' + durationStr );
+	if ( pidStats ) {
+		const executionMemoryUsageStr = Math.round( pidStats.memory / 1024 / 1024 * 100 ) / 100 + ' MiB';
+		const executionCpuUsageStr = pidStats.ctime.toString() + ' μs';
+		Z22 = setMetadataValue( Z22, { Z1K1: 'Z6', Z6K1: 'executionMemoryUsage' }, {
+			Z1K1: 'Z6',
+			Z6K1: executionMemoryUsageStr
+		} );
+		Z22 = setMetadataValue( Z22, { Z1K1: 'Z6', Z6K1: 'executionCpuUsage' }, {
+			Z1K1: 'Z6',
+			Z6K1: executionCpuUsageStr
+		} );
+		console.debug( 'Execution memory usage: ' + executionMemoryUsageStr );
+		console.debug( 'Execution CPU usage: ' + executionCpuUsageStr );
+	}
 
 	return {
 		process: executorProcess,
