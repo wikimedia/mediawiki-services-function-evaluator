@@ -6,6 +6,7 @@ const { validatesAsFunctionCall } = require( '../function-schemata/javascript/sr
 const { convertZListToItemArray, makeMappedResultEnvelope, setMetadataValue } = require( '../function-schemata/javascript/src/utils.js' );
 const { cpuUsage, memoryUsage } = require( 'node:process' );
 const pidusage = require( 'pidusage' );
+const os = require( 'os' );
 
 /**
  * The main router object
@@ -178,16 +179,19 @@ async function maybeRunZ7( ZObject ) {
 	const startTimeStr = startTime.toISOString();
 	const endTimeStr = endTime.toISOString();
 	const durationStr = ( endTime.getTime() - startTime.getTime() ) + ' ms';
+	const hostname = os.hostname();
 	Z22 = setMetadataValue( Z22, { Z1K1: 'Z6', Z6K1: 'evaluationMemoryUsage' }, { Z1K1: 'Z6', Z6K1: memoryUsageStr } );
 	Z22 = setMetadataValue( Z22, { Z1K1: 'Z6', Z6K1: 'evaluationCpuUsage' }, { Z1K1: 'Z6', Z6K1: cpuUsageStr } );
 	Z22 = setMetadataValue( Z22, { Z1K1: 'Z6', Z6K1: 'evaluationStartTime' }, { Z1K1: 'Z6', Z6K1: startTimeStr } );
 	Z22 = setMetadataValue( Z22, { Z1K1: 'Z6', Z6K1: 'evaluationEndTime' }, { Z1K1: 'Z6', Z6K1: endTimeStr } );
 	Z22 = setMetadataValue( Z22, { Z1K1: 'Z6', Z6K1: 'evaluationDuration' }, { Z1K1: 'Z6', Z6K1: durationStr } );
+	Z22 = setMetadataValue( Z22, { Z1K1: 'Z6', Z6K1: 'evaluationHostname' }, { Z1K1: 'Z6', Z6K1: hostname } );
 	console.debug( 'Evaluation memory usage: ' + memoryUsageStr );
 	console.debug( 'Evaluation CPU usage: ' + cpuUsageStr );
 	console.debug( 'Evaluation start time: ' + startTimeStr );
 	console.debug( 'Evaluation end time: ' + endTimeStr );
 	console.debug( 'Evaluation duration: ' + durationStr );
+	console.debug( 'Evaluation hostname: ' + hostname );
 	if ( pidStats ) {
 		const executionMemoryUsageStr = Math.round( pidStats.memory / 1024 / 1024 * 100 ) / 100 + ' MiB';
 		const executionCpuUsageStr = pidStats.ctime.toString() + ' μs';
