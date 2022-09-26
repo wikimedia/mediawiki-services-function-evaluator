@@ -58,9 +58,10 @@ The existing Python and JavaScript implementations can hopefully serve as a
 reference for how to accomplish these tasks, but serialization and deserialization
 deserve particular attention.
 
-For certain built-in types, there is a natural mapping between ZType and
-primitive (or standard library) types; currently, executors can (de)serialize
-the following types:
+For certain built-in types, there is a natural mapping between
+[ZType](https://meta.wikimedia.org/wiki/Abstract_Wikipedia/Reserved_ZIDs#Core_types)
+and primitive (or standard library) types; currently, executors can
+(de)serialize the following types:
 
 - Z6/String    <-> string
 - Z10/List     <-> generic sequential container type (list, array, vector, etc.)
