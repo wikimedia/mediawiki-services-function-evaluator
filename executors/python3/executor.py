@@ -6,6 +6,7 @@ import os
 
 from python3 import serialization
 from python3 import utils
+from python3 import ztypes
 
 
 _RESULT_CACHE = {}
@@ -79,8 +80,8 @@ def execute(Z7):
             ),
             {
                 "_RESULT_CACHE": _RESULT_CACHE,
-                "ZPair": utils.ZPair,
-                "ZObject": utils.ZObject,
+                "ZPair": ztypes.ZPair,
+                "ZObject": ztypes.ZObject,
             },
             {
                 "_BOUND_VALUES": bound_values,

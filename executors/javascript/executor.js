@@ -3,7 +3,7 @@
 // eslint-disable-next-line no-unused-vars
 const { serialize, deserialize } = require( './serialization.js' );
 // eslint-disable-next-line no-unused-vars
-const { ZObject, ZPair } = require( './utils.js' );
+const { ZObject, ZPair } = require( './ztypes.js' );
 
 const { convertZListToItemArray, makeMappedResultEnvelope } = require( './function-schemata/javascript/src/utils.js' );
 

@@ -1,7 +1,7 @@
 'use strict';
 
 const { serialize, deserialize } = require( '../serialization.js' );
-const { ZObject, ZPair } = require( '../utils.js' );
+const { ZObject, ZPair } = require( '../ztypes.js' );
 const { withoutZ1K1s } = require( './utils.js' );
 const assert = require( 'chai' ).assert;
 

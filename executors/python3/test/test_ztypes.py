@@ -1,6 +1,6 @@
 import unittest
 
-from .. import utils
+from .. import ztypes
 
 
 _USER_DEFINED_TYPE = {
@@ -41,12 +41,12 @@ _USER_DEFINED_TYPE = {
     },
     "Z4K3": {"Z1K1": "Z9", "Z9K1": "Z222"},
 }
-_USER_DEFINED_DESERIALIZED = utils.ZObject(
+_USER_DEFINED_DESERIALIZED = ztypes.ZObject(
     _USER_DEFINED_TYPE, Z10101K1="tRue", Z10101K2="trUe"
 )
 
 
-class UtilsTest(unittest.TestCase):
+class ZTypesTest(unittest.TestCase):
     def test_keys_of_serialized_zobject(self):
         self.assertEquals(
             ["Z1K1", "Z10101K1", "Z10101K2"], list(_USER_DEFINED_DESERIALIZED.keys())

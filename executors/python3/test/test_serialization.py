@@ -2,6 +2,7 @@ import unittest
 from .. import exceptions
 from .. import serialization
 from .. import utils
+from .. import ztypes
 from . import utils as test_utils
 
 
@@ -62,7 +63,7 @@ _Z86 = {"Z1K1": {"Z1K1": "Z9", "Z9K1": "Z86"}, "Z86K1": {"Z1K1": "Z6", "Z6K1": "
 _Z6_DESERIALIZED = "opiparo"
 _Z881_Z1_DESERIALIZED = [True, "tRue", []]
 _Z86_DESERIALIZED = "%"
-_Z882_DESERIALIZED = utils.ZPair("pigs", "just pigs")
+_Z882_DESERIALIZED = ztypes.ZPair("pigs", "just pigs")
 _Z881_Z6_DESERIALIZED = ["horses", "regular ungulates"]
 
 
@@ -314,10 +315,10 @@ _USER_DEFINED_TYPE = {
     },
     "Z4K3": {"Z1K1": "Z9", "Z9K1": "Z222"},
 }
-_USER_DEFINED_DESERIALIZED = utils.ZObject(
+_USER_DEFINED_DESERIALIZED = ztypes.ZObject(
     _USER_DEFINED_TYPE, Z10101K1="tRue", Z10101K2="trUe"
 )
-_USER_DEFINED_DESERIALIZED_NO_Z1K1 = utils.ZObject(Z10101K1="tRue", Z10101K2="trUe")
+_USER_DEFINED_DESERIALIZED_NO_Z1K1 = ztypes.ZObject(Z10101K1="tRue", Z10101K2="trUe")
 _USER_DEFINED = {
     "Z1K1": _USER_DEFINED_TYPE,
     "Z10101K1": {"Z1K1": "Z6", "Z6K1": "tRue"},

@@ -1,5 +1,6 @@
 from python3 import exceptions
 from python3 import utils
+from python3 import ztypes
 
 
 def _DESERIALIZE_ZLIST(ZObject):
@@ -17,7 +18,7 @@ def _DESERIALIZE_ZLIST(ZObject):
 # TODO (T290898): This can serve as a model for default deserialization--all
 # local keys can be deserialized and set as members.
 def _DESERIALIZE_ZPAIR(Z_object):
-    return utils.ZPair(
+    return ztypes.ZPair(
         deserialize(Z_object["K1"]), deserialize(Z_object["K2"]), Z_object["Z1K1"]
     )
 
@@ -34,7 +35,7 @@ def _DESERIALIZE_ZTYPE(Z_object):
             Z1K1 = value
         else:
             kwargs[key] = deserialize(value)
-    return utils.ZObject(Z1K1, **kwargs)
+    return ztypes.ZObject(Z1K1, **kwargs)
 
 
 _DESERIALIZE_Z6 = lambda Z6: Z6["Z6K1"]
@@ -193,7 +194,7 @@ def _z4_for_zpair(first_type, second_type):
 
 
 def _SERIALIZE_ZMAP(the_dict, expected_type):
-    pair_list = [utils.ZPair(*item) for item in the_dict.items()]
+    pair_list = [ztypes.ZPair(*item) for item in the_dict.items()]
     expected_args = utils.convert_zlist_to_list(expected_type["Z4K2"])
     the_key = expected_args[0]["Z3K2"]["Z6K1"]
     subtype = expected_args[0]["Z3K1"]
@@ -242,7 +243,7 @@ def _SERIALIZE_Z1(anything, _):
         Z1K1 = _z4_for_zpair(_soup_up_z1k1(K1["Z1K1"]), _soup_up_z1k1(K2["Z1K1"]))
         return _serialize_generic_internal(Z1K1, K1=K1, K2=K2)
     if ZID == "Z883":
-        K1 = serialize((utils.ZPair(*item) for item in anything.items()), z1_type)
+        K1 = serialize((ztypes.ZPair(*item) for item in anything.items()), z1_type)
         first_pair = K1.get("K1")
         if first_pair == None:
             key_type = z1_type
