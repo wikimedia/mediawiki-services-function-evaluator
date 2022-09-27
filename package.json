@@ -6,13 +6,13 @@
 	"scripts": {
 		"start": "service-runner",
 		"test": "npm run lint && npm run test:nolint",
-		"test:nolint": "PREQ_CONNECT_TIMEOUT=15 mocha",
+		"test:nolint": "PREQ_CONNECT_TIMEOUT=15 nyc --reporter text-summary _mocha --recursive --timeout 15000",
 		"lint": "eslint --max-warnings 2 .",
 		"lint:fix": "eslint --fix .",
 		"docker-start": "service-runner docker-start",
 		"docker-test": "service-runner docker-test",
 		"test-build": "service-runner docker-test && service-runner build --deploy-repo --force",
-		"coverage": "PREQ_CONNECT_TIMEOUT=15 nyc --reporter=lcov _mocha -i -g python"
+		"coverage": "PREQ_CONNECT_TIMEOUT=15 nyc --reporter=lcov --reporter=text-summary _mocha --recursive --timeout 15000 -i -g python"
 	},
 	"repository": {
 		"type": "git",

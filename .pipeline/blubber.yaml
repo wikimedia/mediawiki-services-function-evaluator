@@ -10,10 +10,12 @@ variants:
     copies:
     - from: local
     apt: { packages: [git, build-essential, python3-dev] }
-    # TODO (T318728): When/if we split the services, the evaluator will need 
+    # TODO (T318728): When/if we split the services, the evaluator will need
     # its own checkout of function-schemata.
     node: { requirements: [package.json, package-lock.json, executors/javascript/function-schemata/package.json, executors/javascript/function-schemata/package-lock.json] }
-    runs: { environment: { LINK: g++ } }
+    runs:
+      # Allow the application to write to the filesystem so we can generate coverage reports
+      environment: { LINK: g++ }
   development:
     includes: [build]
     apt: { packages: [ca-certificates] }
@@ -22,6 +24,9 @@ variants:
     includes: [build]
     apt: { packages: [ca-certificates] }
     entrypoint: [npm, test]
+    runs:
+      # Allow the application to write to the filesystem so we can generate coverage reports
+      insecurely: true
   prep:
     includes: [build]
     node: { env: production }

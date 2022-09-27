@@ -21,7 +21,7 @@ let app; // eslint-disable-line no-unused-vars
 async function maybeRunZ7( ZObject ) {
 	const theStatus = await validatesAsFunctionCall( ZObject );
 	if ( !theStatus.isValid() ) {
-		console.log( theStatus.getParserErrors() );
+		// console.log( theStatus.getParserErrors() );
 		// A flattened list of parser errors. Note that they are from different layers of parsing.
 		// The first message might be the most useful.
 		const parserErrorMessages = theStatus.getParserErrors().map( ( x ) => x.message );
