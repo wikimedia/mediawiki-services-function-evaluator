@@ -8,8 +8,8 @@ const Server = require( '../../utils/server.js' );
 const subprocess = require( '../../../src/subprocess.js' );
 const sinon = require( 'sinon' );
 
-const { SchemaFactory } = require( '../../../function-schemata/javascript/src/schema.js' );
-const { makeVoid, isVoid, getError, isZMap } = require( '../../../function-schemata/javascript/src/utils.js' );
+const { SchemaFactory } = require( '../../../executors/javascript/function-schemata/javascript/src/schema.js' );
+const { makeVoid, isVoid, getError, isZMap } = require( '../../../executors/javascript/function-schemata/javascript/src/utils.js' );
 
 const errorValidator = SchemaFactory.NORMAL().create( 'Z5' );
 

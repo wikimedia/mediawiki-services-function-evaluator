@@ -4,7 +4,7 @@
 const { serialize, deserialize } = require( './serialization.js' );
 // eslint-disable-next-line no-unused-vars
 const { ZObject, ZPair } = require( './utils.js' );
-// eslint-disable-next-line node/no-missing-require
+
 const { convertZListToItemArray, makeMappedResultEnvelope } = require( './function-schemata/javascript/src/utils.js' );
 
 function error( message ) {

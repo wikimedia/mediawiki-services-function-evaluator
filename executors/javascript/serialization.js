@@ -2,7 +2,6 @@
 
 const { getZID, getZIDForJSType, getZObjectType, isString, isZType } = require( './utils.js' );
 const { ZObject, ZPair } = require( './utils.js' );
-// eslint-disable-next-line node/no-missing-require
 const { convertItemArrayToZList, convertZListToItemArray } = require( './function-schemata/javascript/src/utils.js' );
 const { inspect } = require( 'util' );
 const stableStringify = require( 'json-stable-stringify-without-jsonify' );

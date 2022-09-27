@@ -13,19 +13,19 @@ then
 	echo >&2 "Working directory must be clean"
 	exit 1
 fi
-cd function-schemata/
+cd javascript/executors/function-schemata/
 if git status -uno --ignore-submodules | grep -i changes > /dev/null
 then
 	echo >&2 "function-schemata/ working directory must be clean"
 	exit 1
 fi
-cd ..
+cd ../../..
 
 git fetch origin
 # Create sync-repos branch if needed and reset it to master
 git checkout -B sync-function-schemata -t origin/master
 git submodule update
-cd function-schemata/
+cd javascript/executors/function-schemata/
 git fetch origin
 
 # Figure out what to set the submodule to

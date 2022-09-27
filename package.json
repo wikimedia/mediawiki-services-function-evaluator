@@ -37,7 +37,7 @@
 		"compression": "^1.7.4",
 		"domino": "^2.1.6",
 		"express": "^4.17.1",
-		"function-schemata": "file:./function-schemata",
+		"function-schemata": "file:./executors/javascript/function-schemata",
 		"http-shutdown": "^1.2.2",
 		"js-yaml": "^3.14.1",
 		"pidusage": "3.0.0",

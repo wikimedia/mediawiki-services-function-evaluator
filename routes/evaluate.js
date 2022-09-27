@@ -2,8 +2,8 @@
 
 const sUtil = require( '../lib/util' );
 const subprocess = require( '../src/subprocess.js' );
-const { validatesAsFunctionCall } = require( '../function-schemata/javascript/src/schema.js' );
-const { convertZListToItemArray, makeMappedResultEnvelope, setMetadataValue } = require( '../function-schemata/javascript/src/utils.js' );
+const { validatesAsFunctionCall } = require( '../executors/javascript/function-schemata/javascript/src/schema.js' );
+const { convertZListToItemArray, makeMappedResultEnvelope, setMetadataValue } = require( '../executors/javascript/function-schemata/javascript/src/utils.js' );
 const { cpuUsage, memoryUsage } = require( 'node:process' );
 const pidusage = require( 'pidusage' );
 const os = require( 'os' );

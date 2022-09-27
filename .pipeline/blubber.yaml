@@ -9,11 +9,10 @@ variants:
   build:
     copies:
     - from: local
-    - from: local
-      source: function-schemata
-      destination: ./executors/javascript/function-schemata
     apt: { packages: [git, build-essential, python3-dev] }
-    node: { requirements: [package.json, package-lock.json, function-schemata/package.json, function-schemata/package-lock.json] }
+    # TODO (T318728): When/if we split the services, the evaluator will need 
+    # its own checkout of function-schemata.
+    node: { requirements: [package.json, package-lock.json, executors/javascript/function-schemata/package.json, executors/javascript/function-schemata/package-lock.json] }
     runs: { environment: { LINK: g++ } }
   development:
     includes: [build]
@@ -86,9 +85,6 @@ variants:
       source: executors/javascript/
       destination: .
     - from: local
-      source: function-schemata
-      destination: ./function-schemata
-    - from: local
       source: test_data
       destination: ./test/test_data
     node:
@@ -100,10 +96,10 @@ variants:
         source: executors/javascript/package-lock.json
         destination: ./package-lock.json
       - from: local
-        source: function-schemata/package.json
+        source: executors/javascript/function-schemata/package.json
         destination: ./function-schemata/package.json
       - from: local
-        source: function-schemata/package-lock.json
+        source: executors/javascript/function-schemata/package-lock.json
         destination: ./function-schemata/package-lock.json
   test-javascript-executor:
     includes: [build-javascript-executor]
