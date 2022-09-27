@@ -15,7 +15,7 @@ function createExecutorSubprocess( binary, callArguments ) {
 	return process;
 }
 
-// TODO: Common config between these keys and function-schemata.
+// TODO (T318747): Common config between these keys and function-schemata.
 const executors = new Map();
 executors.set( 'javascript-es2020', 'node' );
 executors.set( 'javascript-es2019', 'node' );
