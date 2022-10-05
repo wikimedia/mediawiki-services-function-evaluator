@@ -75,10 +75,9 @@ types to grow (a little, and finitely); we also expect to be able to support
 (de)serialization of user-defined types, but executors can't handle this at
 present.
 
-Once we adopt the generic function model, the return type of a Z7/Function call will be fully
-specifiable (even if complex, e.g. a Z10/List of Z6/Strings); however, at the moment, it is not.
-Therefore, while type inference for deserialization is completely deterministic,
-serialization must rely on some type-inferring heuristic.
+Serialization is completely determined by introspection of types in each programming
+language. A str or String serializes as a Z6/String; a list, tuple, Array, etc. as a
+Z7 call to a Z881/Typed list; etc.
 
 To be precise: deserialization can trivially determine the type of a Z1/ZObject by
 consulting its `Z1K1` attribute, which reports the ZID corresponding to its type.
