@@ -63,10 +63,12 @@ For certain built-in types, there is a natural mapping between
 and primitive (or standard library) types; currently, executors can
 (de)serialize the following types:
 
-- Z6/String    <-> string
-- Z10/List     <-> generic sequential container type (list, array, vector, etc.)
-- Z21/Unit     <-> nullary type (None, null, etc.)
-- Z40/Boolean  <-> Boolean
+- Z6/String          <-> string
+- Z21/Unit           <-> nullary type (None, null, etc.)
+- Z40/Boolean        <-> Boolean
+- Z881/Typed list    <-> sequential container type (list, array, vector, etc.)
+- Z882/Typed pair    <-> pair container type (tuple, etc.)
+- Z883/Typed map     <-> key-value container type (map, dict, etc.)
 
 Any new executor must be able to support these. We expect the list of built-in
 types to grow (a little, and finitely); we also expect to be able to support
