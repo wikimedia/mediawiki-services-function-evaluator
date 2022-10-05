@@ -1,6 +1,7 @@
 'use strict';
 const sUtil = require( '../lib/util' );
 const { maybeRunZ7 } = require( '../src/maybeRunZ7.js' );
+const { getZObjectFromBinary } = require( '../executors/javascript/function-schemata/javascript/src/serialize.js' );
 
 /**
  * The main router object
@@ -13,7 +14,15 @@ const router = sUtil.router();
 let app; // eslint-disable-line no-unused-vars
 
 router.post( '/', async ( req, res ) => {
-	const ZObject = req.body;
+	let ZObject;
+	console.log( 'req.body is', req.body );
+
+	// TODO (T320576): Condition this on Content-type header?
+	try {
+		ZObject = getZObjectFromBinary( req.body );
+	} catch ( err ) {
+		ZObject = req.body;
+	}
 	const resultTuple = await maybeRunZ7( ZObject );
 
 	// Kill the executor child process if it has survived.

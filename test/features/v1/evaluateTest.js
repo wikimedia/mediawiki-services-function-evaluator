@@ -252,6 +252,10 @@ describe( 'evaluate-integration', function () { // eslint-disable-line no-undef
 
 	const integrationTest = ( name, input, expectedOutput = null, expectedErrorKeyPhrase = '' ) => {
 		const toTest = {
+			'serialized version': {
+				theInput: convertZObjectToBinary( input ),
+				contentType: 'application/octet-stream'
+			},
 			'raw JSON version': {
 				theInput: JSON.stringify( input ),
 				contentType: 'application/json'

@@ -125,6 +125,8 @@ function initApp( options ) {
 	app.use( bodyParser.json( { limit: app.conf.max_body_size || '100kb' } ) );
 	// use the application/x-www-form-urlencoded parser
 	app.use( bodyParser.urlencoded( { extended: true } ) );
+	// use the raw body parser
+	app.use( bodyParser.raw( { limit: app.conf.max_body_size || '100kb' } ) );
 
 	return BBPromise.resolve( app );
 
