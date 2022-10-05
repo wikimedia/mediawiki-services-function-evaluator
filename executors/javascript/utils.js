@@ -87,7 +87,6 @@ typeMap.set( 'Map', 'Z883' );
 /**
  * Infer the type of a JS object and try to find the corresponding ZID.
  * String -> Z6
- * Array -> Z10
  * Null -> Z21
  * Boolean -> Z40
  *
