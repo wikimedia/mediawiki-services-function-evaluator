@@ -1,7 +1,7 @@
 'use strict';
 
 const fs = require( 'fs' );
-const preq = require( 'preq' );
+const fetch = require( '../../../lib/fetch.js' );
 const assert = require( '../../utils/assert.js' );
 const Server = require( '../../utils/server.js' );
 
@@ -10,11 +10,17 @@ const sinon = require( 'sinon' );
 
 const { SchemaFactory } = require( '../../../executors/javascript/function-schemata/javascript/src/schema.js' );
 const { makeVoid, isVoid, getError, isZMap } = require( '../../../executors/javascript/function-schemata/javascript/src/utils.js' );
+const { convertZObjectToBinary } = require( '../../../executors/javascript/function-schemata/javascript/src/serialize.js' );
 
 const errorValidator = SchemaFactory.NORMAL().create( 'Z5' );
 
 function readJSON( fileName ) {
 	return JSON.parse( fs.readFileSync( fileName, { encoding: 'utf8' } ) );
+}
+
+function assertContentTypeJson( result ) {
+	const jsonRegex = /application\/json/;
+	assert.ok( result.headers.get( 'Content-type' ).match( jsonRegex ) );
 }
 
 describe( 'evaluate-unit', function () { // eslint-disable-line no-undef
@@ -41,21 +47,25 @@ describe( 'evaluate-unit', function () { // eslint-disable-line no-undef
 
 			const stubProcess = sinon.stub( subprocess, 'runExecutorSubprocess' ).callsFake( mockExecutor );
 
-			return preq( {
+			return fetch( uri, {
 				method: 'post',
-				uri: uri,
-				body: readJSON( './test_data/python3_foo.json' )
+				body: convertZObjectToBinary( readJSON( './test_data/python3_foo.json' ) ),
+				headers: { 'Content-type': 'application/octet-stream' }
 			} )
 				.then( ( res ) => {
 					assert.status( res, 200 );
-					assert.contentType( res, 'application/json' );
-					if ( typeof output === 'function' ) {
-						assert.ok( output( res.body ), name );
-					} else {
-						assert.deepEqual( res.body.Z22K1, output.Z22K1, name );
-						assert.deepEqual( getError( res.body ), getError( output ), name );
-						assert.ok( isVoid( res.body.Z22K2 ) || isZMap( res.body.Z22K2 ) );
-					}
+					assertContentTypeJson( res );
+					res.json().then( ( actualOutput ) => {
+						if ( typeof output === 'function' ) {
+							assert.ok( output( actualOutput ), name );
+						} else {
+							assert.deepEqual( actualOutput.Z22K1, output.Z22K1, name );
+							assert.deepEqual( getError( actualOutput ), getError( output ), name );
+							assert.ok(
+								isVoid( actualOutput.Z22K2 ) || isZMap( actualOutput.Z22K2 )
+							);
+						}
+					} );
 				} )
 				.finally( () => {
 					stubProcess.restore();
@@ -209,12 +219,15 @@ describe( 'evaluate-unit', function () { // eslint-disable-line no-undef
 			const stubProcess = sinon.stub( subprocess, 'runExecutorSubprocess' ).callsFake( mockExecutor );
 
 			const expectedZ22K1 = makeVoid();
-			const response = await preq( { method: 'post', uri: uri, body: {} } );
-			assert.status( response, 200 );
-			assert.contentType( response, 'application/json' );
-			const Z22 = response.body;
+			const fetchedResult = await fetch( uri, {
+				method: 'post',
+				body: convertZObjectToBinary( {} )
+			} );
+			assert.status( fetchedResult, 200 );
+			assertContentTypeJson( fetchedResult );
+			const Z22 = await fetchedResult.json();
 			assert.deepEqual( Z22.Z22K1, expectedZ22K1 );
-			assert.ok( !( await errorValidator.validate( response.body ) ) );
+			assert.ok( !( await errorValidator.validate( Z22 ) ) );
 			stubProcess.restore();
 		}
 	);
@@ -238,23 +251,41 @@ describe( 'evaluate-integration', function () { // eslint-disable-line no-undef
 	after( () => server.stop() ); // eslint-disable-line no-undef
 
 	const integrationTest = ( name, input, expectedOutput = null, expectedErrorKeyPhrase = '' ) => {
-		it( name, async function () { // eslint-disable-line no-undef
-			const response = await preq( { method: 'post', uri: uri, body: input } );
-			assert.status( response, 200 );
-			assert.contentType( response, 'application/json' );
-			const Z22K1 = response.body.Z22K1;
-			if ( expectedOutput !== null ) {
-				assert.deepEqual( response.body.Z22K1, expectedOutput.Z22K1, name );
-				assert.deepEqual( getError( response.body ), getError( expectedOutput ), name );
-				assert.ok( isVoid( response.body.Z22K2 ) || isZMap( response.body.Z22K2 ) );
-			} else {
-				const isError = ( isVoid( Z22K1 ) );
-				assert.ok( isError );
-				// Checks that the error content contains the expected error key phrase.
-				const errorMessage = response.body.Z22K2.K1.K1.K2.Z5K2.Z6K1;
-				assert.ok( errorMessage.includes( expectedErrorKeyPhrase ) );
+		const toTest = {
+			'raw JSON version': {
+				theInput: JSON.stringify( input ),
+				contentType: 'application/json'
 			}
-		} );
+		};
+		for ( const key of Object.keys( toTest ) ) {
+			const theInput = toTest[ key ].theInput;
+			const contentType = toTest[ key ].contentType;
+			const testName = `${name}: ${key}`;
+			it( testName, async function () { // eslint-disable-line no-undef,no-loop-func
+				const fetchedResult = await fetch( uri, {
+					method: 'POST',
+					body: theInput,
+					headers: { 'Content-type': contentType }
+				} );
+				assert.status( fetchedResult, 200 );
+				const jsonRegex = /application\/json/;
+				assert.ok( fetchedResult.headers.get( 'Content-type' ).match( jsonRegex ) );
+				const Z22 = await fetchedResult.json();
+				const Z22K1 = Z22.Z22K1;
+				const Z22K2 = Z22.Z22K2;
+				if ( expectedOutput !== null ) {
+					assert.deepEqual( Z22K1, expectedOutput.Z22K1, name );
+					assert.deepEqual( getError( Z22 ), getError( expectedOutput ), name );
+					assert.ok( isVoid( Z22K2 ) || isZMap( Z22K2 ) );
+				} else {
+					const isError = ( isVoid( Z22K1 ) );
+					assert.ok( isError );
+					// Checks that the error content contains the expected error key phrase.
+					const errorMessage = Z22K2.K1.K1.K2.Z5K2.Z6K1;
+					assert.ok( errorMessage.includes( expectedErrorKeyPhrase ) );
+				}
+			} );
+		}
 	};
 
 	integrationTest(
