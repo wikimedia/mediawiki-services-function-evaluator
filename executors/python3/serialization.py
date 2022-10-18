@@ -40,15 +40,11 @@ def _DESERIALIZE_ZTYPE(Z_object):
 
 _DESERIALIZE_Z6 = lambda Z6: Z6["Z6K1"]
 _DESERIALIZE_Z21 = lambda Z21: None
-_DESERIALIZE_Z39 = lambda Z39: Z39["Z39K1"]["Z6K1"]
 _DESERIALIZE_Z40 = lambda Z40: Z40["Z40K1"]["Z9K1"] == "Z41"
-_DESERIALIZE_Z86 = lambda Z86: Z86["Z86K1"]["Z6K1"]
 _DESERIALIZERS = {
     "Z6": _DESERIALIZE_Z6,
     "Z21": _DESERIALIZE_Z21,
-    "Z39": _DESERIALIZE_Z39,
     "Z40": _DESERIALIZE_Z40,
-    "Z86": _DESERIALIZE_Z86,
     "Z881": _DESERIALIZE_ZLIST,
     "Z882": _DESERIALIZE_ZPAIR,
     "Z883": _DESERIALIZE_ZMAP,
@@ -59,27 +55,18 @@ _DEFAULT_DESERIALIZER = _DESERIALIZE_ZTYPE
 def deserialize(ZObject):
     """Convert a ZObject into the corresponding Python type.
     Z6 -> str
-    Typed List (Z881 instance) -> list
     Z21 -> None
     Z40 -> bool
+    Typed List (Z881-generated type) -> list
+    Typed Pair (Z882-generated type) -> ZPair
+    Typed Map (Z883-generated type) -> dict
+    anything else -> ZObject
     """
     ZID = utils.get_zobject_type(ZObject)
     deserializer = _DESERIALIZERS.get(ZID)
     if deserializer is None:
         deserializer = _DEFAULT_DESERIALIZER
     return deserializer(ZObject)
-
-
-def _z3_for(key_type, key_label):
-    return {
-        "Z1K1": {"Z1K1": "Z9", "Z9K1": "Z3"},
-        "Z3K1": key_type,
-        "Z3K2": {"Z1K1": "Z6", "Z6K1": key_label},
-        "Z3K3": {
-            "Z1K1": {"Z1K1": "Z9", "Z9K1": "Z12"},
-            "Z12K1": utils.convert_list_to_zlist([], {"Z1K1": "Z9", "Z9K1": "Z11"}),
-        },
-    }
 
 
 def _soup_up_z1k1(Z1K1):
@@ -101,20 +88,6 @@ def _SERIALIZE_Z40(boolean):
     return {
         "Z1K1": {"Z1K1": "Z9", "Z9K1": "Z40"},
         "Z40K1": {"Z1K1": "Z9", "Z9K1": ZID},
-    }
-
-
-def _SERIALIZE_Z39(key_reference):
-    return {
-        "Z1K1": {"Z1K1": "Z9", "Z9K1": "Z39"},
-        "Z39K1": {"Z1K1": "Z6", "Z6K1": key_reference},
-    }
-
-
-def _SERIALIZE_Z86(code_point):
-    return {
-        "Z1K1": {"Z1K1": "Z9", "Z9K1": "Z86"},
-        "Z86K1": _SERIALIZE_Z6(code_point.Z86K1),
     }
 
 
@@ -160,9 +133,7 @@ _SERIALIZE_Z6 = lambda string: {"Z1K1": "Z6", "Z6K1": string}
 _SERIALIZERS = {
     "Z6": _SERIALIZE_Z6,
     "Z21": _SERIALIZE_Z21,
-    "Z39": _SERIALIZE_Z39,
     "Z40": _SERIALIZE_Z40,
-    "Z86": _SERIALIZE_Z86,
     "Z881": _SERIALIZE_ZLIST,
     "Z882": _SERIALIZE_ZTYPE,
     "Z883": _SERIALIZE_ZMAP,
@@ -173,9 +144,12 @@ _DEFAULT_SERIALIZER = _SERIALIZE_ZTYPE
 def serialize(py_object):
     """Convert a Python object into the corresponding ZObject type.
     str -> Z6
-    list -> Typed List (as Returned by Z881)
     None -> Z21
     bool -> Z40
+    iterable -> Typed List (Z881-generated type)
+    ZPair -> Typed Pair (Z882-generated type)
+    dict -> Typed Map (Z883-generated type)
+    ZObject -> arbitrary ZObject
     """
     ZID = utils.get_python_type(py_object)
     serializer = _SERIALIZERS.get(ZID)
