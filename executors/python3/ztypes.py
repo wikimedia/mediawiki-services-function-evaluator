@@ -1,3 +1,9 @@
+from python3 import serialization
+
+
+_z9 = lambda ZID: {"Z1K1": "Z9", "Z9K1": ZID}
+
+
 class ZErrorType:
     pass
 
@@ -32,9 +38,6 @@ class ZObject:
     def __getitem__(self, key):
         return getattr(self, key, None)
 
-    def _as_dict(self):
-        pass
-
     def __repr__(self):
         return "ZObject<{}>".format(
             ",".join(
@@ -61,6 +64,13 @@ class ZObject:
 
 class ZPair:
     def __init__(self, K1, K2, original_Z1K1=None):
+        if original_Z1K1 is None:
+            original_Z1K1 = {
+                "Z1K1": _z9("Z7"),
+                "Z7K1": _z9("Z882"),
+                "Z882K1": serialization.serialize(K1)["Z1K1"],
+                "Z882K2": serialization.serialize(K2)["Z1K1"],
+            }
         self._Z1K1 = original_Z1K1
         self._K1 = K1
         self._K2 = K2
@@ -76,6 +86,10 @@ class ZPair:
     @property
     def Z1K1(self):
         return self._Z1K1
+
+    def items(self):
+        for key in ["K1", "K2"]:
+            yield (key, getattr(self, key))
 
     def __eq__(self, other_zpair):
         if isinstance(other_zpair, type(self)):

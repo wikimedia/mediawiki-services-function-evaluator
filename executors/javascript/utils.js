@@ -1,9 +1,14 @@
 'use strict';
 
 const { inspect } = require( 'util' );
+const { isString } = require( './function-schemata/javascript/src/utils.js' );
+const stableStringify = require( 'json-stable-stringify-without-jsonify' );
 
-function isString( str ) {
-	return typeof str === 'string' || str instanceof String;
+function soupUpZ1K1( Z1K1 ) {
+	if ( isString( Z1K1 ) ) {
+		return { Z1K1: 'Z9', Z9K1: Z1K1 };
+	}
+	return Z1K1;
 }
 
 // TODO (T282891): All isZWhatev functions should use function-schemata.
@@ -23,6 +28,25 @@ function isZFunction( Z8 ) {
 	return Z8 !== undefined && Z8.Z1K1 !== undefined && Z8.Z1K1.Z9K1 === 'Z8';
 }
 
+function getListType( theList ) {
+	const Z1K1s = new Set();
+	let firstZ1K1;
+	for ( const element of theList ) {
+		if ( firstZ1K1 === undefined ) {
+			firstZ1K1 = element.Z1K1;
+		}
+		// TODO (T293915): Use ZObjectKeyFactory to create string representations.
+		Z1K1s.add( stableStringify( element.Z1K1 ) );
+	}
+	let elementType;
+	if ( Z1K1s.size === 1 ) {
+		elementType = soupUpZ1K1( JSON.parse( Z1K1s.values().next().value ) );
+	} else {
+		elementType = soupUpZ1K1( 'Z1' );
+	}
+	return elementType;
+}
+
 function getZID( Z4 ) {
 	if ( isZFunction( Z4 ) ) {
 		return getZID( Z4.Z8K5 );
@@ -40,8 +64,7 @@ function getZID( Z4 ) {
 		// If Z4 is a string, original object was a Z6 or a Z9.
 		return Z4;
 	}
-	// I guess this wasn't a very good ZObject.
-	throw new Error( `Could not determine type for ${Z4}` );
+	return null;
 }
 
 /**
@@ -87,9 +110,11 @@ function getZIDForJSType( theObject ) {
 }
 
 module.exports = {
+	getListType,
 	getZIDForJSType,
 	getZID,
 	getZObjectType,
 	isString,
-	isZType
+	isZType,
+	soupUpZ1K1
 };
