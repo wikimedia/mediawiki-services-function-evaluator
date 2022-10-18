@@ -15,7 +15,6 @@ let app; // eslint-disable-line no-unused-vars
 
 router.post( '/', async ( req, res ) => {
 	let ZObject;
-	console.log( 'req.body is', req.body );
 
 	// TODO (T320576): Condition this on Content-type header?
 	try {
