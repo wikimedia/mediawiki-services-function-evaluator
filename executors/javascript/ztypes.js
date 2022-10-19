@@ -12,8 +12,6 @@ class ZPair {
 				Z882K2: soupUpZ1K1( serialize( K2 ).Z1K1 )
 			};
 		}
-		// FIXME: Remove Z1K1_
-		// this.Z1K1_ = originalZ1K1;
 		this.Z1K1 = originalZ1K1;
 		this.K1 = K1;
 		this.K2 = K2;
