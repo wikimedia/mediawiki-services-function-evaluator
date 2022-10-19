@@ -53,9 +53,7 @@ function deserializeZType( theObject ) {
 DESERIALIZERS_.set( 'Z6', ( Z6 ) => Z6.Z6K1 );
 // eslint-disable-next-line no-unused-vars
 DESERIALIZERS_.set( 'Z21', ( Z21 ) => null );
-DESERIALIZERS_.set( 'Z39', ( Z39 ) => Z39.Z39K1.Z6K1 );
 DESERIALIZERS_.set( 'Z40', ( Z40 ) => Z40.Z40K1.Z9K1 === 'Z41' );
-DESERIALIZERS_.set( 'Z86', ( Z86 ) => Z86.Z86K1.Z6K1 );
 DESERIALIZERS_.set( 'Z881', deserializeZList );
 DESERIALIZERS_.set( 'Z882', deserializeZPair );
 DESERIALIZERS_.set( 'Z883', deserializeZMap );
@@ -64,9 +62,12 @@ const DEFAULT_DESERIALIZER_ = deserializeZType;
 /**
  * Convert a ZObject into the corresponding JS type.
  * Z6 -> String
- * Typed List ( Z881 instance ) -> Array
  * Z21 -> Null
  * Z40 -> Boolean
+ * Typed List ( Z881-generated type ) -> Array
+ * Typed Pair ( Z882-generated type ) -> ZPair
+ * Typed Map ( Z883-generated type ) -> Map
+ * anything else -> ZObject
  *
  * @param {Object} ZObject
  * @return {Object}
@@ -80,16 +81,8 @@ function deserialize( ZObject ) {
 	return deserializer( ZObject );
 }
 
-// eslint-disable-next-line no-unused-vars
-function serializeZ21( nothing ) {
+function serializeZ21() {
 	return { Z1K1: { Z1K1: 'Z9', Z9K1: 'Z21' } };
-}
-
-function serializeZ39( theKeyReference ) {
-	return {
-		Z1K1: { Z1K1: 'Z9', Z9K1: 'Z39' },
-		Z39K1: { Z1K1: 'Z6', Z6K1: theKeyReference }
-	};
 }
 
 function serializeZ40( theBoolean ) {
@@ -102,19 +95,6 @@ function serializeZ40( theBoolean ) {
 	return {
 		Z1K1: { Z1K1: 'Z9', Z9K1: 'Z40' },
 		Z40K1: { Z1K1: 'Z9', Z9K1: ZID }
-	};
-}
-
-function serializeZ86( theCodePoint ) {
-	return {
-		Z1K1: {
-			Z1K1: 'Z9',
-			Z9K1: 'Z86'
-		},
-		Z86K1: {
-			Z1K1: 'Z6',
-			Z6K1: theCodePoint
-		}
 	};
 }
 
@@ -174,9 +154,7 @@ SERIALIZERS_.set( 'Z6', ( theString ) => {
 	return { Z1K1: 'Z6', Z6K1: theString };
 } );
 SERIALIZERS_.set( 'Z21', serializeZ21 );
-SERIALIZERS_.set( 'Z39', serializeZ39 );
 SERIALIZERS_.set( 'Z40', serializeZ40 );
-SERIALIZERS_.set( 'Z86', serializeZ86 );
 SERIALIZERS_.set( 'Z881', serializeZList );
 SERIALIZERS_.set( 'Z882', serializeZType );
 SERIALIZERS_.set( 'Z883', serializeZMap );
@@ -185,9 +163,12 @@ const DEFAULT_SERIALIZER_ = serializeZType;
 /**
  * Convert a JS object into the corresponding ZObject type.
  * String -> Z6
- * Array -> Typed List ( Z881 instance )
  * null -> Z21
  * Boolean -> Z40
+ * Array -> Typed List ( Z881-generated type )
+ * ZPair -> Typed Pair ( Z882-generated type )
+ * Map -> Typed Map ( Z883-generated type )
+ * ZObject -> arbitrary ZObject
  *
  * @param {Object} theObject
  * @param {Object} expectedType

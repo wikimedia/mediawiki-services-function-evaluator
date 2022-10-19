@@ -224,7 +224,7 @@ describe( 'Javascript executor: deserialization', () => { // eslint-disable-line
 	} );
 
 	it( 'test deserializes Z39', () => { // eslint-disable-line no-undef
-		assert.deepEqual( 'Z1000K1', deserialize( Z39_ ) );
+		assert.deepEqual( 'Z1000K1', deserialize( Z39_ ).Z39K1 );
 	} );
 
 	it( 'test deserializes Z40: Z41', () => { // eslint-disable-line no-undef
@@ -236,7 +236,7 @@ describe( 'Javascript executor: deserialization', () => { // eslint-disable-line
 	} );
 
 	it( 'test deserializes Z86', () => { // eslint-disable-line no-undef
-		assert.deepEqual( '%', deserialize( Z86_ ) );
+		assert.deepEqual( '%', deserialize( Z86_ ).Z86K1 );
 	} );
 
 	it( 'test deserializes Z882', () => { // eslint-disable-line no-undef
