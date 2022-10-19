@@ -56,7 +56,6 @@ async function execute( Z7 ) {
 	}
 
 	const returnValue = functionName + 'K0';
-	const returnType = Z7.Z7K1.Z8K2; // eslint-disable-line no-unused-vars
 	// Why can't this just be defined directly in the eval statement?
 	let callMe = null; // eslint-disable-line prefer-const
 	const functionTemplate = `
@@ -71,7 +70,7 @@ async function execute( Z7 ) {
 
             resultCache.set(
                 '${returnValue}',
-                await serialize(${functionName}.apply(null, boundLocals), returnType)
+                serialize(${functionName}.apply(null, boundLocals))
             );
         }
     `;

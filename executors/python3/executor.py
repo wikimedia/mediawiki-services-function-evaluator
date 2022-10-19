@@ -22,8 +22,7 @@ for key, value in _BOUND_VALUES.items():
 
 
 _RESULT_CACHE['{return_value}'] = _SERIALIZE(
-    {function_name}(**bound_values),
-    _RETURN_TYPE
+    {function_name}(**bound_values)
 )
 """
 
@@ -88,7 +87,6 @@ def execute(Z7):
                 # TODO (T288555): Pass serialization as native code.
                 "_DESERIALIZE": serialization.deserialize,
                 "_SERIALIZE": serialization.serialize,
-                "_RETURN_TYPE": return_type,
             },
         )
     except Exception as e:

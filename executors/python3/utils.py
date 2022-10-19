@@ -212,25 +212,29 @@ def convert_zlist_to_list(zlist):
     return result
 
 
-def convert_list_to_zlist(the_list, type_clue=None):
-    """Turns a Python iterable into a Typed List.
-
-    Arguments:
-        the_list: an iterable of ZObjects
-
-    Returns:
-        a Type List corresponding to the input list
-    """
+def get_list_type(the_list):
     Z1K1s = set()
-
     for i, element in enumerate(the_list):
         if i == 0:
             first_Z1K1 = element["Z1K1"]
+        # TODO (T293915): Use ZObjectKeyFactory or similar to create string representations.
         Z1K1s.add(frozendict(element["Z1K1"]))
     if len(Z1K1s) == 1:
         head_type = first_Z1K1
     else:
-        head_type = type_clue or _z9_for("Z1")
+        head_type = _z9_for("Z1")
+    return head_type
+
+
+def convert_list_to_zlist(the_list, head_type):
+    """Turns a Python iterable into a Typed List.
+
+    Arguments:
+        the_list: an iterable of serialized ZObjects
+
+    Returns:
+        a Type List corresponding to the input list
+    """
     list_type = {"Z1K1": _z9_for("Z7"), "Z7K1": _z9_for("Z881"), "Z881K1": head_type}
 
     head_key = "K1"
