@@ -25,32 +25,35 @@ function createExecutorSubprocess( binary, callArguments ) {
 
 // TODO (T318747): Common config between these keys and function-schemata.
 const executors = new Map();
-executors.set( 'javascript-es2020', 'node' );
-executors.set( 'javascript-es2019', 'node' );
-executors.set( 'javascript-es2018', 'node' );
-executors.set( 'javascript-es2017', 'node' );
-executors.set( 'javascript-es2016', 'node' );
-executors.set( 'javascript-es2015', 'node' );
-executors.set( 'javascript', 'node' );
-executors.set( 'python-3-9', 'python3' );
-executors.set( 'python-3-8', 'python3' );
-executors.set( 'python-3-7', 'python3' );
-executors.set( 'python-3', 'python3' );
-executors.set( 'python', 'python3' );
-
-const calls = new Map();
-calls.set( 'python3', { args: [ 'executors/python3/executor.py' ], env: { PYTHONPATH: 'executors' } } );
-calls.set( 'node', { args: [ 'executors/javascript/executor.js' ] } );
+for ( const languageVersion of [
+	'javascript-es2020', 'javascript-es2019', 'javascript-es2018', 'javascript-es2017',
+	'javascript-es2016', 'javascript-es2015', 'javascript'
+] ) {
+	executors.set( languageVersion, {
+		executable: 'node',
+		callArguments: {
+			args: [ 'executors/javascript/executor.js' ]
+		}
+	} );
+}
+for ( const languageVersion of [
+	'python-3-9', 'python-3-8', 'python-3-7', 'python-3', 'python'
+] ) {
+	executors.set( languageVersion, {
+		executable: 'python3',
+		callArguments: {
+			args: [ 'executors/python3/executor.py' ],
+			env: { PYTHONPATH: 'executors' }
+		}
+	} );
+}
 
 function runExecutorSubprocess( languageVersion ) {
-	const executable = executors.get( languageVersion );
-	if ( executable === undefined ) {
+	const executableDict = executors.get( languageVersion );
+	if ( executableDict === undefined ) {
 		return null;
 	}
-	const callArguments = calls.get( executable );
-	if ( callArguments === undefined ) {
-		return null;
-	}
+	const { executable, callArguments } = executableDict;
 	return createExecutorSubprocess( executable, callArguments );
 }
 
