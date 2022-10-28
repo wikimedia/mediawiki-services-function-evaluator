@@ -14,7 +14,8 @@ function error( message ) {
 	};
 }
 
-async function execute( Z7 ) {
+// eslint-disable-next-line no-unused-vars
+async function execute( Z7, stdin = process.stdin, stdout = process.stdout ) {
 	const resultCache = new Map();
 	const boundValues = new Map();
 	const argumentNames = [];
@@ -98,7 +99,7 @@ function main( stdin = process.stdin, stdout = process.stdout ) {
 			const theInput = JSON.parse( chunk );
 			const functionCall = theInput.function_call;
 			if ( functionCall !== undefined ) {
-				const result = await execute( functionCall );
+				const result = await execute( functionCall, stdin, stdout );
 				stdout.write( JSON.stringify( result ) );
 			}
 		}

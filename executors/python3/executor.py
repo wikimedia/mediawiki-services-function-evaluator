@@ -45,7 +45,7 @@ def void():
     return {"Z1K1": "Z9", "Z9K1": "Z24"}
 
 
-def execute(Z7):
+def execute(Z7, stdin=sys.stdin, stdout=sys.stdout):
     # TODO (T282891): Handle input that fails to validate all at once instead of ad hoc.
     try:
         function_name = Z7["Z7K1"]["Z8K5"]["Z9K1"]
@@ -101,7 +101,7 @@ def main(stdin=sys.stdin, stdout=sys.stdout):
         the_input = json.loads(line)
         function_call = the_input.get("function_call")
         if function_call is not None:
-            result = execute(function_call)
+            result = execute(function_call, stdin, stdout)
             stdout.write(json.dumps(result))
 
 
