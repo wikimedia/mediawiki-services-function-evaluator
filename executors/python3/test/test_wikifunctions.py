@@ -4,7 +4,7 @@ import re
 import threading
 import unittest
 
-# TODO (T282795): This is a kludge due to how env variables work in Blubber;
+# TODO (T322096): This is a kludge due to how env variables work in Blubber;
 # would be better if PYTHONPATH could be controlled directly.
 from .. import wikifunctions
 

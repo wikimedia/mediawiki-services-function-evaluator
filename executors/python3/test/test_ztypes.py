@@ -1,5 +1,7 @@
 import unittest
 
+# TODO (T322096): This is a kludge due to how env variables work in Blubber;
+# would be better if PYTHONPATH could be controlled directly.
 from .. import ztypes
 
 
