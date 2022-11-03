@@ -101,6 +101,8 @@ async function maybeRunZ7( ZObject, websocket = null ) {
 		} else if ( data.replace( /\s/g, '' ) ) {
 			// Skip data that contains only whitespaces; all other data becomes
 			// part of the eventual result.
+			// TODO (T322345): Consider raising an error if stdout only contains
+			// whitespace.
 			stdoutQueue.push( data );
 		}
 	} );
@@ -154,6 +156,8 @@ async function maybeRunZ7( ZObject, websocket = null ) {
 	pidusage.clear();
 
 	let Z22, errorful;
+	// TODO (T322345): Raise an error if all we ever got from the code executor
+	// was whitespace.
 	const contents = stdoutQueue.join( '' );
 
 	if ( contents ) {
