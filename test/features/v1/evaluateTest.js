@@ -83,13 +83,13 @@ describe( 'evaluate-integration', function () { // eslint-disable-line no-undef
 
 	integrationTest(
 		'python - addition',
-		readJSON( './test_data/python3_add.json' ),
+		readJSON( './test_data/python3_add_Z7.json' ),
 		readJSON( './test_data/add_expected.json' )
 	);
 
 	integrationTest(
 		'python - addition (with generics)',
-		readJSON( './test_data/python3_add_with_generics.json' ),
+		readJSON( './test_data/python3_add_with_generics_Z7.json' ),
 		readJSON( './test_data/add_expected.json' )
 	);
 
@@ -110,13 +110,13 @@ describe( 'evaluate-integration', function () { // eslint-disable-line no-undef
 
 	integrationTest(
 		'javascript - addition',
-		readJSON( './test_data/javascript_add.json' ),
+		readJSON( './test_data/javascript_add_Z7.json' ),
 		readJSON( './test_data/add_expected.json' )
 	);
 
 	integrationTest(
 		'javascript - addition (with generics)',
-		readJSON( './test_data/javascript_add_with_generics.json' ),
+		readJSON( './test_data/javascript_add_with_generics_Z7.json' ),
 		readJSON( './test_data/add_expected.json' )
 	);
 

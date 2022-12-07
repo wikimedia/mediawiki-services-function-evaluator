@@ -134,9 +134,22 @@ async function maybeRunZ7( ZObject, websocket = null ) {
 		} );
 	}
 
+	const firstImplementation = ZObject.Z7K1.Z8K4.K1;
+	const functionCallRequest = {
+		codeString: firstImplementation.Z14K3.Z16K2.Z6K1,
+		functionName: ZObject.Z7K1.Z8K5.Z9K1,
+		functionArguments: {}
+	};
+	for ( const key of Object.keys( ZObject ) ) {
+		if ( key === 'Z1K1' || key === 'Z7K1' ) {
+			continue;
+		}
+		functionCallRequest.functionArguments[ key ] = ZObject[ key ];
+	}
+
 	// Write ZObject to executor process.
 	executorProcess.stdin.cork();
-	executorProcess.stdin.write( JSON.stringify( { function_call: ZObject } ) );
+	executorProcess.stdin.write( JSON.stringify( functionCallRequest ) );
 	executorProcess.stdin.write( '\n' );
 	executorProcess.stdin.uncork();
 	executorProcess.stdin.write( '\n' );

@@ -46,30 +46,29 @@ def void():
     return {"Z1K1": "Z9", "Z9K1": "Z24"}
 
 
-def execute(Z7, stdin=sys.stdin, stdout=sys.stdout):
+def execute(function_call, stdin=sys.stdin, stdout=sys.stdout):
     # TODO (T282891): Handle input that fails to validate all at once instead of ad hoc.
     try:
-        function_name = Z7["Z7K1"]["Z8K5"]["Z9K1"]
+        function_name = function_call["functionName"]
     except KeyError:
         return utils.make_mapped_result_envelope(
-            None, _error("Z7K1 did not contain a valid Function.")
+            None, _error("Function call did not provide functionName.")
         )
 
     # TODO (T289319): Consider whether to reduce all keys to local keys.
-    argument_names = [key for key in Z7 if key.startswith(function_name)]
-    bound_values = {
-        argument_name: Z7[argument_name] for argument_name in argument_names
-    }
+    argument_names = []
+    bound_values = {}
+    for key, value in function_call.get("functionArguments", {}).items():
+        argument_names.append(key)
+        bound_values[key] = value
     try:
-        implementations = utils.convert_zlist_to_list(Z7["Z7K1"]["Z8K4"])
-        implementation = implementations[0]["Z14K3"]["Z16K2"]["Z6K1"]
+        implementation = function_call["codeString"]
     except KeyError:
         return utils.make_mapped_result_envelope(
-            None, _error("Z8K4 did not contain a valid Implementation.")
+            None, _error("Function call did not provide codeString.")
         )
 
     return_value = function_name + "K0"
-    return_type = Z7["Z7K1"]["Z8K2"]
     try:
         exec(
             _FUNCTION_TEMPLATE.format(
@@ -100,9 +99,8 @@ def execute(Z7, stdin=sys.stdin, stdout=sys.stdout):
 
 def main(stdin=sys.stdin, stdout=sys.stdout, stderr=sys.stderr):
     for line in stdin:
-        the_input = json.loads(line)
-        function_call = the_input.get("function_call")
-        if function_call is not None:
+        function_call = json.loads(line)
+        if function_call:
             result = execute(function_call, stdin, stdout)
             stdout.write(json.dumps(result))
             stdout.write("\n")
