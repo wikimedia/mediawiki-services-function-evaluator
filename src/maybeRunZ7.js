@@ -1,92 +1,13 @@
 'use strict';
 
-const subprocess = require( './subprocess.js' );
-const { convertZListToItemArray, makeMappedResultEnvelope, setMetadataValue } = require( '../executors/javascript/function-schemata/javascript/src/utils.js' );
-const { validatesAsFunctionCall } = require( '../executors/javascript/function-schemata/javascript/src/schema.js' );
+const { makeMappedResultEnvelope, setMetadataValue } = require( '../executors/javascript/function-schemata/javascript/src/utils.js' );
 const os = require( 'os' );
 const pidusage = require( 'pidusage' );
 const { cpuUsage, memoryUsage } = require( 'node:process' );
 
-async function maybeRunZ7( ZObject, websocket = null ) {
-	const theStatus = await validatesAsFunctionCall( ZObject );
-	if ( !theStatus.isValid() ) {
-		// console.log( theStatus.getParserErrors() );
-		// A flattened list of parser errors. Note that they are from different layers of parsing.
-		// The first message might be the most useful.
-		const parserErrorMessages = theStatus.getParserErrors().map( ( x ) => x.message );
-		return {
-			process: null,
-			Z22: makeMappedResultEnvelope(
-				null,
-				{
-					Z1K1: {
-						Z1K1: 'Z9',
-						Z9K1: 'Z5'
-					},
-					// TODO (T292804): Figure out what error this should actually be.
-					Z5K1: theStatus.getZ5().Z5K1,
-					Z5K2: {
-						Z1K1: 'Z6',
-						Z6K1: `Unable to validate function call. Parser errors: ${parserErrorMessages}`
-					}
-				}
-			)
-		};
-	}
-
-	let programmingLanguage;
-	try {
-		const implementations = convertZListToItemArray( ZObject.Z7K1.Z8K4 );
-		programmingLanguage = implementations[ 0 ].Z14K3.Z16K1.Z61K1.Z6K1;
-	} catch ( e ) {
-		return {
-			process: null,
-			Z22: makeMappedResultEnvelope(
-				null,
-				{
-					Z1K1: {
-						Z1K1: 'Z9',
-						Z9K1: 'Z5'
-					},
-					Z5K1: {
-						Z1K1: 'Z9',
-						Z9K1: 'Z558'
-					},
-					Z5K2: {
-						Z1K1: 'Z6',
-						Z6K1: `Unable to find programming language in function call. ${e}`
-					}
-				}
-			)
-		};
-	}
-
+async function maybeRunZ7( ZObject, executorProcess, websocket = null ) {
 	const startTime = new Date();
 	const startUsage = cpuUsage();
-
-	const executorProcess = subprocess.runExecutorSubprocess( programmingLanguage );
-	if ( executorProcess === null ) {
-		return {
-			process: null,
-			Z22: makeMappedResultEnvelope(
-				null,
-				{
-					Z1K1: {
-						Z1K1: 'Z9',
-						Z9K1: 'Z5'
-					},
-					Z5K1: {
-						Z1K1: 'Z9',
-						Z9K1: 'Z558'
-					},
-					Z5K2: {
-						Z1K1: 'Z6',
-						Z6K1: `No executor found for programming language ${programmingLanguage}.`
-					}
-				}
-			)
-		};
-	}
 
 	// Captured stdout will become the resultant ZObject; captured stderr will be logged.
 	const stdoutQueue = [];
@@ -119,7 +40,6 @@ async function maybeRunZ7( ZObject, websocket = null ) {
 		} else {
 			// TODO (T322097): Use a logger; consider whether this should be
 			// logged to INFO or ERROR or what.
-			console.log( data.toString() );
 		}
 	} );
 	const stderrPromise = new Promise( ( resolve ) => {
