@@ -5,7 +5,7 @@ const { serialize, deserialize } = require( './serialization.js' );
 // eslint-disable-next-line no-unused-vars
 const { ZObject, ZPair } = require( './ztypes.js' );
 
-const { convertZListToItemArray, makeMappedResultEnvelope } = require( './function-schemata/javascript/src/utils.js' );
+const { makeMappedResultEnvelope } = require( './function-schemata/javascript/src/utils.js' );
 
 function error( message ) {
 	return {
@@ -15,44 +15,32 @@ function error( message ) {
 }
 
 // eslint-disable-next-line no-unused-vars
-async function execute( Z7, stdin = process.stdin, stdout = process.stdout ) {
+async function execute( functionCall, stdin = process.stdin, stdout = process.stdout ) {
 	const resultCache = new Map();
 	const boundValues = new Map();
 	const argumentNames = [];
-	let functionName;
-	try {
-		functionName = Z7.Z7K1.Z8K5.Z9K1;
-	} catch ( e ) {
-		functionName = undefined;
-	}
+	const functionName = functionCall.functionName;
+
 	// TODO (T282891): Handle input that fails to validate all at once instead of ad hoc.
 	if ( functionName === undefined ) {
 		return makeMappedResultEnvelope(
 			null,
-			error( 'Z7K1 did not contain a valid Function.' )
+			error( 'Function call did not provide functionName.' )
 		);
 	}
 
 	// TODO (T289319): Consider whether to reduce all keys to local keys.
-	for ( const key of Object.keys( Z7 ) ) {
-		if ( key.startsWith( functionName ) ) {
-			argumentNames.push( key );
-			boundValues.set( key, Z7[ key ] );
-		}
+	for ( const key of Object.keys( functionCall.functionArguments ) ) {
+		argumentNames.push( key );
+		boundValues.set( key, functionCall.functionArguments[ key ] );
 	}
 	argumentNames.sort();
 
-	let implementation;
-	try {
-		const implementations = convertZListToItemArray( Z7.Z7K1.Z8K4 );
-		implementation = implementations[ 0 ].Z14K3.Z16K2.Z6K1;
-	} catch ( e ) {
-		implementation = undefined;
-	}
+	const implementation = functionCall.codeString;
 	if ( implementation === undefined ) {
 		return makeMappedResultEnvelope(
 			null,
-			error( 'Z8K4 did not contain a valid Implementation.' )
+			error( 'Function call did not provide codeString.' )
 		);
 	}
 
@@ -96,9 +84,8 @@ function main( stdin = process.stdin, stdout = process.stdout, stderr = process.
 	stdin.on( 'readable', async () => {
 		let chunk;
 		while ( ( chunk = stdin.read() ) !== null ) {
-			const theInput = JSON.parse( chunk );
-			const functionCall = theInput.function_call;
-			if ( functionCall !== undefined ) {
+			const functionCall = JSON.parse( chunk );
+			if ( functionCall ) {
 				const result = await execute( functionCall, stdin, stdout );
 				stdout.write( JSON.stringify( result ) );
 				stdout.write( '\n' );
