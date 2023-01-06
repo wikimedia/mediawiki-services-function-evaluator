@@ -22,6 +22,20 @@ your local check-out with:
 git submodule update --init
 ```
 
+<a href='testing'></a>
+## Testing
+
+Before submitting, please run the integration tests. Please install Mediawiki core
+and the Wikilambda extension.
+
+- Point the extension to a local orchestrator by overriding the
+    `$wgWikiLambdaOrchestratorLocation` config value in `LocalSettings.php` with something like:
+```
+$wgWikiLambdaOrchestratorLocation =  "http://mediawiki-function-orchestrator-1:6254/";
+```
+- From the MediaWiki root directory, run the command `docker-compose exec mediawiki php tests/phpunit/phpunit.php extensions/WikiLambda/tests/phpunit/integration/API/ApiFunctionCallTest.php`
+- If your code hasn't made any breaking changes, all tests should pass.
+
 <a href='evaluator-service'></a>
 ## Evaluator Service
 The evaluator itself is a thin wrapper (based on [service-template-node](https://www.mediawiki.org/wiki/ServiceTemplateNode))
