@@ -17,6 +17,9 @@ const router = sUtil.router();
 let app;
 
 async function propagateResult( res, result, childProcess = null ) {
+	if ( res.writableEnded ) {
+		return;
+	}
 	// Kill the executor child process if it has survived.
 	if ( childProcess !== null ) {
 		try {
