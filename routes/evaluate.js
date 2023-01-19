@@ -39,6 +39,8 @@ router.post( '/', async ( req, res ) => {
 	const wss = app.wss;
 	let ZObject;
 
+	const timeoutLimit = process.env.FUNCTION_EVALUATOR_TIMEOUT || 15000;
+
 	setTimeout(
 		async function () {
 			await propagateResult(
@@ -63,8 +65,7 @@ router.post( '/', async ( req, res ) => {
 				)
 			);
 		},
-		// TODO (T325590): Parameterize this.
-		15000
+		timeoutLimit
 	);
 
 	try {
