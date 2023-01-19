@@ -16,10 +16,14 @@ const router = sUtil.router();
  */
 let app;
 
-async function propagateResult( res, result, childProcess = null ) {
+async function propagateResult( res, result, timer = null, childProcess = null ) {
 	if ( res.writableEnded ) {
 		return;
 	}
+	if ( timer !== null ) {
+		clearTimeout( timer );
+	}
+
 	// Kill the executor child process if it has survived.
 	if ( childProcess !== null ) {
 		try {
@@ -30,11 +34,11 @@ async function propagateResult( res, result, childProcess = null ) {
 	res.json( result );
 }
 
-async function runFunctionCall( ZObject, childProcess, res, websocket = null ) {
+async function runFunctionCall( ZObject, childProcess, res, timer, websocket = null ) {
 	const resultTuple = await maybeRunZ7( ZObject, childProcess, websocket );
 
 	// Return the resulting Z22 to the caller.
-	propagateResult( res, resultTuple.Z22, childProcess );
+	propagateResult( res, resultTuple.Z22, timer, childProcess );
 }
 
 router.post( '/', async ( req, res ) => {
@@ -44,7 +48,7 @@ router.post( '/', async ( req, res ) => {
 
 	const timeoutLimit = process.env.FUNCTION_EVALUATOR_TIMEOUT || 15000;
 
-	setTimeout(
+	const timer = setTimeout(
 		async function () {
 			await propagateResult(
 				res,
@@ -116,7 +120,8 @@ router.post( '/', async ( req, res ) => {
 						Z6K1: `Unable to validate function call. Parser errors: ${parserErrorMessages}`
 					}
 				}
-			)
+			),
+			timer
 		);
 		return;
 	}
@@ -144,7 +149,8 @@ router.post( '/', async ( req, res ) => {
 						Z6K1: `Unable to find programming language in function call. ${e}`
 					}
 				}
-			)
+			),
+			timer
 		);
 		return;
 	}
@@ -169,17 +175,18 @@ router.post( '/', async ( req, res ) => {
 						Z6K1: `No executor found for programming language ${programmingLanguage}.`
 					}
 				}
-			)
+			),
+			timer
 		);
 		return;
 	}
 
 	if ( reentrant ) {
 		wss.once( 'connection', async ( ws ) => {
-			await runFunctionCall( ZObject, childProcess, res, ws );
+			await runFunctionCall( ZObject, childProcess, res, timer, ws );
 		} );
 	} else {
-		await runFunctionCall( ZObject, childProcess, res );
+		await runFunctionCall( ZObject, childProcess, res, timer );
 	}
 } );
 
