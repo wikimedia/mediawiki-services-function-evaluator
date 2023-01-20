@@ -10,6 +10,7 @@ async function maybeRunZ7( ZObject, executorProcess, websocket = null ) {
 	const startUsage = cpuUsage();
 
 	// Captured stdout will become the resultant ZObject; captured stderr will be logged.
+	let Z22 = null;
 	const stdoutQueue = [];
 	executorProcess.stdout.on( 'data', ( data ) => {
 		// TODO (T295699): Avoid toString; find a way to merge Buffers.
@@ -18,7 +19,31 @@ async function maybeRunZ7( ZObject, executorProcess, websocket = null ) {
 		if ( data.match( /^\s*call / ) ) {
 			// When the data starts with "call ", request a subsequent orchestration
 			// via the websocket.
-			websocket.send( data );
+			//
+			// If websocket is null (i.e., reentrant mode is disabled), exit
+			// early.
+			if ( websocket === null ) {
+				Z22 = makeMappedResultEnvelope(
+					null,
+					{
+						Z1K1: {
+							Z1K1: 'Z9',
+							Z9K1: 'Z5'
+						},
+						Z5K1: {
+							Z1K1: 'Z9',
+							// Generic evaluation error.
+							Z9K1: 'Z507'
+						},
+						Z5K2: {
+							Z1K1: 'Z6',
+							Z6K1: 'Non-reentrant executor tried to call back to the orchestrator'
+						}
+					} );
+				process.kill( executorProcess.pid );
+			} else {
+				websocket.send( data );
+			}
 		} else if ( data.replace( /\s/g, '' ) ) {
 			// Skip data that contains only whitespaces; all other data becomes
 			// part of the eventual result.
@@ -84,46 +109,51 @@ async function maybeRunZ7( ZObject, executorProcess, websocket = null ) {
 		}
 		pidStats = stats;
 	} );
+
 	// Wait until subprocess exits; return the result of function execution.
 	await Promise.all( [ stdoutPromise, stderrPromise ] );
 	pidusage.clear();
 
-	let Z22, errorful;
-	// TODO (T322345): Raise an error if all we ever got from the code executor
-	// was whitespace.
-	const contents = stdoutQueue.join( '' );
+	// Z22 may already have been set to an error state. If it hasn't, read the
+	// Z22 returned by the executor or generate an error.
+	if ( Z22 === null ) {
+		let errorful;
+		// TODO (T322345): Raise an error if all we ever got from the code executor
+		// was whitespace.
+		const contents = stdoutQueue.join( '' );
 
-	if ( contents ) {
-		try {
-			Z22 = JSON.parse( contents );
-		} catch ( error ) {
-			errorful = 'contentful';
+		if ( contents ) {
+			try {
+				Z22 = JSON.parse( contents );
+			} catch ( error ) {
+				errorful = 'contentful';
+			}
+		} else {
+			errorful = 'empty';
 		}
-	} else {
-		errorful = 'empty';
-	}
 
-	if ( errorful ) {
-		Z22 = makeMappedResultEnvelope(
-			null,
-			{
-				Z1K1: {
-					Z1K1: 'Z9',
-					Z9K1: 'Z5'
-				},
-				Z5K1: {
-					Z1K1: 'Z9',
-					// Generic evaluation error.
-					Z9K1: 'Z507'
-				},
-				Z5K2: {
-					Z1K1: 'Z6',
-					Z6K1: errorful === 'contentful' ?
-						`Executor returned some nonsense: ${contents}.` :
-						'Executor returned an empty response.'
-				}
-			} );
+		if ( errorful ) {
+			Z22 = makeMappedResultEnvelope(
+				null,
+				{
+					Z1K1: {
+						Z1K1: 'Z9',
+						Z9K1: 'Z5'
+					},
+					Z5K1: {
+						Z1K1: 'Z9',
+						// Generic evaluation error.
+						Z9K1: 'Z507'
+					},
+					Z5K2: {
+						Z1K1: 'Z6',
+						Z6K1: errorful === 'contentful' ?
+							`Executor returned some nonsense: ${contents}.` :
+							'Executor returned an empty response.'
+					}
+				} );
 
+		}
 	}
 
 	const cpuUsageStats = cpuUsage( startUsage );
