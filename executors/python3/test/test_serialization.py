@@ -148,7 +148,6 @@ _USER_DEFINED = {
 
 
 class DeserializeTest(unittest.TestCase):
-
     maxDiff = None
 
     def test_deserializes_Z6(self):
@@ -187,7 +186,6 @@ class DeserializeTest(unittest.TestCase):
 
 
 class SerializeTest(unittest.TestCase):
-
     maxDiff = None
 
     def _run_test(self, expected, actual):

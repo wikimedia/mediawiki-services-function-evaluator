@@ -22,7 +22,6 @@ def _read_test_json(file_name):
 
 
 class ExecutorTest(unittest.TestCase):
-
     maxDiff = None
 
     def _run_test(self, zobject, expected_result):

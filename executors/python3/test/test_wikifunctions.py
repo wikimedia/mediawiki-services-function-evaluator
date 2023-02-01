@@ -10,7 +10,6 @@ from .. import wikifunctions
 
 
 class WikifunctionsTest(unittest.TestCase):
-
     maxDiff = None
 
     def setUp(self):
