@@ -6,6 +6,8 @@ runs:
   environment: { APP_BASE_PATH: /srv/service }
 
 variants:
+  # These variants concern the soon-to-be-deprecated mono-evaluator that includes
+  # all programming languages.
   build:
     copies:
     - from: local
@@ -30,12 +32,128 @@ variants:
   prep:
     includes: [build]
     node: { env: production }
+
+  # This is the "omnibus" variant with all languages supported in one place
   production:
     copies: [prep]
     node: { env: production }
     apt: { packages: [python3] }
     entrypoint: [node, server.js]
 
+  # These variants are for building, testing, and deploying an evaluator for
+  # Python3 programming language varieties only.
+  build-python3-v1-evaluator:
+    copies:
+    - from: local
+      source: app.js
+      destination: .
+    - from: local
+      source: server.js
+      destination: .
+    - from: local
+      source: package.json
+      destination: .
+    - from: local
+      source: config*.yaml
+      destination: .
+    - from: local
+      source: spec*.yaml
+      destination: .
+    - from: local
+      source: targets.yaml
+      destination: .
+    - from: local
+      source: src/
+      destination: ./src
+    - from: local
+      source: lib/
+      destination: ./lib
+    - from: local
+      source: routes/
+      destination: ./routes
+    - from: local
+      source: static/
+      destination: ./static
+    - from: local
+      source: executors/python3/
+      destination: ./executors/python3
+    - from: local
+      source: executors/javascript/function-schemata
+      destination: ./executors/javascript/function-schemata
+    apt: { packages: [git, build-essential, python3-dev] }
+    node: { requirements: [package.json, package-lock.json, executors/javascript/function-schemata/package.json, executors/javascript/function-schemata/package-lock.json] }
+    runs:
+      # Allow the application to write to the filesystem so we can generate coverage reports
+      environment: { LINK: g++ }
+  development-python3-v1:
+    includes: [build-python3-v1-evaluator]
+    apt: { packages: [ca-certificates] }
+    entrypoint: [node, server.js]
+  prep-python3-v1:
+    includes: [build-python3-v1-evaluator]
+    node: { env: production }
+  production-python3-v1:
+    copies: [prep-python3-v1]
+    node: { env: production }
+    apt: { packages: [python3] }
+    entrypoint: [node, server.js]
+
+  # These variants are for building, testing, and deploying an evaluator for
+  # JavaScript programming language varieties only.
+  build-javascript-v1-evaluator:
+    copies:
+    - from: local
+      source: app.js
+      destination: .
+    - from: local
+      source: server.js
+      destination: .
+    - from: local
+      source: package.json
+      destination: .
+    - from: local
+      source: config*.yaml
+      destination: .
+    - from: local
+      source: spec*.yaml
+      destination: .
+    - from: local
+      source: targets.yaml
+      destination: .
+    - from: local
+      source: src/
+      destination: ./src
+    - from: local
+      source: lib/
+      destination: ./lib
+    - from: local
+      source: routes/
+      destination: ./routes
+    - from: local
+      source: static/
+      destination: ./static
+    - from: local
+      source: executors/javascript/
+      destination: ./executors/javascript
+    apt: { packages: [git, build-essential] }
+    node: { requirements: [package.json, package-lock.json, executors/javascript/function-schemata/package.json, executors/javascript/function-schemata/package-lock.json] }
+    runs:
+      # Allow the application to write to the filesystem so we can generate coverage reports
+      environment: { LINK: g++ }
+  development-javascript-v1:
+    includes: [build-javascript-v1-evaluator]
+    apt: { packages: [ca-certificates] }
+    entrypoint: [node, server.js]
+  prep-javascript-v1:
+    includes: [build-javascript-v1-evaluator]
+    node: { env: production }
+  production-javascript-v1:
+    copies: [prep-javascript-v1]
+    node: { env: production }
+    entrypoint: [node, server.js]
+
+  # These variants are for testing the Python3 executor code only, without the
+  # service layer.
   build-python3-executor:
     base: docker-registry.wikimedia.org/python3-devel:0.0.2
     apt: { packages: [python3-dev, python3-setuptools, python3-pkgconfig] }
@@ -61,7 +179,6 @@ variants:
         source: executors/python3/requirements-dev.txt
         destination: ./requirements-dev.txt
     entrypoint: [pytest]
-
   build-format-python3:
     base: docker-registry.wikimedia.org/python3-build-bullseye
     lives:
@@ -82,6 +199,8 @@ variants:
         destination: ./requirements-format.txt
     entrypoint: [sh, "./format.sh"]
 
+  # These variants are for testing the JavaScript executor code only, without the
+  # service layer.
   build-javascript-executor:
     lives:
       in: /executors/javascript
