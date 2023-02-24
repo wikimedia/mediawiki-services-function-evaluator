@@ -80,6 +80,15 @@ variants:
     - from: local
       source: executors/javascript/function-schemata
       destination: ./executors/javascript/function-schemata
+    - from: local
+      source: test/
+      destination: ./test
+    - from: local
+      source: test_data/
+      destination: ./test_data
+    - from: local
+      source: .eslintrc.json
+      destination: ./.eslintrc.json
     apt: { packages: [git, build-essential, python3-dev] }
     node: { requirements: [package.json, package-lock.json, executors/javascript/function-schemata/package.json, executors/javascript/function-schemata/package-lock.json] }
     runs:
@@ -97,6 +106,13 @@ variants:
     node: { env: production }
     apt: { packages: [python3] }
     entrypoint: [node, server.js]
+  test-python3-v1-evaluator:
+    includes: [build-python3-v1-evaluator]
+    apt: { packages: [ca-certificates] }
+    entrypoint: [npm, run, test:python3-v1]
+    runs:
+      # Allow the application to write to the filesystem so we can generate coverage reports
+      insecurely: true
 
   # These variants are for building, testing, and deploying an evaluator for
   # JavaScript programming language varieties only.
@@ -135,6 +151,15 @@ variants:
     - from: local
       source: executors/javascript/
       destination: ./executors/javascript
+    - from: local
+      source: test/
+      destination: ./test
+    - from: local
+      source: test_data/
+      destination: ./test_data
+    - from: local
+      source: .eslintrc.json
+      destination: ./.eslintrc.json
     apt: { packages: [git, build-essential] }
     node: { requirements: [package.json, package-lock.json, executors/javascript/function-schemata/package.json, executors/javascript/function-schemata/package-lock.json] }
     runs:
@@ -151,6 +176,13 @@ variants:
     copies: [prep-javascript-v1]
     node: { env: production }
     entrypoint: [node, server.js]
+  test-javascript-v1-evaluator:
+    includes: [build-javascript-v1-evaluator]
+    apt: { packages: [ca-certificates] }
+    entrypoint: [npm, run, test:javascript-v1]
+    runs:
+      # Allow the application to write to the filesystem so we can generate coverage reports
+      insecurely: true
 
   # These variants are for testing the Python3 executor code only, without the
   # service layer.

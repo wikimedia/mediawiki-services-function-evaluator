@@ -5,7 +5,7 @@ const Server = require( '../../utils/server.js' );
 const { evaluatorIntegrationTest } = require( '../../utils/integrationTest.js' );
 const { readJSON } = require( '../../../src/fileUtils.js' );
 
-describe( 'evaluate-integration', function () { // eslint-disable-line no-undef
+describe( 'python3-v1-integration', function () { // eslint-disable-line no-undef
 
 	this.timeout( 20000 );
 
@@ -85,68 +85,18 @@ describe( 'evaluate-integration', function () { // eslint-disable-line no-undef
 
 	);
 
-	evaluatorIntegrationTest(
-		async function ( requestBody ) {
-			return await fetch( uri, requestBody );
-		},
-		function ( testName, callBack ) {
-			it( testName, callBack ); // eslint-disable-line no-undef
-		},
-		'javascript - addition',
-		readJSON( './test_data/javascript_add_Z7.json' ),
-		readJSON( './test_data/add_expected.json' )
-	);
-
-	evaluatorIntegrationTest(
-		async function ( requestBody ) {
-			return await fetch( uri, requestBody );
-		},
-		function ( testName, callBack ) {
-			it( testName, callBack ); // eslint-disable-line no-undef
-		},
-		'javascript - addition (with generics)',
-		readJSON( './test_data/javascript_add_with_generics_Z7.json' ),
-		readJSON( './test_data/add_expected.json' )
-	);
-
-	evaluatorIntegrationTest(
-		async function ( requestBody ) {
-			return await fetch( uri, requestBody );
-		},
-		function ( testName, callBack ) {
-			it( testName, callBack ); // eslint-disable-line no-undef
-		},
-		'javascript - error: no Z8',
-		readJSON( './test_data/javascript_no_Z8.json' ),
-		/* expectedOutput= */ null,
-		/* expectedErrorKeyPhrase */ 'Unable to validate function call'
-	);
-
-	evaluatorIntegrationTest(
-		async function ( requestBody ) {
-			return await fetch( uri, requestBody );
-		},
-		function ( testName, callBack ) {
-			it( testName, callBack ); // eslint-disable-line no-undef
-		},
-		'javascript - error: no Z14',
-		readJSON( './test_data/javascript_no_Z14.json' ),
-		/* expectedOutput= */ null,
-		/* expectedErrorKeyPhrase */ 'Unable to validate function call'
-	);
-
-	evaluatorIntegrationTest(
-		async function ( requestBody ) {
-			return await fetch( uri, requestBody );
-		},
-		function ( testName, callBack ) {
-			it( testName, callBack ); // eslint-disable-line no-undef
-		},
-		'javascript - throw',
-		readJSON( './test_data/javascript_throw.json' ),
-		/* expectedOutput= */ null,
-		/* expectedErrorKeyPhrase */ 'Hello, this is a good day to die'
-	);
+	// TODO (T330294): Enable this test and ensure an error is thrown.
+	// evaluatorIntegrationTest(
+	//    async function ( requestBody ) {
+	//        return await fetch( uri, requestBody );
+	//    },
+	//    function ( testName, callBack ) {
+	//        it( testName, callBack ); // eslint-disable-line no-undef
+	//    },
+	//    'javascript - addition',
+	//    readJSON( './test_data/javascript_add_Z7.json' ),
+	//    /* expectedOutput= */ null
+	// );
 
 	evaluatorIntegrationTest(
 		async function ( requestBody ) {
