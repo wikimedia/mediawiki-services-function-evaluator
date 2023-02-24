@@ -1,10 +1,14 @@
 'use strict';
+
 const sUtil = require( '../lib/util' );
-const subprocess = require( '../src/subprocess.js' );
 const { maybeRunZ7 } = require( '../src/maybeRunZ7.js' );
+const { executorConfigurations } = require( '../executorConfigurations.js' ); // eslint-disable-line node/no-missing-require
+const { runExecutorSubprocess, setExecutorConfigurations } = require( '../src/subprocess.js' );
 const { getWrappedZObjectFromVersionedBinary, getZObjectFromBinary } = require( '../executors/javascript/function-schemata/javascript/src/serialize.js' );
 const { validatesAsFunctionCall } = require( '../executors/javascript/function-schemata/javascript/src/schema.js' );
 const { convertZListToItemArray, makeMappedResultEnvelope } = require( '../executors/javascript/function-schemata/javascript/src/utils.js' );
+
+setExecutorConfigurations( executorConfigurations );
 
 /**
  * The main router object
@@ -155,7 +159,7 @@ router.post( '/', async ( req, res ) => {
 		return;
 	}
 
-	const childProcess = subprocess.runExecutorSubprocess( programmingLanguage );
+	const childProcess = runExecutorSubprocess( programmingLanguage );
 	if ( childProcess === null ) {
 		await propagateResult(
 			res,
