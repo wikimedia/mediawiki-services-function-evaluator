@@ -23,30 +23,43 @@ function createExecutorSubprocess( binary, callArguments ) {
 	return subProcess;
 }
 
-// TODO (T318747): Common config between these keys and function-schemata.
+const softwareLanguages = require( '../executors/javascript/function-schemata/data/definitions/softwareLanguages.json' );
+
 const executors = new Map();
-for ( const languageVersion of [
-	'javascript-es2020', 'javascript-es2019', 'javascript-es2018', 'javascript-es2017',
-	'javascript-es2016', 'javascript-es2015', 'javascript'
-] ) {
-	executors.set( languageVersion, {
-		executable: 'node',
-		callArguments: {
-			args: [ 'executors/javascript/executor.js' ]
-		}
-	} );
-}
-for ( const languageVersion of [
-	'python-3-9', 'python-3-8', 'python-3-7', 'python-3', 'python'
-] ) {
-	executors.set( languageVersion, {
-		executable: 'python3',
-		callArguments: {
-			// -u forces std* streams to be unbuffered
-			args: [ '-u', 'executors/python3/executor.py' ],
-			env: { PYTHONPATH: 'executors' }
-		}
-	} );
+for ( const languageVersion in softwareLanguages ) {
+	let executorConfig;
+
+	if ( languageVersion.startsWith( 'javascript' ) ) {
+		executorConfig = {
+			// TODO: This should use a different executable for different versions of Node once we
+			// support them (needs said versioned binary to also exist first!).
+			executable: 'node',
+			callArguments: {
+				args: [ 'executors/javascript/executor.js' ]
+			}
+		};
+	} else if ( languageVersion.startsWith( 'python' ) ) {
+		executorConfig = {
+			// TODO: This should use a different executable for different versions of python once we
+			// support them (needs said versioned binary to also exist first!).
+			executable: 'python3',
+			callArguments: {
+				// -u forces std* streams to be unbuffered
+				args: [ '-u', 'executors/python3/executor.py' ],
+				env: { PYTHONPATH: 'executors' }
+			}
+		};
+	}
+
+	// Only register an executor if we recognised it (e.g. Lua doesn't yet have an executable here)
+	if ( executorConfig ) {
+		// Register this executor for the given ZID (e.g. 'Z601' or 'Z612')
+		executors.set( softwareLanguages[ languageVersion ], executorConfig );
+
+		// Register this executor under the language string (e.g. 'javascript-es5' or 'python-3-5')
+		// TODO (T287155): This is a legacy, and we will remove it
+		executors.set( languageVersion, executorConfig );
+	}
 }
 
 function runExecutorSubprocess( languageVersion ) {
