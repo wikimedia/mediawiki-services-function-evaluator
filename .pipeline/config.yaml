@@ -18,11 +18,21 @@ pipelines:
         build: build
         run: false
       - name: test
+      - name: build-python3-all-evaluator
+        build: build-python3-all-evaluator
+        run: false
+      - name: test-python3-all-evaluator
+      - name: build-javascript-all-evaluator
+        build: build-javascript-all-evaluator
+        run: false
+      - name: test-javascript-all-evaluator
     execution:
       - [build-python3-executor, test-python3-executor]
       - [build-format-python3, format-python3]
       - [build-javascript-executor, test-javascript-executor]
       - [build, test]
+      - [build-python3-all-evaluator, test-python3-all-evaluator]
+      - [build-javascript-all-evaluator, test-javascript-all-evaluator]
   publish:
     blubberfile: blubber.yaml
     stages:
