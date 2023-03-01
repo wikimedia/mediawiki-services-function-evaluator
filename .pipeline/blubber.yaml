@@ -11,6 +11,9 @@ variants:
   build:
     copies:
     - from: local
+    - from: local
+      source: src/monolithicSoftwareLanguages.js
+      destination: ./executorConfigurations.js
     apt: { packages: [git, build-essential, python3-dev] }
     # TODO (T318728): When/if we split the services, the evaluator will need
     # its own checkout of function-schemata.
@@ -80,6 +83,9 @@ variants:
     - from: local
       source: executors/javascript/function-schemata
       destination: ./executors/javascript/function-schemata
+    - from: local
+      source: executors/python3/pythonSoftwareLanguages.js
+      destination: ./executorConfigurations.js
     - from: local
       source: test/
       destination: ./test
@@ -151,6 +157,9 @@ variants:
     - from: local
       source: executors/javascript/
       destination: ./executors/javascript
+    - from: local
+      source: executors/javascript/javaScriptSoftwareLanguages.js
+      destination: ./executorConfigurations.js
     - from: local
       source: test/
       destination: ./test
