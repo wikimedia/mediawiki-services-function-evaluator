@@ -45,7 +45,7 @@ variants:
 
   # These variants are for building, testing, and deploying an evaluator for
   # Python3 programming language varieties only.
-  build-python3-v1-evaluator:
+  build-python3-all-evaluator:
     copies:
     - from: local
       source: app.js
@@ -100,29 +100,29 @@ variants:
     runs:
       # Allow the application to write to the filesystem so we can generate coverage reports
       environment: { LINK: g++ }
-  development-python3-v1:
-    includes: [build-python3-v1-evaluator]
+  development-python3-all:
+    includes: [build-python3-all-evaluator]
     apt: { packages: [ca-certificates] }
     entrypoint: [node, server.js]
-  prep-python3-v1:
-    includes: [build-python3-v1-evaluator]
+  prep-python3-all:
+    includes: [build-python3-all-evaluator]
     node: { env: production }
-  production-python3-v1:
-    copies: [prep-python3-v1]
+  production-python3-all:
+    copies: [prep-python3-all]
     node: { env: production }
     apt: { packages: [python3] }
     entrypoint: [node, server.js]
-  test-python3-v1-evaluator:
-    includes: [build-python3-v1-evaluator]
+  test-python3-all-evaluator:
+    includes: [build-python3-all-evaluator]
     apt: { packages: [ca-certificates] }
-    entrypoint: [npm, run, test:python3-v1]
+    entrypoint: [npm, run, test:python3-all]
     runs:
       # Allow the application to write to the filesystem so we can generate coverage reports
       insecurely: true
 
   # These variants are for building, testing, and deploying an evaluator for
   # JavaScript programming language varieties only.
-  build-javascript-v1-evaluator:
+  build-javascript-all-evaluator:
     copies:
     - from: local
       source: app.js
@@ -174,21 +174,21 @@ variants:
     runs:
       # Allow the application to write to the filesystem so we can generate coverage reports
       environment: { LINK: g++ }
-  development-javascript-v1:
-    includes: [build-javascript-v1-evaluator]
+  development-javascript-all:
+    includes: [build-javascript-all-evaluator]
     apt: { packages: [ca-certificates] }
     entrypoint: [node, server.js]
-  prep-javascript-v1:
-    includes: [build-javascript-v1-evaluator]
+  prep-javascript-all:
+    includes: [build-javascript-all-evaluator]
     node: { env: production }
-  production-javascript-v1:
-    copies: [prep-javascript-v1]
+  production-javascript-all:
+    copies: [prep-javascript-all]
     node: { env: production }
     entrypoint: [node, server.js]
-  test-javascript-v1-evaluator:
-    includes: [build-javascript-v1-evaluator]
+  test-javascript-all-evaluator:
+    includes: [build-javascript-all-evaluator]
     apt: { packages: [ca-certificates] }
-    entrypoint: [npm, run, test:javascript-v1]
+    entrypoint: [npm, run, test:javascript-all]
     runs:
       # Allow the application to write to the filesystem so we can generate coverage reports
       insecurely: true
