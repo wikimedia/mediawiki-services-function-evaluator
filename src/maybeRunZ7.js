@@ -1,6 +1,7 @@
 'use strict';
 
 const { makeMappedResultEnvelope, setMetadataValue } = require( '../executors/javascript/function-schemata/javascript/src/utils.js' );
+const { getLogger } = require( './logger.js' );
 const os = require( 'os' );
 const pidusage = require( 'pidusage' );
 const { cpuUsage, memoryUsage } = require( 'node:process' );
@@ -8,6 +9,8 @@ const { cpuUsage, memoryUsage } = require( 'node:process' );
 async function maybeRunZ7( ZObject, executorProcess, websocket = null ) {
 	const startTime = new Date();
 	const startUsage = cpuUsage();
+
+	const logger = getLogger();
 
 	// Captured stdout will become the resultant ZObject; captured stderr will be logged.
 	let Z22 = null;
@@ -104,7 +107,7 @@ async function maybeRunZ7( ZObject, executorProcess, websocket = null ) {
 	// TODO(T313460): Take a closer look at how useful the pidusage results are
 	pidusage( executorProcess.pid, function ( err, stats ) {
 		if ( err ) {
-			console.error( 'pidusage error: ' + err );
+			logger.error( 'pidusage error: ' + err );
 			return;
 		}
 		pidStats = stats;
@@ -170,12 +173,12 @@ async function maybeRunZ7( ZObject, executorProcess, websocket = null ) {
 	Z22 = setMetadataValue( Z22, { Z1K1: 'Z6', Z6K1: 'evaluationEndTime' }, { Z1K1: 'Z6', Z6K1: endTimeStr } );
 	Z22 = setMetadataValue( Z22, { Z1K1: 'Z6', Z6K1: 'evaluationDuration' }, { Z1K1: 'Z6', Z6K1: durationStr } );
 	Z22 = setMetadataValue( Z22, { Z1K1: 'Z6', Z6K1: 'evaluationHostname' }, { Z1K1: 'Z6', Z6K1: hostname } );
-	console.debug( 'Evaluation memory usage: ' + memoryUsageStr );
-	console.debug( 'Evaluation CPU usage: ' + cpuUsageStr );
-	console.debug( 'Evaluation start time: ' + startTimeStr );
-	console.debug( 'Evaluation end time: ' + endTimeStr );
-	console.debug( 'Evaluation duration: ' + durationStr );
-	console.debug( 'Evaluation hostname: ' + hostname );
+	logger.debug( 'Evaluation memory usage: ' + memoryUsageStr );
+	logger.debug( 'Evaluation CPU usage: ' + cpuUsageStr );
+	logger.debug( 'Evaluation start time: ' + startTimeStr );
+	logger.debug( 'Evaluation end time: ' + endTimeStr );
+	logger.debug( 'Evaluation duration: ' + durationStr );
+	logger.debug( 'Evaluation hostname: ' + hostname );
 	if ( pidStats ) {
 		const executionMemoryUsageStr = Math.round( pidStats.memory / 1024 / 1024 * 100 ) / 100 + ' MiB';
 		const executionCpuUsageStr = pidStats.ctime.toString() + ' μs';
@@ -187,8 +190,8 @@ async function maybeRunZ7( ZObject, executorProcess, websocket = null ) {
 			Z1K1: 'Z6',
 			Z6K1: executionCpuUsageStr
 		} );
-		console.debug( 'Execution memory usage: ' + executionMemoryUsageStr );
-		console.debug( 'Execution CPU usage: ' + executionCpuUsageStr );
+		logger.debug( 'Execution memory usage: ' + executionMemoryUsageStr );
+		logger.debug( 'Execution CPU usage: ' + executionCpuUsageStr );
 	}
 
 	return {
