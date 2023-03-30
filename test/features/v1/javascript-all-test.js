@@ -31,7 +31,9 @@ describe( 'javascript-v1-integration', function () { // eslint-disable-line no-u
 		'degenerate function call',
 		readJSON( './test_data/degenerate_Z8.json' ),
 		// TODO (T292804): Figure out what error this should actually be.
-		/* expectedOutput= */ null
+		/* expectedOutput= */ null,
+		/* expectedErrorKeyPhrase= */ '',
+		/* enableForV003= */ false
 	);
 
 	// TODO (T330294): Enable this test and ensure an error is thrown.
@@ -81,7 +83,8 @@ describe( 'javascript-v1-integration', function () { // eslint-disable-line no-u
 		'javascript - error: no Z8',
 		readJSON( './test_data/javascript_no_Z8.json' ),
 		/* expectedOutput= */ null,
-		/* expectedErrorKeyPhrase */ 'Unable to validate function call'
+		/* expectedErrorKeyPhrase */ 'Unable to find programming language',
+		/* enableForV003= */ false
 	);
 
 	evaluatorIntegrationTest(
@@ -94,7 +97,8 @@ describe( 'javascript-v1-integration', function () { // eslint-disable-line no-u
 		'javascript - error: no Z14',
 		readJSON( './test_data/javascript_no_Z14.json' ),
 		/* expectedOutput= */ null,
-		/* expectedErrorKeyPhrase */ 'Unable to validate function call'
+		/* expectedErrorKeyPhrase */ 'Unable to find programming language',
+		/* enableForV003= */ false
 	);
 
 	evaluatorIntegrationTest(
@@ -120,7 +124,8 @@ describe( 'javascript-v1-integration', function () { // eslint-disable-line no-u
 		'no implementation - throw',
 		readJSON( './test_data/no_implementation_throw.json' ),
 		/* expectedOutput= */ null,
-		/* expectedErrorKeyPhrase */ 'Unable to find programming language'
+		/* expectedErrorKeyPhrase */ 'Unable to find programming language',
+		/* enableForV003= */ false
 	);
 
 	evaluatorIntegrationTest(

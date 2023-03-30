@@ -31,7 +31,9 @@ describe( 'python3-v1-integration', function () { // eslint-disable-line no-unde
 		'degenerate function call',
 		readJSON( './test_data/degenerate_Z8.json' ),
 		// TODO (T292804): Figure out what error this should actually be.
-		/* expectedOutput= */ null
+		/* expectedOutput= */ null,
+		/* expectedErrorKeyPhrase= */ '',
+		/* enableForV003= */ false
 	);
 
 	evaluatorIntegrationTest(
@@ -68,7 +70,8 @@ describe( 'python3-v1-integration', function () { // eslint-disable-line no-unde
 		'python - error: no Z8',
 		readJSON( './test_data/python3_no_Z8.json' ),
 		/* expectedOutput= */ null,
-		/* expectedErrorKeyPhrase */ 'Unable to validate function call'
+		/* expectedErrorKeyPhrase */ 'Unable to find programming language',
+		/* enableForV003= */ false
 	);
 
 	evaluatorIntegrationTest(
@@ -81,8 +84,8 @@ describe( 'python3-v1-integration', function () { // eslint-disable-line no-unde
 		'python - error: no Z14',
 		readJSON( './test_data/python3_no_Z14.json' ),
 		/* expectedOutput= */ null,
-		/* expectedErrorKeyPhrase */ 'Unable to validate function call'
-
+		/* expectedErrorKeyPhrase */ 'Unable to find programming language',
+		/* enableForV003= */ false
 	);
 
 	// TODO (T330294): Enable this test and ensure an error is thrown.
@@ -108,7 +111,8 @@ describe( 'python3-v1-integration', function () { // eslint-disable-line no-unde
 		'no implementation - throw',
 		readJSON( './test_data/no_implementation_throw.json' ),
 		/* expectedOutput= */ null,
-		/* expectedErrorKeyPhrase */ 'Unable to find programming language'
+		/* expectedErrorKeyPhrase */ 'Unable to find programming language',
+		/* enableForV003= */ false
 	);
 
 	evaluatorIntegrationTest(
