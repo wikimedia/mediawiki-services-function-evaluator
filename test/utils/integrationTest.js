@@ -6,21 +6,34 @@ const { isVoid, getError, isZMap } = require( '../../executors/javascript/functi
 const { convertWrappedZObjectToVersionedBinary } = require( '../../executors/javascript/function-schemata/javascript/src/serialize.js' );
 
 function evaluatorIntegrationTest(
-	fetch, testRunner, name, input, expectedOutput = null, expectedErrorKeyPhrase = ''
+	fetch, testRunner, name, input, expectedOutput = null, expectedErrorKeyPhrase = '',
+	enableForV003 = true
 ) {
 	const wrappedInput = {
 		reentrant: false,
 		zobject: input
 	};
-	const toTest = {
-		'serialized version': {
-			theInput: convertWrappedZObjectToVersionedBinary( wrappedInput, '0.0.2' ),
+	const wrappedInputV004 = { ...wrappedInput };
+	wrappedInputV004.remainingTime = 15;
+	const toTest = {};
+
+	// Some older test cases aren't applicable to schema versions v0.0.3 and up.
+	// This is a good thing, since it means that we've tightened guarantees around
+	// the input, but it makes this code messy. We can clean up the irrelevant
+	// test cases if/when we deprecate the older schema versions.
+	if ( enableForV003 ) {
+		toTest[ 'serialized version 0.0.3/4' ] = {
+			theInput: convertWrappedZObjectToVersionedBinary( wrappedInputV004, '0.0.4' ),
 			contentType: 'application/octet-stream'
-		},
-		'raw JSON version': {
-			theInput: JSON.stringify( wrappedInput ),
-			contentType: 'application/json'
-		}
+		};
+	}
+	toTest[ 'serialized version 0.0.2' ] = {
+		theInput: convertWrappedZObjectToVersionedBinary( wrappedInput, '0.0.2' ),
+		contentType: 'application/octet-stream'
+	};
+	toTest[ 'raw JSON version' ] = {
+		theInput: JSON.stringify( wrappedInput ),
+		contentType: 'application/json'
 	};
 	for ( const key of Object.keys( toTest ) ) {
 		const theInput = toTest[ key ].theInput;

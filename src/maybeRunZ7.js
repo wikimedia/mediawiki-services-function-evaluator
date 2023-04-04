@@ -6,7 +6,7 @@ const os = require( 'os' );
 const pidusage = require( 'pidusage' );
 const { cpuUsage, memoryUsage } = require( 'node:process' );
 
-async function maybeRunZ7( ZObject, executorProcess, websocket = null ) {
+async function maybeRunZ7( functionCallRequest, executorProcess, websocket = null ) {
 	const startTime = new Date();
 	const startUsage = cpuUsage();
 
@@ -80,19 +80,6 @@ async function maybeRunZ7( ZObject, executorProcess, websocket = null ) {
 		websocket.on( 'message', ( message ) => {
 			executorProcess.stdin.write( message + '\n' );
 		} );
-	}
-
-	const firstImplementation = ZObject.Z7K1.Z8K4.K1;
-	const functionCallRequest = {
-		codeString: firstImplementation.Z14K3.Z16K2.Z6K1,
-		functionName: ZObject.Z7K1.Z8K5.Z9K1,
-		functionArguments: {}
-	};
-	for ( const key of Object.keys( ZObject ) ) {
-		if ( key === 'Z1K1' || key === 'Z7K1' ) {
-			continue;
-		}
-		functionCallRequest.functionArguments[ key ] = ZObject[ key ];
 	}
 
 	// Write ZObject to executor process.
