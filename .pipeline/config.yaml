@@ -46,3 +46,17 @@ pipelines:
             tags:
               - latest
               - '${setup.tag}'
+      - name: build-and-publish-python3-all
+        build: production-python3-all
+        publish:
+          image:
+            name: wikimedia/mediawiki-services-function-evaluator-python3-all
+            tags:
+              - latest
+      - name: build-and-publish-javascript-all
+        build: production-javascript-all
+        publish:
+          image:
+            name: wikimedia/mediawiki-services-function-evaluator-javascript-all
+            tags:
+              - latest
