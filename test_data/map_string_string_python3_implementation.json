@@ -1,4 +1,0 @@
-{
-	"Z1K1": "Z6",
-	"Z6K1": "def Z1802(Z1802K1, Z1802K2):\n    return {Z1802K2: str(Z1802K1[Z1802K2]).lower()}"
-}

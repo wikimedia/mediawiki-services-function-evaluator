@@ -1,4 +1,0 @@
-{
-	"Z1K1": "Z6",
-	"Z6K1": "function Z1802(Z1802K1, Z1802K2) { return new Map([[Z1802K2, Z1802K1.get(Z1802K2).toString()]]); }"
-}

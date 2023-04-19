@@ -1,9 +1,0 @@
-node_modules
-.eslintcache
-executors/python3/test/test_data/**
-executors/javascript/test/test_data/**
-executors/javascript/node_modules/**
-**/__pycache__/**
-**/venv/**
-.nyc_output/
-coverage/

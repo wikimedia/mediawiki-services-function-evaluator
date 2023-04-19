@@ -1,2 +1,0 @@
-class EvaluatorError(Exception):
-    pass

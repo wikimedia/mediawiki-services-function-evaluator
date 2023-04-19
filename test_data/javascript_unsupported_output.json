@@ -1,5 +1,0 @@
-{
-	"codeString": "class A {}\nfunction Z1000() {\n\treturn new A();\n}",
-	"functionName": "Z1000",
-	"functionArguments": {}
-}

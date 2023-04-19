@@ -1,5 +1,0 @@
-{
-	"codeString": "def Z1000():\n\tclass A:\n\t\tdef __repr__(self):\n\t\t\treturn '<A>'\n\treturn A()",
-	"functionName": "Z1000",
-	"functionArguments": {}
-}
